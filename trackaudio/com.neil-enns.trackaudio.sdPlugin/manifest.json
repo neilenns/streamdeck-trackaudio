@@ -4,25 +4,16 @@
   "Author": "Neil Enns",
   "Actions": [
     {
-      "Name": "Counter",
-      "UUID": "com.neil-enns.trackaudio.increment",
-      "Icon": "imgs/actions/counter/icon",
-      "Tooltip": "Displays a count, which increments by one on press.",
-      "Controllers": ["Keypad"],
-      "States": [
-        {
-          "Image": "imgs/actions/counter/key",
-          "TitleAlignment": "middle"
-        }
-      ]
-    },
-    {
       "Name": "Station status",
       "UUID": "com.neil-enns.trackaudio.stationstatus",
       "Icon": "imgs/actions/counter/icon",
       "Tooltip": "Shows the status of a station.",
       "Controllers": ["Keypad"],
       "States": [
+        {
+          "Image": "imgs/actions/counter/key",
+          "TitleAlignment": "middle"
+        },
         {
           "Image": "imgs/actions/counter/key",
           "TitleAlignment": "middle"
@@ -51,7 +42,7 @@
   ],
   "Nodejs": {
     "Version": "20",
-    "Debug": "break"
+    "Debug": "enabled"
   },
   "UUID": "com.neil-enns.trackaudio"
 }
