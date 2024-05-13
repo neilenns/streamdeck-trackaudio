@@ -6,12 +6,16 @@
   </head>
   <body>
     <sdpi-item label="Callsign">
-      <sdpi-textfield setting="callsign"></sdpi-textfield>
+      <sdpi-textfield
+        setting="callsign"
+        placeholder="Station callsign, e.g. SEA_GND"
+        required
+      ></sdpi-textfield>
     </sdpi-item>
 
     <sdpi-item label="Listen to">
-      <sdpi-radio setting="listenTo" columns="3">
-        <option value="rx" default>RX</option>
+      <sdpi-radio setting="listenTo" default="rx" columns="3">
+        <option value="rx">RX</option>
         <option value="tx">TX</option>
         <option value="xc">XC</option>
       </sdpi-radio>
