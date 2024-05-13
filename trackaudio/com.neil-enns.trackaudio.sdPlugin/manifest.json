@@ -9,13 +9,12 @@
       "Icon": "imgs/actions/counter/icon",
       "Tooltip": "Shows the status of a station.",
       "Controllers": ["Keypad"],
+      "PropertyInspectorPath": "station-status.html",
       "States": [
         {
-          "Image": "imgs/actions/counter/key",
           "TitleAlignment": "middle"
         },
         {
-          "Image": "imgs/actions/counter/key",
           "TitleAlignment": "middle"
         }
       ]

@@ -3,14 +3,17 @@ import { EventEmitter } from "events";
 
 // For some reason this isn't exported from @elgato/streamdeck
 type State = 0 | 1;
+export type ListenTo = "RX" | "TX" | "XC";
 
 export class TrackAudioAction {
   callsign: string;
+  listenTo: ListenTo;
   action: Action;
 
-  constructor(callsign: string, action: Action) {
+  constructor(callsign: string, listenTo: ListenTo, action: Action) {
     this.callsign = callsign;
     this.action = action;
+    this.listenTo = listenTo;
   }
 }
 
@@ -34,11 +37,30 @@ export default class ActionManager extends EventEmitter {
    * @param callsign The callsign associated with the action
    * @param action The action
    */
-  public add(callsign: string, action: Action): void {
-    const newObject = new TrackAudioAction(callsign, action);
+  public add(callsign: string, listenTo: ListenTo, action: Action): void {
+    const newObject = new TrackAudioAction(callsign, listenTo, action);
     this.actions.push(newObject);
 
     this.emit("added", this.actions.length);
+  }
+
+  /**
+   * Updates the callsign and listenTo values associated with an action
+   * @param action The action to update
+   * @param callsign The callsign to set
+   * @param listenTo The listenTo value to set
+   */
+  public update(action: Action, callsign: string, listenTo: ListenTo) {
+    const savedAction = this.actions.find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.callsign = callsign;
+    savedAction.listenTo = listenTo;
   }
 
   /**
