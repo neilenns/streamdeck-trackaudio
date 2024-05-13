@@ -6,7 +6,7 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import WebSocket from "ws";
+import TrackAudioConnection from "../trackAudio";
 import { isFrequencyStateUpdate, Message } from "../types/messages";
 
 /**
@@ -14,64 +14,9 @@ import { isFrequencyStateUpdate, Message } from "../types/messages";
  */
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 export class StationStatus extends SingletonAction<StationSettings> {
-  // The socket for communication with TrackAudio
-  ws: WebSocket | null = null;
+  trackAudio = TrackAudioConnection.getInstance();
+
   buttonAction: Action | null = null;
-
-  // Function to handle WebSocket messages
-  handleMessage = (message: string) => {
-    console.log("received: %s", message);
-
-    // Parse the message as JSON
-    const data: Message = JSON.parse(message);
-
-    // Check if the received message is of the desired event type
-    if (isFrequencyStateUpdate(data)) {
-      console.log(`Received ${data.type} event:`, data.value);
-
-      const isRx = data.value.rx.find(
-        (station) => station.pCallsign === "SEA_GND"
-      );
-
-      isRx ? this.buttonAction?.setState(1) : this.buttonAction?.setState(0);
-
-      console.log(`Rx: ${isRx}`);
-    }
-  };
-
-  // Establishes a socket connection to TrackAudio and registers the appropriate
-  // event handlers. Also takes care of auto-reconnect attempts if a connection fails
-  // or is dropped.
-  connectWebSocket = () => {
-    this.ws = new WebSocket(`ws://localhost:49080/ws`);
-
-    this.ws.on("open", () => {
-      console.log("TrackAudio connection opened");
-    });
-
-    // Listen for messages from the WebSocket server
-    this.ws.on("message", this.handleMessage);
-
-    this.ws.on("error", (error) => {
-      console.log(error.message);
-      this.ws?.close();
-    });
-
-    // Handle WebSocket close event
-    this.ws.on("close", () => {
-      console.log("TrackAudio connection closed");
-    });
-  };
-
-  // Disconnects from TrackAudio and cleans up any pending auto-reconnect
-  // timers.
-  disconnectWebSocket = () => {
-    // Close WebSocket connection
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
-    }
-  };
 
   /**
    * The {@link SingletonAction.onWillAppear} event is useful for setting the visual representation of an action when it become visible. This could be due to the Stream Deck first
@@ -82,16 +27,13 @@ export class StationStatus extends SingletonAction<StationSettings> {
     // I'm not sure if this is the right way to do it, but save the action so
     // setState can be called from the socket message handler.
     this.buttonAction = ev.action;
-    if (!this.ws) {
-      this.connectWebSocket();
-    }
+
+    this.trackAudio.connect();
   }
 
   onWillDisappear(
     ev: WillDisappearEvent<StationSettings>
-  ): void | Promise<void> {
-    this.disconnectWebSocket();
-  }
+  ): void | Promise<void> {}
 
   /**
    * Listens for the {@link SingletonAction.onKeyDown} event which is emitted by Stream Deck when an action is pressed. Stream Deck provides various events for tracking interaction
@@ -109,10 +51,6 @@ export class StationStatus extends SingletonAction<StationSettings> {
   }
 }
 
-/**
- * Settings for {@link StationStatus}.
- */
 type StationSettings = {
   callsign: string;
-  port: number;
 };
