@@ -1,15 +1,17 @@
 import WebSocket from "ws";
 import { Message, isFrequencyStateUpdate } from "./types/messages";
-import { error } from "console";
+import { EventEmitter } from "events";
 
-export default class TrackAudioConnection {
+export default class TrackAudioConnection extends EventEmitter {
   private static instance: TrackAudioConnection;
   private socket: WebSocket | null = null;
   private reconnectInterval = 1000 * 5; // 5 seconds
   private url: string = "ws://localhost:49080/ws";
   private reconnectTimer: NodeJS.Timeout | null = null;
 
-  private constructor() {}
+  private constructor() {
+    super();
+  }
 
   /**
    * Provides access to the TrackAudio websocket connection
@@ -50,10 +52,12 @@ export default class TrackAudioConnection {
 
     this.socket.on("open", () => {
       console.log("WebSocket connection established.");
+      this.emit("connected");
     });
 
     this.socket.on("close", () => {
       console.log("WebSocket connection closed");
+      this.emit("disconnected");
       this.reconnect();
     });
 
@@ -79,8 +83,6 @@ export default class TrackAudioConnection {
 
     // Check if the received message is of the desired event type
     if (isFrequencyStateUpdate(data)) {
-      console.log(`Received ${data.type} event:`, data.value);
-
       const isRx = data.value.rx.find(
         (station) => station.pCallsign === "SEA_GND"
       );
