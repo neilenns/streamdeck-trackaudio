@@ -1,0 +1,57 @@
+{
+  "Name": "trackaudio",
+  "Version": "0.1.0.0",
+  "Author": "Neil Enns",
+  "Actions": [
+    {
+      "Name": "Counter",
+      "UUID": "com.neil-enns.trackaudio.increment",
+      "Icon": "imgs/actions/counter/icon",
+      "Tooltip": "Displays a count, which increments by one on press.",
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "imgs/actions/counter/key",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "Station status",
+      "UUID": "com.neil-enns.trackaudio.stationstatus",
+      "Icon": "imgs/actions/counter/icon",
+      "Tooltip": "Shows the status of a station.",
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "imgs/actions/counter/key",
+          "TitleAlignment": "middle"
+        }
+      ]
+    }
+  ],
+  "Category": "trackaudio",
+  "CategoryIcon": "imgs/plugin/category-icon",
+  "CodePath": "bin/plugin.js",
+  "Description": "Provides buttons for controlling TrackAudio",
+  "Icon": "imgs/plugin/marketplace",
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "6.5"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.15"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Nodejs": {
+    "Version": "20",
+    "Debug": "break"
+  },
+  "UUID": "com.neil-enns.trackaudio"
+}
