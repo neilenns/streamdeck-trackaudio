@@ -1,5 +1,10 @@
 import WebSocket from "ws";
-import { Message, isFrequencyStateUpdate } from "./types/messages";
+import {
+  Message,
+  isFrequencyStateUpdate,
+  isRxBegin,
+  isRxEnd,
+} from "./types/messages";
 import { EventEmitter } from "events";
 
 export default class TrackAudioManager extends EventEmitter {
@@ -84,6 +89,10 @@ export default class TrackAudioManager extends EventEmitter {
     // Check if the received message is of the desired event type
     if (isFrequencyStateUpdate(data)) {
       TrackAudioManager.instance.emit("frequencyUpdate", data);
+    } else if (isRxBegin(data)) {
+      TrackAudioManager.instance.emit("rxBegin", data);
+    } else if (isRxEnd(data)) {
+      TrackAudioManager.instance.emit("rxEnd", data);
     }
   }
 

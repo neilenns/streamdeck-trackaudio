@@ -15,6 +15,7 @@
           "TitleAlignment": "middle"
         },
         {
+          "Image": "imgs/actions/station-status/green",
           "TitleAlignment": "middle"
         }
       ]

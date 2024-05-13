@@ -24,10 +24,26 @@ export type RxBegin = {
   };
 };
 
-export type Message = FrequenciesUpdate | RxBegin;
+export type RxEnd = {
+  type: "kRxEnd";
+  value: {
+    callsign: string;
+    pFrequencyHz: number;
+  };
+};
+
+export type Message = FrequenciesUpdate | RxBegin | RxEnd;
 
 export function isFrequencyStateUpdate(
   message: Message
 ): message is FrequenciesUpdate {
   return message.type === "kFrequenciesUpdate";
+}
+
+export function isRxBegin(message: Message): message is RxBegin {
+  return message.type === "kRxBegin";
+}
+
+export function isRxEnd(message: Message): message is RxEnd {
+  return message.type === "kRxEnd";
 }

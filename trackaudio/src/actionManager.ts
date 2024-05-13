@@ -64,6 +64,28 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
+   * Updates all actions that match the callsign to show the transmission in progress state.
+   * @param callsign The callsign of the actions to update
+   */
+  public rxBegin(callsign: string) {
+    this.actions
+      .filter((entry) => entry.callsign === callsign)
+      .forEach((entry) =>
+        entry.action.setImage("actions/station-status/orange.png")
+      );
+  }
+
+  /**
+   * Updates all actions that match the callsign to clear the transmission in progress state.
+   * @param callsign The callsign of the actions to update
+   */
+  public rxEnd(callsign: string) {
+    this.actions
+      .filter((entry) => entry.callsign === callsign)
+      .forEach((entry) => entry.action.setImage());
+  }
+
+  /**
    * Removes an action from the list.
    * @param action The action to remove
    */
@@ -96,10 +118,10 @@ export default class ActionManager extends EventEmitter {
    * @param state The state to set
    */
   public setState(callsign: string, state: State) {
-    this.actions.forEach((entry) => {
-      if (entry.callsign === callsign) {
+    this.actions
+      .filter((entry) => entry.callsign === callsign)
+      .forEach((entry) => {
         entry.action.setState(state);
-      }
-    });
+      });
   }
 }

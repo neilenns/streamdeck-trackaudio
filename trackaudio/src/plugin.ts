@@ -3,7 +3,7 @@ import streamDeck, { LogLevel, action } from "@elgato/streamdeck";
 import { StationStatus } from "./actions/station-status";
 import TrackAudioManager from "./trackAudioManager";
 import ActionManager, { TrackAudioAction } from "./actionManager";
-import { FrequenciesUpdate } from "./types/messages";
+import { FrequenciesUpdate, RxBegin, RxEnd, isRxBegin } from "./types/messages";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -26,6 +26,14 @@ const updateButtons = (data: FrequenciesUpdate) => {
   });
 };
 
+const updateRxState = (data: RxBegin | RxEnd) => {
+  if (isRxBegin(data)) {
+    console.log(`Transmission started on: ${data.value.callsign}`);
+  } else {
+    console.log(`Transmission started on: ${data.value.callsign}`);
+  }
+};
+
 // We can enable "trace" logging so that all messages between the Stream Deck, and the plugin are recorded. When storing sensitive information
 streamDeck.logger.setLevel(LogLevel.TRACE);
 
@@ -46,6 +54,14 @@ trackAudio.on("disconnected", () => {
 
 trackAudio.on("frequencyUpdate", (data) => {
   updateButtons(data);
+});
+
+trackAudio.on("rxBegin", (data) => {
+  updateRxState(data);
+});
+
+trackAudio.on("rxEnd", (data) => {
+  updateRxState(data);
 });
 
 // Register event handlers for action addition and removal
