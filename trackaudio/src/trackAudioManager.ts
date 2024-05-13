@@ -2,8 +2,8 @@ import WebSocket from "ws";
 import { Message, isFrequencyStateUpdate } from "./types/messages";
 import { EventEmitter } from "events";
 
-export default class TrackAudioConnection extends EventEmitter {
-  private static instance: TrackAudioConnection;
+export default class TrackAudioManager extends EventEmitter {
+  private static instance: TrackAudioManager;
   private socket: WebSocket | null = null;
   private reconnectInterval = 1000 * 5; // 5 seconds
   private url: string = "ws://localhost:49080/ws";
@@ -17,11 +17,11 @@ export default class TrackAudioConnection extends EventEmitter {
    * Provides access to the TrackAudio websocket connection
    * @returns The websocket instance
    */
-  public static getInstance(): TrackAudioConnection {
-    if (!TrackAudioConnection.instance) {
-      TrackAudioConnection.instance = new TrackAudioConnection();
+  public static getInstance(): TrackAudioManager {
+    if (!TrackAudioManager.instance) {
+      TrackAudioManager.instance = new TrackAudioManager();
     }
-    return TrackAudioConnection.instance;
+    return TrackAudioManager.instance;
   }
 
   /**
@@ -52,12 +52,12 @@ export default class TrackAudioConnection extends EventEmitter {
 
     this.socket.on("open", () => {
       console.log("WebSocket connection established.");
-      this.emit("connected");
+      TrackAudioManager.instance.emit("connected");
     });
 
     this.socket.on("close", () => {
       console.log("WebSocket connection closed");
-      this.emit("disconnected");
+      TrackAudioManager.instance.emit("disconnected");
       this.reconnect();
     });
 
@@ -83,11 +83,7 @@ export default class TrackAudioConnection extends EventEmitter {
 
     // Check if the received message is of the desired event type
     if (isFrequencyStateUpdate(data)) {
-      const isRx = data.value.rx.find(
-        (station) => station.pCallsign === "SEA_GND"
-      );
-
-      console.log(`Rx: ${isRx}`);
+      TrackAudioManager.instance.emit("frequencyUpdate", data.value);
     }
   }
 

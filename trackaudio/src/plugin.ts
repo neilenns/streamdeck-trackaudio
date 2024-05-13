@@ -1,10 +1,10 @@
 import streamDeck, { LogLevel } from "@elgato/streamdeck";
 
 import { StationStatus } from "./actions/station-status";
-import TrackAudioConnection from "./trackAudio";
+import TrackAudioManager from "./trackAudioManager";
 import ActionManager from "./actionManager";
 
-const trackAudio = TrackAudioConnection.getInstance();
+const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
 
 // We can enable "trace" logging so that all messages between the Stream Deck, and the plugin are recorded. When storing sensitive information
@@ -23,6 +23,10 @@ trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
   actionManager.setState("SEA_GND", 0);
   actionManager.showAlertOnAll();
+});
+
+trackAudio.on("frequencyUpdate", (data) => {
+  console.log(`Received frequency update: ${data}`);
 });
 
 // Register event handlers for action addition and removal

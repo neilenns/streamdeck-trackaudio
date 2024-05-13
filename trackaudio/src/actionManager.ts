@@ -74,8 +74,10 @@ export default class ActionManager extends EventEmitter {
    * @param state The state to set
    */
   public setState(callsign: string, state: State) {
-    this.actions
-      .filter((entry) => entry.callsign === callsign)
-      .forEach((entry) => entry.action.setState(state));
+    this.actions.forEach((entry) => {
+      if (entry.callsign === callsign) {
+        entry.action.setState(state);
+      }
+    });
   }
 }
