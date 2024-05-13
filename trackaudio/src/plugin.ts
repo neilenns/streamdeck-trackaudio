@@ -16,10 +16,12 @@ streamDeck.actions.registerAction(new StationStatus());
 // Register event handlers for the TrackAudio connection
 trackAudio.on("connected", () => {
   console.log("Plugin detected connection to TrackAudio");
+  actionManager.setState("SEA_GND", 1);
 });
 
 trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
+  actionManager.setState("SEA_GND", 0);
   actionManager.showAlertOnAll();
 });
 

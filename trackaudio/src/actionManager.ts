@@ -1,6 +1,9 @@
 import { Action } from "@elgato/streamdeck";
 import { EventEmitter } from "events";
 
+// For some reason this isn't exported from @elgato/streamdeck
+type State = 0 | 1;
+
 export class TrackAudioAction {
   callsign: string;
   action: Action;
@@ -58,7 +61,21 @@ export default class ActionManager extends EventEmitter {
     return this.actions;
   }
 
+  /**
+   * Temporarily shows an alert warning on all tracked actions.
+   */
   public showAlertOnAll() {
     this.actions.forEach((entry) => entry.action.showAlert());
+  }
+
+  /**
+   * Sets the state of all actions matching the specified callsign to the specified state
+   * @param callsign The callsign to set the state on
+   * @param state The state to set
+   */
+  public setState(callsign: string, state: State) {
+    this.actions
+      .filter((entry) => entry.callsign === callsign)
+      .forEach((entry) => entry.action.setState(state));
   }
 }
