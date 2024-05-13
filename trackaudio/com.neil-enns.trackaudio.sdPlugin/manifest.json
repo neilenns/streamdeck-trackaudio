@@ -1,5 +1,5 @@
 {
-  "Name": "trackaudio",
+  "Name": "TrackAudio",
   "Version": "0.1.0.0",
   "Author": "Neil Enns",
   "Actions": [
@@ -21,7 +21,7 @@
       ]
     }
   ],
-  "Category": "trackaudio",
+  "Category": "TrackAudio",
   "CategoryIcon": "imgs/plugin/headphones-solid",
   "CodePath": "bin/plugin.js",
   "Description": "Provides buttons for controlling TrackAudio",
