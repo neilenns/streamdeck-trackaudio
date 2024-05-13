@@ -83,7 +83,7 @@ export default class TrackAudioManager extends EventEmitter {
 
     // Check if the received message is of the desired event type
     if (isFrequencyStateUpdate(data)) {
-      TrackAudioManager.instance.emit("frequencyUpdate", data.value);
+      TrackAudioManager.instance.emit("frequencyUpdate", data);
     }
   }
 

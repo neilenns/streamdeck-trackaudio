@@ -3,7 +3,7 @@ import { EventEmitter } from "events";
 
 // For some reason this isn't exported from @elgato/streamdeck
 type State = 0 | 1;
-export type ListenTo = "RX" | "TX" | "XC";
+export type ListenTo = "rx" | "tx" | "xc";
 
 export class TrackAudioAction {
   callsign: string;
