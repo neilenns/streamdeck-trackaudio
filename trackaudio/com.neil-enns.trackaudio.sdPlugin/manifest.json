@@ -6,7 +6,7 @@
     {
       "Name": "Station status",
       "UUID": "com.neil-enns.trackaudio.stationstatus",
-      "Icon": "imgs/actions/counter/icon",
+      "Icon": "imgs/plugin/headphones-solid",
       "Tooltip": "Shows the status of a station.",
       "Controllers": ["Keypad"],
       "PropertyInspectorPath": "station-status.html",
@@ -22,10 +22,10 @@
     }
   ],
   "Category": "trackaudio",
-  "CategoryIcon": "imgs/plugin/category-icon",
+  "CategoryIcon": "imgs/plugin/headphones-solid",
   "CodePath": "bin/plugin.js",
   "Description": "Provides buttons for controlling TrackAudio",
-  "Icon": "imgs/plugin/marketplace",
+  "Icon": "imgs/plugin/pluginIcon",
   "SDKVersion": 2,
   "Software": {
     "MinimumVersion": "6.5"
