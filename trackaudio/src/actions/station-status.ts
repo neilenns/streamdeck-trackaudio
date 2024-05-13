@@ -10,16 +10,8 @@ import {
 } from "@elgato/streamdeck";
 import ActionManager, { ListenTo } from "../actionManager";
 
-/**
- * An example action class that displays a count that increments by one each time the button is pressed.
- */
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 export class StationStatus extends SingletonAction<StationSettings> {
-  /**
-   * The {@link SingletonAction.onWillAppear} event is useful for setting the visual representation of an action when it become visible. This could be due to the Stream Deck first
-   * starting up, or the user navigating between pages / folders etc.. There is also an inverse of this event in the form of {@link streamDeck.client.onWillDisappear}. In this example,
-   * we're setting the title to the "count" that is incremented in {@link IncrementCounter.onKeyDown}.
-   */
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
     ActionManager.getInstance().add(
       ev.payload.settings.callsign,
@@ -42,6 +34,10 @@ export class StationStatus extends SingletonAction<StationSettings> {
       ev.payload.settings.callsign,
       ev.payload.settings.listenTo
     );
+
+    // Set the default title to the provided callsign. StreamDeck will use this if the user
+    // didn't specify a custom title.
+    ev.action.setTitle(ev.payload.settings.callsign);
   }
 
   /**
