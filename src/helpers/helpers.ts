@@ -1,4 +1,4 @@
-import { ListenTo } from "../actionManager";
+import { ListenTo } from "../stationStatusAction";
 
 export function getDisplayTitle(callsign: string, listenTo: ListenTo | "") {
   // This can happen when a button is first created. Don't include the listenTo

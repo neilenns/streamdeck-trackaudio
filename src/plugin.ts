@@ -2,7 +2,7 @@ import streamDeck, { LogLevel, action } from "@elgato/streamdeck";
 
 import { StationStatus } from "./actions/station-status";
 import TrackAudioManager from "./trackAudioManager";
-import ActionManager, { TrackAudioAction } from "./actionManager";
+import ActionManager from "./actionManager";
 import {
   FrequenciesUpdate,
   RxBegin,
@@ -34,7 +34,7 @@ const updateButtons = () => {
   // Go through every active button and see if it's in the appropriate frequency array. If yes, set
   // the state to active. Relies on the frequencyData variable to contain the data received from a
   // frequencyUpdate message.
-  actionManager.getActions().forEach((entry) => {
+  actionManager.getStationStatusActions().forEach((entry) => {
     if (!entry.settings.listenTo || !entry.settings.callsign) {
       return;
     }
@@ -47,13 +47,13 @@ const updateButtons = () => {
     // so txBegin and rxBegin events can determine which buttons to light up
     if (foundEntry) {
       actionManager.listenBegin(entry.settings.callsign);
-      actionManager.setFrequency(
+      actionManager.setStationFrequency(
         entry.settings.callsign,
         foundEntry.pFrequencyHz
       );
     } else {
       actionManager.listenEnd(entry.settings.callsign);
-      actionManager.setFrequency(entry.settings.callsign, 0);
+      actionManager.setStationFrequency(entry.settings.callsign, 0);
     }
   });
 };
@@ -88,7 +88,6 @@ trackAudio.on("connected", () => {
 
 trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
-  actionManager.setStateOnAll(0);
 });
 
 trackAudio.on("frequencyUpdate", (data) => {
