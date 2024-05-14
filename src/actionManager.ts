@@ -10,6 +10,8 @@ export class TrackAudioAction {
   listenTo: ListenTo;
   action: Action;
   frequency: number = 0;
+  isRx: boolean = false;
+  isTx: boolean = false;
 
   constructor(callsign: string, listenTo: ListenTo, action: Action) {
     this.callsign = callsign;
@@ -81,11 +83,15 @@ export default class ActionManager extends EventEmitter {
   public rxBegin(frequency: number) {
     this.actions
       .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
+        (entry) =>
+          entry.frequency === frequency &&
+          entry.listenTo === "rx" &&
+          entry.isRx === false
       )
-      .forEach((entry) =>
-        entry.action.setImage("images/actions/station-status/orange.svg")
-      );
+      .forEach((entry) => {
+        entry.action.setImage("images/actions/station-status/orange.svg");
+        entry.isRx = true;
+      });
   }
 
   /**
@@ -95,9 +101,15 @@ export default class ActionManager extends EventEmitter {
   public rxEnd(frequency: number) {
     this.actions
       .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
+        (entry) =>
+          entry.frequency === frequency &&
+          entry.listenTo === "rx" &&
+          entry.isRx === true
       )
-      .forEach((entry) => entry.action.setImage());
+      .forEach((entry) => {
+        entry.action.setImage();
+        entry.isRx = false;
+      });
   }
 
   /**
@@ -107,11 +119,15 @@ export default class ActionManager extends EventEmitter {
   public txBegin(frequency: number) {
     this.actions
       .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
+        (entry) =>
+          entry.frequency === frequency &&
+          entry.listenTo === "tx" &&
+          entry.isTx === false
       )
-      .forEach((entry) =>
-        entry.action.setImage("images/actions/station-status/orange.svg")
-      );
+      .forEach((entry) => {
+        entry.action.setImage("images/actions/station-status/orange.svg");
+        entry.isTx = true;
+      });
   }
 
   /**
@@ -121,9 +137,15 @@ export default class ActionManager extends EventEmitter {
   public txEnd(frequency: number) {
     this.actions
       .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
+        (entry) =>
+          entry.frequency === frequency &&
+          entry.listenTo === "tx" &&
+          entry.isTx === true
       )
-      .forEach((entry) => entry.action.setImage());
+      .forEach((entry) => {
+        entry.action.setImage();
+        entry.isTx = false;
+      });
   }
 
   /**
