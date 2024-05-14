@@ -71,7 +71,7 @@ export default class ActionManager extends EventEmitter {
     this.actions
       .filter((entry) => entry.callsign === callsign)
       .forEach((entry) =>
-        entry.action.setImage("actions/station-status/orange.png")
+        entry.action.setImage("images/actions/station-status/orange.svg")
       );
   }
 
