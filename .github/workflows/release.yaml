@@ -25,10 +25,10 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Package
-        run: npm run package
+      - name: Pack
+        run: npm run pack
 
-      - name: Upload package
+      - name: Upload plugin
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,7 +2,7 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.neil-enns.trackaudio\"",
-    "package": "start buildTools/DistributionTool -b -i com.neil-enns.trackaudio.sdPlugin -o .",
+    "pack": "streamdeck pack com.neil-enns.trackaudio.sdPlugin -o .",
     "link": "streamdeck link com.neil-enns.trackaudio.sdPlugin"
   },
   "type": "module",

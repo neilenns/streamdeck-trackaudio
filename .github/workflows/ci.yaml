@@ -26,5 +26,5 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Package
-        run: npm run package
+      - name: Pack
+        run: npm run pack
