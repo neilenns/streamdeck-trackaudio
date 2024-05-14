@@ -43,17 +43,25 @@ const updateButtons = () => {
       (update) => update.pCallsign === entry.callsign
     );
 
-    foundEntry
-      ? actionManager.setState(entry.callsign, 1)
-      : actionManager.setState(entry.callsign, 0);
+    // If the entry is found set both the state and the frequency. The frequency must be set
+    // so txBegin and rxBegin events can determine which buttons to light up
+    if (foundEntry) {
+      actionManager.setState(entry.callsign, 1);
+      actionManager.setFrequency(entry.callsign, foundEntry.pFrequencyHz);
+    } else {
+      actionManager.setFrequency(entry.callsign, 0);
+      actionManager.setState(entry.callsign, 0);
+    }
   });
 };
 
 const updateRxState = (data: RxBegin | RxEnd) => {
   if (isRxBegin(data)) {
-    console.log(`Receive started on: ${data.value.callsign}`);
+    console.log(`Receive started on: ${data.value.pFrequencyHz}`);
+    actionManager.rxBegin(data.value.pFrequencyHz);
   } else {
-    console.log(`Receive started on: ${data.value.callsign}`);
+    console.log(`Receive ended on: ${data.value.pFrequencyHz}`);
+    actionManager.rxEnd(data.value.pFrequencyHz);
   }
 };
 

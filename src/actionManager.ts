@@ -9,6 +9,7 @@ export class TrackAudioAction {
   callsign: string;
   listenTo: ListenTo;
   action: Action;
+  frequency: number = 0;
 
   constructor(callsign: string, listenTo: ListenTo, action: Action) {
     this.callsign = callsign;
@@ -63,13 +64,25 @@ export default class ActionManager extends EventEmitter {
     savedAction.listenTo = listenTo;
   }
 
+  public setFrequency(callsign: string, frequency: number) {
+    const savedAction = this.actions.find(
+      (entry) => entry.callsign === callsign
+    );
+
+    if (savedAction) {
+      savedAction.frequency = frequency;
+    }
+  }
+
   /**
-   * Updates all actions that match the callsign to show the transmission in progress state.
-   * @param callsign The callsign of the actions to update
+   * Updates all actions that match the frequency to show the transmission in progress state.
+   * @param frequency The callsign of the actions to update
    */
-  public rxBegin(callsign: string) {
+  public rxBegin(frequency: number) {
     this.actions
-      .filter((entry) => entry.callsign === callsign)
+      .filter(
+        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
+      )
       .forEach((entry) =>
         entry.action.setImage("images/actions/station-status/orange.svg")
       );
@@ -77,11 +90,39 @@ export default class ActionManager extends EventEmitter {
 
   /**
    * Updates all actions that match the callsign to clear the transmission in progress state.
-   * @param callsign The callsign of the actions to update
+   * @param frequency The callsign of the actions to update
    */
-  public rxEnd(callsign: string) {
+  public rxEnd(frequency: number) {
     this.actions
-      .filter((entry) => entry.callsign === callsign)
+      .filter(
+        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
+      )
+      .forEach((entry) => entry.action.setImage());
+  }
+
+  /**
+   * Updates all actions that match the frequency to show the transmission in progress state.
+   * @param frequency The callsign of the actions to update
+   */
+  public txBegin(frequency: number) {
+    this.actions
+      .filter(
+        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
+      )
+      .forEach((entry) =>
+        entry.action.setImage("images/actions/station-status/orange.svg")
+      );
+  }
+
+  /**
+   * Updates all actions that match the callsign to clear the transmission in progress state.
+   * @param frequency The callsign of the actions to update
+   */
+  public txEnd(frequency: number) {
+    this.actions
+      .filter(
+        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
+      )
       .forEach((entry) => entry.action.setImage());
   }
 
