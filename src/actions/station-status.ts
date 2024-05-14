@@ -16,7 +16,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
     ActionManager.getInstance().add(
       ev.payload.settings.callsign,
-      ev.payload.settings.listenTo,
+      ev.payload.settings.listenTo ?? "rx",
       ev.action
     );
 
@@ -25,7 +25,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
     ev.action.setTitle(
       getDisplayTitle(
         ev.payload.settings.callsign,
-        ev.payload.settings.listenTo
+        ev.payload.settings.listenTo ?? "rx"
       )
     );
   }
