@@ -3,7 +3,15 @@ import streamDeck, { LogLevel, action } from "@elgato/streamdeck";
 import { StationStatus } from "./actions/station-status";
 import TrackAudioManager from "./trackAudioManager";
 import ActionManager, { TrackAudioAction } from "./actionManager";
-import { FrequenciesUpdate, RxBegin, RxEnd, isRxBegin } from "./types/messages";
+import {
+  FrequenciesUpdate,
+  RxBegin,
+  RxEnd,
+  TxBegin,
+  TxEnd,
+  isRxBegin,
+  isTxBegin,
+} from "./types/messages";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -28,9 +36,17 @@ const updateButtons = (data: FrequenciesUpdate) => {
 
 const updateRxState = (data: RxBegin | RxEnd) => {
   if (isRxBegin(data)) {
-    console.log(`Transmission started on: ${data.value.callsign}`);
+    console.log(`Receive started on: ${data.value.callsign}`);
   } else {
-    console.log(`Transmission started on: ${data.value.callsign}`);
+    console.log(`Receive started on: ${data.value.callsign}`);
+  }
+};
+
+const updateTxState = (data: TxBegin | TxEnd) => {
+  if (isTxBegin(data)) {
+    console.log(`Transmit started on: ${data.value.callsign}`);
+  } else {
+    console.log(`Transmit started on: ${data.value.callsign}`);
   }
 };
 
@@ -62,6 +78,14 @@ trackAudio.on("rxBegin", (data) => {
 
 trackAudio.on("rxEnd", (data) => {
   updateRxState(data);
+});
+
+trackAudio.on("txBegin", (data) => {
+  updateTxState(data);
+});
+
+trackAudio.on("txEnd", (data) => {
+  updateTxState(data);
 });
 
 // Register event handlers for action addition and removal

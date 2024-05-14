@@ -16,6 +16,22 @@ export type FrequenciesUpdate = {
   };
 };
 
+export type TxBegin = {
+  type: "kTxBegin";
+  value: {
+    callsign: string;
+    pFrequencyHz: number;
+  };
+};
+
+export type TxEnd = {
+  type: "kTxEnd";
+  value: {
+    callsign: string;
+    pFrequencyHz: number;
+  };
+};
+
 export type RxBegin = {
   type: "kRxBegin";
   value: {
@@ -32,7 +48,7 @@ export type RxEnd = {
   };
 };
 
-export type Message = FrequenciesUpdate | RxBegin | RxEnd;
+export type Message = FrequenciesUpdate | RxBegin | RxEnd | TxBegin | TxEnd;
 
 export function isFrequencyStateUpdate(
   message: Message
@@ -46,4 +62,12 @@ export function isRxBegin(message: Message): message is RxBegin {
 
 export function isRxEnd(message: Message): message is RxEnd {
   return message.type === "kRxEnd";
+}
+
+export function isTxBegin(message: Message): message is TxBegin {
+  return message.type === "kTxBegin";
+}
+
+export function isTxEnd(message: Message): message is TxEnd {
+  return message.type === "kTxEnd";
 }

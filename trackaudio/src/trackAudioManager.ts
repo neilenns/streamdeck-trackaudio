@@ -4,6 +4,8 @@ import {
   isFrequencyStateUpdate,
   isRxBegin,
   isRxEnd,
+  isTxBegin,
+  isTxEnd,
 } from "./types/messages";
 import { EventEmitter } from "events";
 
@@ -93,6 +95,10 @@ export default class TrackAudioManager extends EventEmitter {
       TrackAudioManager.instance.emit("rxBegin", data);
     } else if (isRxEnd(data)) {
       TrackAudioManager.instance.emit("rxEnd", data);
+    } else if (isTxBegin(data)) {
+      TrackAudioManager.instance.emit("txBegin", data);
+    } else if (isTxEnd(data)) {
+      TrackAudioManager.instance.emit("txEnd", data);
     }
   }
 
