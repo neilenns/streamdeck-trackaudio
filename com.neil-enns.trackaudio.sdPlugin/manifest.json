@@ -1,51 +1,50 @@
 {
-	"Name": "TrackAudio",
-	"Version": "0.1.0.0",
-	"Author": "Neil Enns",
-	"Actions": [
-		{
-			"Name": "Station status",
-			"UUID": "com.neil-enns.trackaudio.stationstatus",
-			"Icon": "images/plugin/headphones-solid",
-			"Tooltip": "Shows the status of a station.",
-			"Controllers": [
-				"Keypad"
-			],
-			"PropertyInspectorPath": "station-status.html",
-			"States": [
-				{
-					"Image": "images/actions/station-status/black",
-					"TitleAlignment": "middle"
-				},
-				{
-					"Image": "images/actions/station-status/green",
-					"TitleAlignment": "middle"
-				}
-			]
-		}
-	],
-	"Category": "TrackAudio",
-	"CategoryIcon": "images/plugin/headphones-solid",
-	"CodePath": "bin/plugin.js",
-	"Description": "Provides buttons for controlling TrackAudio",
-	"Icon": "images/plugin/pluginIcon",
-	"SDKVersion": 2,
-	"Software": {
-		"MinimumVersion": "6.5"
-	},
-	"OS": [
-		{
-			"Platform": "mac",
-			"MinimumVersion": "10.15"
-		},
-		{
-			"Platform": "windows",
-			"MinimumVersion": "10"
-		}
-	],
-	"Nodejs": {
-		"Version": "20",
-		"Debug": "enabled"
-	},
-	"UUID": "com.neil-enns.trackaudio"
+  "Name": "TrackAudio",
+  "Version": "0.1.0.0",
+  "Author": "Neil Enns",
+  "Actions": [
+    {
+      "Name": "Station status",
+      "UUID": "com.neil-enns.trackaudio.stationstatus",
+      "Icon": "images/plugin/headphones-solid",
+      "Tooltip": "Shows the status of a station.",
+      "DisableAutomaticStates": true,
+      "Controllers": ["Keypad"],
+      "PropertyInspectorPath": "station-status.html",
+      "States": [
+        {
+          "Image": "images/actions/station-status/black",
+          "TitleAlignment": "middle"
+        },
+        {
+          "Image": "images/actions/station-status/green",
+          "TitleAlignment": "middle"
+        }
+      ]
+    }
+  ],
+  "Category": "TrackAudio",
+  "CategoryIcon": "images/plugin/headphones-solid",
+  "CodePath": "bin/plugin.js",
+  "Description": "Provides buttons for controlling TrackAudio",
+  "Icon": "images/plugin/pluginIcon",
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "6.5"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.15"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Nodejs": {
+    "Version": "20",
+    "Debug": "enabled"
+  },
+  "UUID": "com.neil-enns.trackaudio"
 }
