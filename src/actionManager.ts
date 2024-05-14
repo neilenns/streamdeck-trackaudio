@@ -1,51 +1,20 @@
 import { Action } from "@elgato/streamdeck";
 import { EventEmitter } from "events";
+import {
+  StationStatusAction,
+  StationStatusActionSettings,
+  isStationStatusAction,
+} from "./stationStatusAction";
+import {
+  TrackAudioStatusAction,
+  isTrackAudioStatusAction,
+} from "./trackAudioStatusAction";
 
-// For some reason this isn't exported from @elgato/streamdeck
-type State = 0 | 1;
-export type ListenTo = "rx" | "tx" | "xc";
-
-export class TrackAudioActionSettings {
-  callsign: string = "";
-  listenTo: ListenTo = "rx";
-
-  // Icon paths
-  notListeningIconPath: string | undefined;
-  listeningIconPath: string | undefined;
-  activeCommsIconPath: string | undefined;
-}
-
-export class TrackAudioAction {
-  action: Action;
-  frequency: number = 0;
-  isRx: boolean = false;
-  isTx: boolean = false;
-  isListening: boolean = false;
-
-  settings: TrackAudioActionSettings = new TrackAudioActionSettings();
-
-  /**
-   *
-   * @param callsign The callsign for the action
-   * @param listenTo The type of listening requested, either rx, tx, or xc
-   * @param notListeningIconPath The path to the icon file for the not listening state, or undefined to use the default
-   * @param listeningIconPath The path to the icon file for the listening state, or undefined to use the default
-   * @param activeCommsIconPath The path to the icon file for the active comms state, or undefined to use the default
-   * @param action The StreamDeck action object
-   */
-  constructor(action: Action, options: TrackAudioActionSettings) {
-    this.action = action;
-    this.settings.callsign = options.callsign;
-    this.settings.listenTo = options.listenTo;
-    this.settings.notListeningIconPath = options.notListeningIconPath;
-    this.settings.listeningIconPath = options.listeningIconPath;
-    this.settings.activeCommsIconPath = options.activeCommsIconPath;
-  }
-}
+export type StatusAction = StationStatusAction | TrackAudioStatusAction;
 
 export default class ActionManager extends EventEmitter {
   private static instance: ActionManager;
-  private actions: TrackAudioAction[] = [];
+  private actions: StatusAction[] = [];
 
   private constructor() {
     super();
@@ -59,24 +28,36 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Adds an action to the list with the associated callsign.
-   * @param callsign The callsign associated with the action
-   * @param action The action
+   * Adds a VectorAudio status action to the action list.
+   * @param action The action to add.
    */
-  public add(action: Action, settings: TrackAudioActionSettings): void {
-    this.actions.push(new TrackAudioAction(action, settings));
+  public addVectorAudio(action: Action) {
+    this.actions.push(new TrackAudioStatusAction(action));
 
-    this.emit("added", this.actions.length);
+    this.emit("vectorAudioStatusAdded", this.actions.length);
   }
 
   /**
-   * Updates the callsign and listenTo values associated with an action
-   * @param action The action to update
-   * @param callsign The callsign to set
-   * @param listenTo The listenTo value to set
+   * Adds a station status action to the list with the associated callsign.
+   * @param callsign The callsign associated with the action
+   * @param action The action
    */
-  public update(action: Action, settings: TrackAudioActionSettings) {
-    const savedAction = this.actions.find(
+  public addStation(
+    action: Action,
+    settings: StationStatusActionSettings
+  ): void {
+    this.actions.push(new StationStatusAction(action, settings));
+
+    this.emit("stationStatusAdded", this.actions.length);
+  }
+
+  /**
+   * Updates the settings associated with a station status action
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
+  public updateStation(action: Action, settings: StationStatusActionSettings) {
+    const savedAction = this.getStationStatusActions().find(
       (entry) => entry.action.id === action.id
     );
 
@@ -87,8 +68,13 @@ export default class ActionManager extends EventEmitter {
     savedAction.settings = settings;
   }
 
-  public setFrequency(callsign: string, frequency: number) {
-    const savedAction = this.actions.find(
+  /**
+   * Updates the frequency on the first station status action that matches the callsign
+   * @param callsign The callsign of the station to update the frequency on
+   * @param frequency The frequency to update to
+   */
+  public setStationFrequency(callsign: string, frequency: number) {
+    const savedAction = this.getStationStatusActions().find(
       (entry) => entry.settings.callsign === callsign
     );
 
@@ -102,7 +88,7 @@ export default class ActionManager extends EventEmitter {
    * @param callsign The callsign of the actions to update
    */
   public listenBegin(callsign: string) {
-    this.actions
+    this.getStationStatusActions()
       .filter(
         (entry) =>
           entry.settings.callsign === callsign && entry.isListening === false
@@ -121,7 +107,7 @@ export default class ActionManager extends EventEmitter {
    * @param callsign The callsign of the actions to update
    */
   public listenEnd(callsign: string) {
-    this.actions
+    this.getStationStatusActions()
       .filter(
         (entry) =>
           entry.settings.callsign === callsign && entry.isListening === true
@@ -140,7 +126,7 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The callsign of the actions to update
    */
   public rxBegin(frequency: number) {
-    this.actions
+    this.getStationStatusActions()
       .filter(
         (entry) =>
           entry.frequency === frequency &&
@@ -158,7 +144,7 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The callsign of the actions to update
    */
   public rxEnd(frequency: number) {
-    this.actions
+    this.getStationStatusActions()
       .filter(
         (entry) =>
           entry.frequency === frequency &&
@@ -176,7 +162,7 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The callsign of the actions to update
    */
   public txBegin(frequency: number) {
-    this.actions
+    this.getStationStatusActions()
       .filter(
         (entry) =>
           entry.frequency === frequency &&
@@ -194,7 +180,7 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The callsign of the actions to update
    */
   public txEnd(frequency: number) {
-    this.actions
+    this.getStationStatusActions()
       .filter(
         (entry) =>
           entry.frequency === frequency &&
@@ -220,11 +206,54 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
+   * Sets the connection state on all VectorAudio status buttons to the specified state
+   * and updates the background image to the appropriate state image.
+   * @param isConnected True if connected, false if not
+   */
+  public setTrackAudioConnectionState(isConnected: boolean) {
+    this.getTrackAudioStatusActions().forEach((entry) => {
+      // Don't do anything if the state didn't change. This prevents repeated unnecessary updates
+      // when no connection is available and there's a reconnect attempt every 5 seconds.
+      if (entry.isConnected === isConnected) {
+        return;
+      }
+
+      entry.isConnected = isConnected;
+
+      if (isConnected) {
+        entry.action.setState(1);
+      } else {
+        entry.action.setState(0);
+      }
+    });
+  }
+
+  /**
    * Returns an array of all the actions tracked by the action manager.
    * @returns An array of the currently tracked actions
    */
-  public getActions(): TrackAudioAction[] {
+  public getActions(): StatusAction[] {
     return this.actions;
+  }
+
+  /**
+   * Retrieves the list of all tracked StationStatusActions
+   * @returns An array of StationStatusActions
+   */
+  public getStationStatusActions(): StationStatusAction[] {
+    return this.actions.filter((action) =>
+      isStationStatusAction(action)
+    ) as StationStatusAction[];
+  }
+
+  /**
+   * Retrieves the list of all tracked StationStatusActions
+   * @returns An array of StationStatusActions
+   */
+  public getTrackAudioStatusActions(): TrackAudioStatusAction[] {
+    return this.actions.filter((action) =>
+      isTrackAudioStatusAction(action)
+    ) as TrackAudioStatusAction[];
   }
 
   /**
@@ -232,20 +261,5 @@ export default class ActionManager extends EventEmitter {
    */
   public showAlertOnAll() {
     this.actions.forEach((entry) => entry.action.showAlert());
-  }
-
-  /**
-   * Sets the state of all actions matching the specified callsign to the specified state
-   * @param callsign The callsign to set the state on
-   * @param state The state to set
-   */
-  public setState(callsign: string, state: State) {
-    this.actions
-      .filter((entry) => entry.settings.callsign === callsign)
-      .forEach((entry) => entry.action.setState(state));
-  }
-
-  public setStateOnAll(state: State) {
-    this.actions.forEach((entry) => entry.action.setState(state));
   }
 }

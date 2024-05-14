@@ -8,17 +8,14 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager, {
-  ListenTo,
-  TrackAudioAction,
-  TrackAudioActionSettings,
-} from "../actionManager";
+import ActionManager from "../actionManager";
 import { getDisplayTitle } from "../helpers/helpers";
+import { ListenTo } from "../stationStatusAction";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 export class StationStatus extends SingletonAction<StationSettings> {
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
-    ActionManager.getInstance().add(ev.action, {
+    ActionManager.getInstance().addStation(ev.action, {
       callsign: ev.payload.settings.callsign,
       listenTo: ev.payload.settings.listenTo ?? "rx",
       listeningIconPath: ev.payload.settings.listeningIconPath,
@@ -45,7 +42,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<StationSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().update(ev.action, {
+    ActionManager.getInstance().updateStation(ev.action, {
       callsign: ev.payload.settings.callsign,
       listenTo: ev.payload.settings.listenTo ?? "rx",
       listeningIconPath: ev.payload.settings.listeningIconPath,

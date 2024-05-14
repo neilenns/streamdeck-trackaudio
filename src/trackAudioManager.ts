@@ -40,6 +40,14 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
+   * Provides the current state of the connection to TrackAudio
+   * @returns True if there is an open connection to TrackAudio, false otherwise.
+   */
+  public isConnected(): boolean {
+    return this.socket !== null && this.socket.readyState === WebSocket.OPEN;
+  }
+
+  /**
    * Connects to a TrackAudio instance
    * @param url The URL of the TrackAudio instance to connect to, typically ws://localhost:49080/ws
    */

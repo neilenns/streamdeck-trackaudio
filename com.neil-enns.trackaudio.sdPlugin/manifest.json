@@ -18,6 +18,25 @@
           "TitleAlignment": "middle"
         }
       ]
+    },
+    {
+      "Name": "TrackAudio status",
+      "UUID": "com.neil-enns.trackaudio.trackaudiostatus",
+      "Icon": "images/plugin/trackAudio",
+      "Tooltip": "Shows the status of the connection to TrackAudio.",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": true,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/trackAudio-status/notConnected",
+          "TitleAlignment": "middle"
+        },
+        {
+          "Image": "images/actions/trackAudio-status/connected",
+          "TitleAlignment": "middle"
+        }
+      ]
     }
   ],
   "Category": "TrackAudio",
