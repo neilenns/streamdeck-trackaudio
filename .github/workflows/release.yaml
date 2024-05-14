@@ -22,6 +22,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Get release version
+        id: get_version
+        uses: battila7/get-version-action@v2
+
+      - name: Update package version
+        uses: restackio/update-json-file-action@2.1
+        with:
+          file: com.neil-enns.trackaudio.sdPlugin/manifest.json
+          fields: '{"Version": "${{ steps.get_version.outputs.version-without-v }}.0"}'
+
       - name: Build
         run: npm run build
 
@@ -29,7 +39,7 @@ jobs:
         run: npm run pack
 
       - name: Upload plugin
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
