@@ -9,6 +9,7 @@
       "Icon": "images/plugin/headphones-solid",
       "Tooltip": "Shows the status of a station.",
       "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
       "Controllers": ["Keypad"],
       "PropertyInspectorPath": "station-status.html",
       "States": [
