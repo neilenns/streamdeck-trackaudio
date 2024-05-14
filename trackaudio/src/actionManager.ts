@@ -120,8 +120,10 @@ export default class ActionManager extends EventEmitter {
   public setState(callsign: string, state: State) {
     this.actions
       .filter((entry) => entry.callsign === callsign)
-      .forEach((entry) => {
-        entry.action.setState(state);
-      });
+      .forEach((entry) => entry.action.setState(state));
+  }
+
+  public setStateOnAll(state: State) {
+    this.actions.forEach((entry) => entry.action.setState(state));
   }
 }

@@ -9,6 +9,7 @@ import {
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import ActionManager, { ListenTo } from "../actionManager";
+import { getDisplayTitle } from "../helpers/helpers";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 export class StationStatus extends SingletonAction<StationSettings> {
@@ -17,6 +18,15 @@ export class StationStatus extends SingletonAction<StationSettings> {
       ev.payload.settings.callsign,
       ev.payload.settings.listenTo,
       ev.action
+    );
+
+    // Set the default title to the provided callsign. StreamDeck will use this if the user
+    // didn't specify a custom title.
+    ev.action.setTitle(
+      getDisplayTitle(
+        ev.payload.settings.callsign,
+        ev.payload.settings.listenTo
+      )
     );
   }
 
@@ -37,7 +47,12 @@ export class StationStatus extends SingletonAction<StationSettings> {
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
-    ev.action.setTitle(ev.payload.settings.callsign);
+    ev.action.setTitle(
+      getDisplayTitle(
+        ev.payload.settings.callsign,
+        ev.payload.settings.listenTo
+      )
+    );
   }
 
   /**

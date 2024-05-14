@@ -13,18 +13,33 @@ import {
   isTxBegin,
 } from "./types/messages";
 
+// Remembers the last received list of frequency updates, used to refresh
+// all the buttons when a new one is added. Otherwise new buttons default to
+// the "not listening" state and won't refresh until a button is pressed in
+// TrackAudio
+let frequencyData: FrequenciesUpdate | null = null;
+
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
 
-const updateButtons = (data: FrequenciesUpdate) => {
+/**
+ * Updates all the buttons to ensure their state matches the current states in the frequencyData
+ * variable. Assumes that frequencyData is updated by a received frequencyUpdate message.
+ */
+const updateButtons = () => {
+  if (frequencyData === null) {
+    return;
+  }
+
   // Go through every active button and see if it's in the appropriate frequency array. If yes, set
-  // the state to active.
+  // the state to active. Relies on the frequencyData variable to contain the data received from a
+  // frequencyUpdate message.
   actionManager.getActions().forEach((entry) => {
     if (!entry.listenTo || !entry.callsign) {
       return;
     }
 
-    const foundEntry = data.value[entry.listenTo].find(
+    const foundEntry = frequencyData?.value[entry.listenTo].find(
       (update) => update.pCallsign === entry.callsign
     );
 
@@ -59,17 +74,16 @@ streamDeck.actions.registerAction(new StationStatus());
 // Register event handlers for the TrackAudio connection
 trackAudio.on("connected", () => {
   console.log("Plugin detected connection to TrackAudio");
-  actionManager.setState("SEA_GND", 1);
 });
 
 trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
-  actionManager.setState("SEA_GND", 0);
-  actionManager.showAlertOnAll();
+  actionManager.setStateOnAll(0);
 });
 
 trackAudio.on("frequencyUpdate", (data) => {
-  updateButtons(data);
+  frequencyData = data;
+  updateButtons();
 });
 
 trackAudio.on("rxBegin", (data) => {
@@ -93,6 +107,11 @@ actionManager.on("added", (count: number) => {
   if (count === 1) {
     trackAudio.connect();
   }
+
+  // Force a refresh of the buttons so the new button gets the proper state
+  // from the start, instead of having to wait for one of the states to change in
+  // TrackAudio.
+  updateButtons();
 });
 
 actionManager.on("removed", (count: number) => {
