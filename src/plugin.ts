@@ -12,6 +12,7 @@ import {
   isRxBegin,
   isTxBegin,
 } from "./types/messages";
+import { TrackAudioStatus } from "./actions/trackAudio-status";
 
 // Remembers the last received list of frequency updates, used to refresh
 // all the buttons when a new one is added. Otherwise new buttons default to
@@ -26,7 +27,7 @@ const actionManager = ActionManager.getInstance();
  * Updates all the buttons to ensure their state matches the current states in the frequencyData
  * variable. Assumes that frequencyData is updated by a received frequencyUpdate message.
  */
-const updateButtons = () => {
+const updateStationStatusButtons = () => {
   if (frequencyData === null) {
     return;
   }
@@ -78,21 +79,29 @@ const updateTxState = (data: TxBegin | TxEnd) => {
 
 // streamDeck.logger.setLevel(LogLevel.TRACE);
 
+// Register for uncaught exceptions
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
+});
+
 // Register the increment action.
 streamDeck.actions.registerAction(new StationStatus());
+streamDeck.actions.registerAction(new TrackAudioStatus());
 
 // Register event handlers for the TrackAudio connection
 trackAudio.on("connected", () => {
   console.log("Plugin detected connection to TrackAudio");
+  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
 
 trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
+  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
 
 trackAudio.on("frequencyUpdate", (data) => {
   frequencyData = data;
-  updateButtons();
+  updateStationStatusButtons();
 });
 
 trackAudio.on("rxBegin", (data) => {
@@ -112,7 +121,7 @@ trackAudio.on("txEnd", (data) => {
 });
 
 // Register event handlers for action addition and removal
-actionManager.on("added", (count: number) => {
+actionManager.on("stationStatusAdded", (count: number) => {
   if (count === 1) {
     trackAudio.connect();
   }
@@ -120,7 +129,16 @@ actionManager.on("added", (count: number) => {
   // Force a refresh of the buttons so the new button gets the proper state
   // from the start, instead of having to wait for one of the states to change in
   // TrackAudio.
-  updateButtons();
+  updateStationStatusButtons();
+});
+
+actionManager.on("vectorAudioStatusAdded", (count: number) => {
+  if (count === 1) {
+    trackAudio.connect();
+  }
+
+  // Refresh the button state so the new button gets the proper state from the start.
+  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
 
 actionManager.on("removed", (count: number) => {
