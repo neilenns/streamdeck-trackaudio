@@ -8,17 +8,23 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager, { ListenTo } from "../actionManager";
+import ActionManager, {
+  ListenTo,
+  TrackAudioAction,
+  TrackAudioActionSettings,
+} from "../actionManager";
 import { getDisplayTitle } from "../helpers/helpers";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 export class StationStatus extends SingletonAction<StationSettings> {
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
-    ActionManager.getInstance().add(
-      ev.payload.settings.callsign,
-      ev.payload.settings.listenTo ?? "rx",
-      ev.action
-    );
+    ActionManager.getInstance().add(ev.action, {
+      callsign: ev.payload.settings.callsign,
+      listenTo: ev.payload.settings.listenTo ?? "rx",
+      listeningIconPath: ev.payload.settings.listeningIconPath,
+      notListeningIconPath: ev.payload.settings.notListeningIconPath,
+      activeCommsIconPath: ev.payload.settings.activeCommsIconPath,
+    });
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
@@ -39,11 +45,13 @@ export class StationStatus extends SingletonAction<StationSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<StationSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().update(
-      ev.action,
-      ev.payload.settings.callsign,
-      ev.payload.settings.listenTo
-    );
+    ActionManager.getInstance().update(ev.action, {
+      callsign: ev.payload.settings.callsign,
+      listenTo: ev.payload.settings.listenTo ?? "rx",
+      listeningIconPath: ev.payload.settings.listeningIconPath,
+      notListeningIconPath: ev.payload.settings.notListeningIconPath,
+      activeCommsIconPath: ev.payload.settings.activeCommsIconPath,
+    });
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
@@ -74,4 +82,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
 type StationSettings = {
   callsign: string;
   listenTo: ListenTo;
+  notListeningIconPath: string;
+  listeningIconPath: string;
+  activeCommsIconPath: string;
 };
