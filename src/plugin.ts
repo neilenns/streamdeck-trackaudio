@@ -35,22 +35,25 @@ const updateButtons = () => {
   // the state to active. Relies on the frequencyData variable to contain the data received from a
   // frequencyUpdate message.
   actionManager.getActions().forEach((entry) => {
-    if (!entry.listenTo || !entry.callsign) {
+    if (!entry.settings.listenTo || !entry.settings.callsign) {
       return;
     }
 
-    const foundEntry = frequencyData?.value[entry.listenTo].find(
-      (update) => update.pCallsign === entry.callsign
+    const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
+      (update) => update.pCallsign === entry.settings.callsign
     );
 
     // If the entry is found set both the state and the frequency. The frequency must be set
     // so txBegin and rxBegin events can determine which buttons to light up
     if (foundEntry) {
-      actionManager.setState(entry.callsign, 1);
-      actionManager.setFrequency(entry.callsign, foundEntry.pFrequencyHz);
+      actionManager.listenBegin(entry.settings.callsign);
+      actionManager.setFrequency(
+        entry.settings.callsign,
+        foundEntry.pFrequencyHz
+      );
     } else {
-      actionManager.setFrequency(entry.callsign, 0);
-      actionManager.setState(entry.callsign, 0);
+      actionManager.listenEnd(entry.settings.callsign);
+      actionManager.setFrequency(entry.settings.callsign, 0);
     }
   });
 };

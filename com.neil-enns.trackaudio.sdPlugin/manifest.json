@@ -16,10 +16,6 @@
         {
           "Image": "images/actions/station-status/black",
           "TitleAlignment": "middle"
-        },
-        {
-          "Image": "images/actions/station-status/green",
-          "TitleAlignment": "middle"
         }
       ]
     }
