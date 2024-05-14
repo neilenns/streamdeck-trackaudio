@@ -24,7 +24,7 @@ jobs:
 
       - name: Get release version
         id: get_version
-        uses: battila7/get-version-action@v2
+        uses: maltoze/get-version-action@v1
 
       - name: Update package version
         uses: restackio/update-json-file-action@2.1
