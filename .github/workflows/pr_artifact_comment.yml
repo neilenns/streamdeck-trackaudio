@@ -1,7 +1,7 @@
 name: Add artifact links to pull request
 on:
   workflow_run:
-    workflows: [RunTests]
+    workflows: ["Pull request validation"]
     types: [completed]
 
 jobs:
