@@ -28,3 +28,10 @@ jobs:
 
       - name: Pack
         run: npm run pack
+
+      - name: Save packaged plugin
+        uses: actions/upload-artifact@v3
+        with:
+          name: Streamdeck-TrackAudio
+          path: |
+            com.neil-enns.trackaudio.streamDeckPlugin
