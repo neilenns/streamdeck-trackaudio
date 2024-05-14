@@ -74,13 +74,11 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The frequency to update to
    */
   public setStationFrequency(callsign: string, frequency: number) {
-    const savedAction = this.getStationStatusActions().find(
-      (entry) => entry.settings.callsign === callsign
-    );
-
-    if (savedAction) {
-      savedAction.frequency = frequency;
-    }
+    this.getStationStatusActions()
+      .filter((entry) => entry.settings.callsign === callsign)
+      .forEach((entry) => {
+        entry.frequency = frequency;
+      });
   }
 
   /**
