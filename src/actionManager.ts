@@ -13,7 +13,7 @@ import {
 export type StatusAction = StationStatusAction | TrackAudioStatusAction;
 
 export default class ActionManager extends EventEmitter {
-  private static instance: ActionManager;
+  private static instance: ActionManager | null = null;
   private actions: StatusAction[] = [];
 
   private constructor() {
@@ -88,15 +88,18 @@ export default class ActionManager extends EventEmitter {
   public listenBegin(callsign: string) {
     this.getStationStatusActions()
       .filter(
-        (entry) =>
-          entry.settings.callsign === callsign && entry.isListening === false
+        (entry) => entry.settings.callsign === callsign && !entry.isListening
       )
       .forEach((entry) => {
         entry.isListening = true;
-        entry.action.setImage(
-          entry.settings.listeningIconPath ??
-            "images/actions/station-status/green.svg"
-        );
+        entry.action
+          .setImage(
+            entry.settings.listeningIconPath ??
+              "images/actions/station-status/green.svg"
+          )
+          .catch((error: unknown) => {
+            console.error(error);
+          });
       });
   }
 
@@ -107,15 +110,18 @@ export default class ActionManager extends EventEmitter {
   public listenEnd(callsign: string) {
     this.getStationStatusActions()
       .filter(
-        (entry) =>
-          entry.settings.callsign === callsign && entry.isListening === true
+        (entry) => entry.settings.callsign === callsign && entry.isListening
       )
       .forEach((entry) => {
         entry.isListening = false;
-        entry.action.setImage(
-          entry.settings.notListeningIconPath ??
-            "images/actions/station-status/black.svg"
-        );
+        entry.action
+          .setImage(
+            entry.settings.notListeningIconPath ??
+              "images/actions/station-status/black.svg"
+          )
+          .catch((error: unknown) => {
+            console.log(error);
+          });
       });
   }
 
@@ -129,10 +135,14 @@ export default class ActionManager extends EventEmitter {
         (entry) =>
           entry.frequency === frequency &&
           entry.settings.listenTo === "rx" &&
-          entry.isRx === false
+          !entry.isRx
       )
       .forEach((entry) => {
-        entry.action.setImage("images/actions/station-status/orange.svg");
+        entry.action
+          .setImage("images/actions/station-status/orange.svg")
+          .catch((error: unknown) => {
+            console.error(error);
+          });
         entry.isRx = true;
       });
   }
@@ -147,10 +157,12 @@ export default class ActionManager extends EventEmitter {
         (entry) =>
           entry.frequency === frequency &&
           entry.settings.listenTo === "rx" &&
-          entry.isRx === true
+          entry.isRx
       )
       .forEach((entry) => {
-        entry.action.setImage();
+        entry.action.setImage().catch((error: unknown) => {
+          console.error(error);
+        });
         entry.isRx = false;
       });
   }
@@ -165,11 +177,15 @@ export default class ActionManager extends EventEmitter {
         (entry) =>
           entry.frequency === frequency &&
           entry.settings.listenTo === "tx" &&
-          entry.isTx === false
+          !entry.isTx
       )
       .forEach((entry) => {
-        entry.action.setImage("images/actions/station-status/orange.svg");
         entry.isTx = true;
+        entry.action
+          .setImage("images/actions/station-status/orange.svg")
+          .catch((error: unknown) => {
+            console.error(error);
+          });
       });
   }
 
@@ -183,11 +199,13 @@ export default class ActionManager extends EventEmitter {
         (entry) =>
           entry.frequency === frequency &&
           entry.settings.listenTo === "tx" &&
-          entry.isTx === true
+          entry.isTx
       )
       .forEach((entry) => {
-        entry.action.setImage();
         entry.isTx = false;
+        entry.action.setImage().catch((error: unknown) => {
+          console.error(error);
+        });
       });
   }
 
@@ -219,9 +237,13 @@ export default class ActionManager extends EventEmitter {
       entry.isConnected = isConnected;
 
       if (isConnected) {
-        entry.action.setState(1);
+        entry.action.setState(1).catch((error: unknown) => {
+          console.error(error);
+        });
       } else {
-        entry.action.setState(0);
+        entry.action.setState(0).catch((error: unknown) => {
+          console.error(error);
+        });
       }
     });
   }
@@ -258,6 +280,10 @@ export default class ActionManager extends EventEmitter {
    * Temporarily shows an alert warning on all tracked actions.
    */
   public showAlertOnAll() {
-    this.actions.forEach((entry) => entry.action.showAlert());
+    this.actions.forEach((entry) => {
+      entry.action.showAlert().catch((error: unknown) => {
+        console.error(error);
+      });
+    });
   }
 }

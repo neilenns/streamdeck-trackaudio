@@ -10,5 +10,6 @@
 	},
 	"files.exclude": {
 		"node_modules": true
-	}
+	},
+	"eslint.experimental.useFlatConfig": true
 }

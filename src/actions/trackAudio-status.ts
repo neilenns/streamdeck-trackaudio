@@ -22,4 +22,4 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   }
 }
 
-type TrackAudioStatusSettings = {};
+type TrackAudioStatusSettings = Record<string, never>;

@@ -1,8 +1,9 @@
-import streamDeck, { LogLevel, action } from "@elgato/streamdeck";
+import streamDeck from "@elgato/streamdeck";
 
-import { StationStatus } from "./actions/station-status";
-import TrackAudioManager from "./trackAudioManager";
 import ActionManager from "./actionManager";
+import { StationStatus } from "./actions/station-status";
+import { TrackAudioStatus } from "./actions/trackAudio-status";
+import TrackAudioManager from "./trackAudioManager";
 import {
   FrequenciesUpdate,
   RxBegin,
@@ -12,7 +13,6 @@ import {
   isRxBegin,
   isTxBegin,
 } from "./types/messages";
-import { TrackAudioStatus } from "./actions/trackAudio-status";
 
 // Remembers the last received list of frequency updates, used to refresh
 // all the buttons when a new one is added. Otherwise new buttons default to
@@ -35,8 +35,8 @@ const updateStationStatusButtons = () => {
   // Go through every active button and see if it's in the appropriate frequency array. If yes, set
   // the state to active. Relies on the frequencyData variable to contain the data received from a
   // frequencyUpdate message.
-  actionManager.getStationStatusActions().forEach((entry) => {
-    if (!entry.settings.listenTo || !entry.settings.callsign) {
+  actionManager.getStationStatusActions().map((entry) => {
+    if (!entry.settings.callsign) {
       return;
     }
 
@@ -47,24 +47,24 @@ const updateStationStatusButtons = () => {
     // If the entry is found set both the state and the frequency. The frequency must be set
     // so txBegin and rxBegin events can determine which buttons to light up
     if (foundEntry) {
-      actionManager.listenBegin(entry.settings.callsign);
       actionManager.setStationFrequency(
         entry.settings.callsign,
         foundEntry.pFrequencyHz
       );
+      actionManager.listenBegin(entry.settings.callsign);
     } else {
-      actionManager.listenEnd(entry.settings.callsign);
       actionManager.setStationFrequency(entry.settings.callsign, 0);
+      actionManager.listenEnd(entry.settings.callsign);
     }
   });
 };
 
 const updateRxState = (data: RxBegin | RxEnd) => {
   if (isRxBegin(data)) {
-    console.log(`Receive started on: ${data.value.pFrequencyHz}`);
+    console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
     actionManager.rxBegin(data.value.pFrequencyHz);
   } else {
-    console.log(`Receive ended on: ${data.value.pFrequencyHz}`);
+    console.log(`Receive ended on: ${data.value.pFrequencyHz.toString()}`);
     actionManager.rxEnd(data.value.pFrequencyHz);
   }
 };
@@ -99,24 +99,24 @@ trackAudio.on("disconnected", () => {
   actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
 
-trackAudio.on("frequencyUpdate", (data) => {
+trackAudio.on("frequencyUpdate", (data: FrequenciesUpdate) => {
   frequencyData = data;
   updateStationStatusButtons();
 });
 
-trackAudio.on("rxBegin", (data) => {
+trackAudio.on("rxBegin", (data: RxBegin) => {
   updateRxState(data);
 });
 
-trackAudio.on("rxEnd", (data) => {
+trackAudio.on("rxEnd", (data: RxEnd) => {
   updateRxState(data);
 });
 
-trackAudio.on("txBegin", (data) => {
+trackAudio.on("txBegin", (data: TxBegin) => {
   updateTxState(data);
 });
 
-trackAudio.on("txEnd", (data) => {
+trackAudio.on("txEnd", (data: TxEnd) => {
   updateTxState(data);
 });
 
@@ -148,4 +148,4 @@ actionManager.on("removed", (count: number) => {
 });
 
 // Finally, connect to the Stream Deck.
-streamDeck.connect();
+await streamDeck.connect();

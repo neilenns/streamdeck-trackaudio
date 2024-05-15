@@ -4,7 +4,7 @@ import { StatusAction } from "./actionManager";
 export type ListenTo = "rx" | "tx" | "xc";
 
 export class StationStatusActionSettings {
-  callsign: string = "";
+  callsign = "";
   listenTo: ListenTo = "rx";
 
   // Icon paths
@@ -16,10 +16,10 @@ export class StationStatusActionSettings {
 export class StationStatusAction {
   type = "StationStatusAction";
   action: Action;
-  frequency: number = 0;
-  isRx: boolean = false;
-  isTx: boolean = false;
-  isListening: boolean = false;
+  frequency = 0;
+  isRx = false;
+  isTx = false;
+  isListening = false;
 
   settings: StationStatusActionSettings = new StationStatusActionSettings();
 
