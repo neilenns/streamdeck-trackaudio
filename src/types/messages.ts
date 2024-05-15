@@ -1,4 +1,4 @@
-export type FrequenciesUpdate = {
+export interface FrequenciesUpdate {
   type: "kFrequenciesUpdate";
   value: {
     rx: {
@@ -14,39 +14,39 @@ export type FrequenciesUpdate = {
       pCallsign: string;
     }[];
   };
-};
+}
 
-export type TxBegin = {
+export interface TxBegin {
   type: "kTxBegin";
   value: {
     callsign: string;
     pFrequencyHz: number;
   };
-};
+}
 
-export type TxEnd = {
+export interface TxEnd {
   type: "kTxEnd";
   value: {
     callsign: string;
     pFrequencyHz: number;
   };
-};
+}
 
-export type RxBegin = {
+export interface RxBegin {
   type: "kRxBegin";
   value: {
     callsign: string;
     pFrequencyHz: number;
   };
-};
+}
 
-export type RxEnd = {
+export interface RxEnd {
   type: "kRxEnd";
   value: {
     callsign: string;
     pFrequencyHz: number;
   };
-};
+}
 
 export type Message = FrequenciesUpdate | RxBegin | RxEnd | TxBegin | TxEnd;
 

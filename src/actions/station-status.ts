@@ -22,12 +22,16 @@ export class StationStatus extends SingletonAction<StationSettings> {
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
-    ev.action.setTitle(
-      getDisplayTitle(
-        ev.payload.settings.callsign,
-        ev.payload.settings.listenTo ?? "rx"
+    ev.action
+      .setTitle(
+        getDisplayTitle(
+          ev.payload.settings.callsign,
+          ev.payload.settings.listenTo ?? "rx"
+        )
       )
-    );
+      .catch((error: unknown) => {
+        console.error(error);
+      });
   }
 
   onWillDisappear(
@@ -49,19 +53,23 @@ export class StationStatus extends SingletonAction<StationSettings> {
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
-    ev.action.setTitle(
-      getDisplayTitle(
-        ev.payload.settings.callsign,
-        ev.payload.settings.listenTo
+    ev.action
+      .setTitle(
+        getDisplayTitle(
+          ev.payload.settings.callsign,
+          ev.payload.settings.listenTo ?? "rx"
+        )
       )
-    );
+      .catch((error: unknown) => {
+        console.error(error);
+      });
   }
 }
 
-type StationSettings = {
+interface StationSettings {
   callsign: string;
-  listenTo: ListenTo;
+  listenTo: ListenTo | null;
   notListeningIconPath: string;
   listeningIconPath: string;
   activeCommsIconPath: string;
-};
+}

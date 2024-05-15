@@ -27,7 +27,7 @@ const actionManager = ActionManager.getInstance();
  * Updates all the buttons to ensure their state matches the current states in the frequencyData
  * variable. Assumes that frequencyData is updated by a received frequencyUpdate message.
  */
-const updateStationStatusButtons = async () => {
+const updateStationStatusButtons = () => {
   if (frequencyData === null) {
     return;
   }
@@ -35,39 +35,37 @@ const updateStationStatusButtons = async () => {
   // Go through every active button and see if it's in the appropriate frequency array. If yes, set
   // the state to active. Relies on the frequencyData variable to contain the data received from a
   // frequencyUpdate message.
-  await Promise.all(
-    actionManager.getStationStatusActions().map(async (entry) => {
-      if (!entry.settings.callsign) {
-        return;
-      }
+  actionManager.getStationStatusActions().map((entry) => {
+    if (!entry.settings.callsign) {
+      return;
+    }
 
-      const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
-        (update) => update.pCallsign === entry.settings.callsign
+    const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
+      (update) => update.pCallsign === entry.settings.callsign
+    );
+
+    // If the entry is found set both the state and the frequency. The frequency must be set
+    // so txBegin and rxBegin events can determine which buttons to light up
+    if (foundEntry) {
+      actionManager.setStationFrequency(
+        entry.settings.callsign,
+        foundEntry.pFrequencyHz
       );
-
-      // If the entry is found set both the state and the frequency. The frequency must be set
-      // so txBegin and rxBegin events can determine which buttons to light up
-      if (foundEntry) {
-        await actionManager.listenBegin(entry.settings.callsign);
-        actionManager.setStationFrequency(
-          entry.settings.callsign,
-          foundEntry.pFrequencyHz
-        );
-      } else {
-        await actionManager.listenEnd(entry.settings.callsign);
-        actionManager.setStationFrequency(entry.settings.callsign, 0);
-      }
-    })
-  );
+      actionManager.listenBegin(entry.settings.callsign);
+    } else {
+      actionManager.setStationFrequency(entry.settings.callsign, 0);
+      actionManager.listenEnd(entry.settings.callsign);
+    }
+  });
 };
 
-const updateRxState = async (data: RxBegin | RxEnd) => {
+const updateRxState = (data: RxBegin | RxEnd) => {
   if (isRxBegin(data)) {
     console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
-    await actionManager.rxBegin(data.value.pFrequencyHz);
+    actionManager.rxBegin(data.value.pFrequencyHz);
   } else {
     console.log(`Receive ended on: ${data.value.pFrequencyHz.toString()}`);
-    await actionManager.rxEnd(data.value.pFrequencyHz);
+    actionManager.rxEnd(data.value.pFrequencyHz);
   }
 };
 
@@ -93,39 +91,25 @@ streamDeck.actions.registerAction(new TrackAudioStatus());
 // Register event handlers for the TrackAudio connection
 trackAudio.on("connected", () => {
   console.log("Plugin detected connection to TrackAudio");
-  actionManager
-    .setTrackAudioConnectionState(trackAudio.isConnected())
-    .catch((error: unknown) => {
-      console.error(error);
-    });
+  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
 
 trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
-  actionManager
-    .setTrackAudioConnectionState(trackAudio.isConnected())
-    .catch((error: unknown) => {
-      console.error(error);
-    });
+  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
 
 trackAudio.on("frequencyUpdate", (data: FrequenciesUpdate) => {
   frequencyData = data;
-  updateStationStatusButtons().catch((error: unknown) => {
-    console.error(error);
-  });
+  updateStationStatusButtons();
 });
 
 trackAudio.on("rxBegin", (data: RxBegin) => {
-  updateRxState(data).catch((error: unknown) => {
-    console.error(error);
-  });
+  updateRxState(data);
 });
 
 trackAudio.on("rxEnd", (data: RxEnd) => {
-  updateRxState(data).catch((error: unknown) => {
-    console.error(error);
-  });
+  updateRxState(data);
 });
 
 trackAudio.on("txBegin", (data: TxBegin) => {
@@ -145,9 +129,7 @@ actionManager.on("stationStatusAdded", (count: number) => {
   // Force a refresh of the buttons so the new button gets the proper state
   // from the start, instead of having to wait for one of the states to change in
   // TrackAudio.
-  updateStationStatusButtons().catch((error: unknown) => {
-    console.error(error);
-  });
+  updateStationStatusButtons();
 });
 
 actionManager.on("vectorAudioStatusAdded", (count: number) => {
@@ -156,11 +138,7 @@ actionManager.on("vectorAudioStatusAdded", (count: number) => {
   }
 
   // Refresh the button state so the new button gets the proper state from the start.
-  actionManager
-    .setTrackAudioConnectionState(trackAudio.isConnected())
-    .catch((error: unknown) => {
-      console.error(error);
-    });
+  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
 
 actionManager.on("removed", (count: number) => {

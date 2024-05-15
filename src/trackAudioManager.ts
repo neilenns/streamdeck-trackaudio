@@ -88,16 +88,16 @@ export default class TrackAudioManager extends EventEmitter {
       this.reconnect();
     });
 
-    this.socket.on("message", (message) => {
+    this.socket.on("message", (message: string) => {
       this.processMessage(message);
     });
   }
 
-  private processMessage(message: WebSocket.RawData): void {
+  private processMessage(message: string): void {
     console.log("received: %s", message);
 
     // Parse the message as JSON
-    const data: Message = JSON.parse(message.toString());
+    const data = JSON.parse(message) as Message;
 
     // Check if the received message is of the desired event type
     if (isFrequencyStateUpdate(data)) {
