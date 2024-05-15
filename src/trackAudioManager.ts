@@ -70,13 +70,13 @@ export default class TrackAudioManager extends EventEmitter {
 
     this.socket.on("open", () => {
       console.log("WebSocket connection established.");
-      TrackAudioManager.instance?.emit("connected");
+      this.emit("connected");
     });
 
     this.socket.on("close", () => {
       console.log("WebSocket connection closed");
 
-      TrackAudioManager.instance?.emit("disconnected");
+      this.emit("disconnected");
       this.reconnect();
     });
 
@@ -109,15 +109,15 @@ export default class TrackAudioManager extends EventEmitter {
 
     // Check if the received message is of the desired event type
     if (isFrequencyStateUpdate(data)) {
-      TrackAudioManager.instance?.emit("frequencyUpdate", data);
+      this.emit("frequencyUpdate", data);
     } else if (isRxBegin(data)) {
-      TrackAudioManager.instance?.emit("rxBegin", data);
+      this.emit("rxBegin", data);
     } else if (isRxEnd(data)) {
-      TrackAudioManager.instance?.emit("rxEnd", data);
+      this.emit("rxEnd", data);
     } else if (isTxBegin(data)) {
-      TrackAudioManager.instance?.emit("txBegin", data);
+      this.emit("txBegin", data);
     } else if (isTxEnd(data)) {
-      TrackAudioManager.instance?.emit("txEnd", data);
+      this.emit("txEnd", data);
     }
   }
 
