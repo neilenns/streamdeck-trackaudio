@@ -10,8 +10,14 @@ import {
   isTrackAudioStatusAction,
 } from "./trackAudioStatusAction";
 
+/**
+ * Type union for all possible actions supported by this plugin
+ */
 export type StatusAction = StationStatusAction | TrackAudioStatusAction;
 
+/**
+ * Singleton class that manages StreamDeck actions
+ */
 export default class ActionManager extends EventEmitter {
   private static instance: ActionManager | null = null;
   private actions: StatusAction[] = [];
@@ -20,6 +26,10 @@ export default class ActionManager extends EventEmitter {
     super();
   }
 
+  /**
+   * Provides access to the ActionManager instance.
+   * @returns The instance of ActionManager
+   */
   public static getInstance(): ActionManager {
     if (!ActionManager.instance) {
       ActionManager.instance = new ActionManager();
@@ -28,17 +38,19 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Adds a VectorAudio status action to the action list.
-   * @param action The action to add.
+   * Adds a TrackAudio status action to the action list. Emits a trackAudioStatusAdded event
+   * after the action is added.
+   * @param action The action to add
    */
-  public addVectorAudio(action: Action) {
+  public addTrackAudio(action: Action) {
     this.actions.push(new TrackAudioStatusAction(action));
 
-    this.emit("vectorAudioStatusAdded", this.actions.length);
+    this.emit("trackAudioStatusAdded", this.actions.length);
   }
 
   /**
-   * Adds a station status action to the list with the associated callsign.
+   * Adds a station status action to the list with the associated callsign. Emits a stationStatusAdded
+   * event after the action is added.
    * @param callsign The callsign associated with the action
    * @param action The action
    */
@@ -52,7 +64,7 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Updates the settings associated with a station status action
+   * Updates the settings associated with a station status action.
    * @param action The action to update
    * @param settings The new settings to use
    */
@@ -69,7 +81,7 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Updates the frequency on the first station status action that matches the callsign
+   * Updates the frequency on the first station status action that matches the callsign.
    * @param callsign The callsign of the station to update the frequency on
    * @param frequency The frequency to update to
    */
@@ -257,7 +269,7 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Retrieves the list of all tracked StationStatusActions
+   * Retrieves the list of all tracked StationStatusActions.
    * @returns An array of StationStatusActions
    */
   public getStationStatusActions(): StationStatusAction[] {
@@ -267,8 +279,8 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Retrieves the list of all tracked StationStatusActions
-   * @returns An array of StationStatusActions
+   * Retrieves the list of all tracked TrackAudioStatusActions.
+   * @returns An array of TrackAudioStatusActions
    */
   public getTrackAudioStatusActions(): TrackAudioStatusAction[] {
     return this.actions.filter((action) =>

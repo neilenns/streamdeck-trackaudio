@@ -9,6 +9,9 @@ import {
   isTxEnd,
 } from "./types/messages";
 
+/**
+ * Manages the websocket connection to TrackAudio.
+ */
 export default class TrackAudioManager extends EventEmitter {
   private static instance: TrackAudioManager | null;
   private socket: WebSocket | null = null;
@@ -21,7 +24,7 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
-   * Provides access to the TrackAudio websocket connection
+   * Provides access to the TrackAudio websocket connection.
    * @returns The websocket instance
    */
   public static getInstance(): TrackAudioManager {
@@ -32,7 +35,7 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
-   * Sets the connection URL for TrackAudio
+   * Sets the connection URL for TrackAudio.
    * @param url The URL for the TrackAudio instance
    */
   public setUrl(url: string) {
@@ -40,7 +43,7 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
-   * Provides the current state of the connection to TrackAudio
+   * Provides the current state of the connection to TrackAudio.
    * @returns True if there is an open connection to TrackAudio, false otherwise.
    */
   public isConnected(): boolean {
@@ -48,7 +51,7 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
-   * Connects to a TrackAudio instance
+   * Connects to a TrackAudio instance and registers event handlers for various socket events.
    * @param url The URL of the TrackAudio instance to connect to, typically ws://localhost:49080/ws
    */
   public connect(): void {
@@ -93,6 +96,11 @@ export default class TrackAudioManager extends EventEmitter {
     });
   }
 
+  /**
+   * Takes an incoming websocket message from TrackAudio, determines the type, and then
+   * fires the appropriate event.
+   * @param message The message to process
+   */
   private processMessage(message: string): void {
     console.log("received: %s", message);
 
@@ -114,7 +122,7 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
-   * Sets up a timer to attempt to reconnect to the websocket
+   * Sets up a timer to attempt to reconnect to the websocket.
    */
   private reconnect(): void {
     // Check to see if a reconnect attempt is already in progress. If so
@@ -130,7 +138,7 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
-   * Disconnects from a TrackAudio instance
+   * Disconnects from a TrackAudio instance.
    */
   public disconnect(): void {
     if (this.socket) {

@@ -1,3 +1,6 @@
+/**
+ * Represents the kFrequenciesUpdate message from TrackAudio.
+ */
 export interface FrequenciesUpdate {
   type: "kFrequenciesUpdate";
   value: {
@@ -16,6 +19,9 @@ export interface FrequenciesUpdate {
   };
 }
 
+/**
+ * Represents the kTxBegin message from TrackAudio.
+ */
 export interface TxBegin {
   type: "kTxBegin";
   value: {
@@ -24,6 +30,9 @@ export interface TxBegin {
   };
 }
 
+/**
+ * Represents the kTxEnd message from TrackAudio.
+ */
 export interface TxEnd {
   type: "kTxEnd";
   value: {
@@ -32,6 +41,9 @@ export interface TxEnd {
   };
 }
 
+/**
+ * Represents the kRxBegin message from TrackAudio.
+ */
 export interface RxBegin {
   type: "kRxBegin";
   value: {
@@ -40,6 +52,9 @@ export interface RxBegin {
   };
 }
 
+/**
+ * Represents the kRxEnd message from TrackAudio.
+ */
 export interface RxEnd {
   type: "kRxEnd";
   value: {
@@ -48,26 +63,54 @@ export interface RxEnd {
   };
 }
 
+/**
+ * Type union for all possible websocket messages from TrackAudio
+ */
 export type Message = FrequenciesUpdate | RxBegin | RxEnd | TxBegin | TxEnd;
 
+/**
+ * Typeguard for FrequencyStatusUpdate.
+ * @param message The message
+ * @returns True if the message is a FrequencyStatusUpdate
+ */
 export function isFrequencyStateUpdate(
   message: Message
 ): message is FrequenciesUpdate {
   return message.type === "kFrequenciesUpdate";
 }
 
+/**
+ * Typeguard for RxBegin.
+ * @param message The message
+ * @returns True if the message is a RxBegin
+ */
 export function isRxBegin(message: Message): message is RxBegin {
   return message.type === "kRxBegin";
 }
 
+/**
+ * Typeguard for RxEnd.
+ * @param message The message
+ * @returns True if the message is a RxEnd
+ */
 export function isRxEnd(message: Message): message is RxEnd {
   return message.type === "kRxEnd";
 }
 
+/**
+ * Typeguard for TxBegin.
+ * @param message The message
+ * @returns True if the message is a TxBegin
+ */
 export function isTxBegin(message: Message): message is TxBegin {
   return message.type === "kTxBegin";
 }
 
+/**
+ * Typeguard for TxEnd.
+ * @param message The message
+ * @returns True if the message is a TxEnd
+ */
 export function isTxEnd(message: Message): message is TxEnd {
   return message.type === "kTxEnd";
 }
