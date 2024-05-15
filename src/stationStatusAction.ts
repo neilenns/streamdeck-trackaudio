@@ -1,8 +1,16 @@
 import { Action } from "@elgato/streamdeck";
 import { StatusAction } from "./actionManager";
 
+// Valid values for the ListenTo property. This must match
+// the list of array property names that come from TrackAudio
+// in the kFrequenciesUpdate message.
 export type ListenTo = "rx" | "tx" | "xc";
 
+/**
+ * Settings for the StationStatusAction. This tracks the values that
+ * were provided from the Property Inspector so they are available for
+ * use outside of StreamDeck events.
+ */
 export class StationStatusActionSettings {
   callsign = "";
   listenTo: ListenTo = "rx";
@@ -13,6 +21,10 @@ export class StationStatusActionSettings {
   activeCommsIconPath: string | undefined;
 }
 
+/**
+ * A StationStatus action, for use with ActionManager. Tracks the settings,
+ * state and StreamDeck action for an individual action in a profile.
+ */
 export class StationStatusAction {
   type = "StationStatusAction";
   action: Action;
@@ -24,13 +36,9 @@ export class StationStatusAction {
   settings: StationStatusActionSettings = new StationStatusActionSettings();
 
   /**
-   *
+   * Creates a new StationStatusAction object.
    * @param callsign The callsign for the action
-   * @param listenTo The type of listening requested, either rx, tx, or xc
-   * @param notListeningIconPath The path to the icon file for the not listening state, or undefined to use the default
-   * @param listeningIconPath The path to the icon file for the listening state, or undefined to use the default
-   * @param activeCommsIconPath The path to the icon file for the active comms state, or undefined to use the default
-   * @param action The StreamDeck action object
+   * @param options: The options for the action
    */
   constructor(action: Action, options: StationStatusActionSettings) {
     this.action = action;
@@ -42,6 +50,11 @@ export class StationStatusAction {
   }
 }
 
+/**
+ * Typeguard for StationStatusAction.
+ * @param action The action
+ * @returns True if the action is a StationStatusAction
+ */
 export function isStationStatusAction(
   action: StatusAction
 ): action is StationStatusAction {

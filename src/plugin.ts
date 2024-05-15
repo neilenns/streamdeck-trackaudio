@@ -132,7 +132,7 @@ actionManager.on("stationStatusAdded", (count: number) => {
   updateStationStatusButtons();
 });
 
-actionManager.on("vectorAudioStatusAdded", (count: number) => {
+actionManager.on("trackAudioStatusAdded", (count: number) => {
   if (count === 1) {
     trackAudio.connect();
   }

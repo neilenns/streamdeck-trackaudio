@@ -10,7 +10,13 @@ import { getDisplayTitle } from "../helpers/helpers";
 import { ListenTo } from "../stationStatusAction";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
+/**
+ * Represents the status of a TrackAudio station
+ */
 export class StationStatus extends SingletonAction<StationSettings> {
+  // When the action is added to a profile it gets saved in the ActionManager
+  // instance for use elsewhere in the code. The default title is also set
+  // to something useful.
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
     ActionManager.getInstance().addStation(ev.action, {
       callsign: ev.payload.settings.callsign,
@@ -34,12 +40,15 @@ export class StationStatus extends SingletonAction<StationSettings> {
       });
   }
 
+  // When the action is removed from a profile it also gets removed from the ActionManager.
   onWillDisappear(
     ev: WillDisappearEvent<StationSettings>
   ): void | Promise<void> {
     ActionManager.getInstance().remove(ev.action);
   }
 
+  // When settings are received the ActionManager is called to update the existing
+  // settings on the saved action.
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<StationSettings>
   ): void | Promise<void> {
