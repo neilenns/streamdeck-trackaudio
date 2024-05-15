@@ -1,0 +1,6 @@
+{
+	"recommendations": [
+		"paulober.rollup-problem-matcher",
+		"davidanson.vscode-markdownlint"
+	]
+}

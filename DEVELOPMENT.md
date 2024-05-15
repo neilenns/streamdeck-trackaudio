@@ -29,3 +29,5 @@ in conjunction with websockets to read and display data from another app. Here a
 * `eslint` is used with strict TypeScript rules to validate the code
 * `markdownlint` is used to validate the markdown files
 * Automated CI/CD builds are handled with GitHub workflows in the `.github/workflows` folder. This includes automatically setting the plugin version to the GitHub release version and attaching the built plugin package to the pull request and release page.
+* F5 debugging in Visual Studio Code using `.vscode/launch.json` and `.vscode/tasks.json` configuration files.
+* Suggested Visual Studio Code extensions using a workspace file.
