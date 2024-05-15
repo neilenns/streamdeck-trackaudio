@@ -1,8 +1,9 @@
-import streamDeck, { LogLevel, action } from "@elgato/streamdeck";
+import streamDeck from "@elgato/streamdeck";
 
-import { StationStatus } from "./actions/station-status";
-import TrackAudioManager from "./trackAudioManager";
 import ActionManager from "./actionManager";
+import { StationStatus } from "./actions/station-status";
+import { TrackAudioStatus } from "./actions/trackAudio-status";
+import TrackAudioManager from "./trackAudioManager";
 import {
   FrequenciesUpdate,
   RxBegin,
@@ -12,7 +13,6 @@ import {
   isRxBegin,
   isTxBegin,
 } from "./types/messages";
-import { TrackAudioStatus } from "./actions/trackAudio-status";
 
 // Remembers the last received list of frequency updates, used to refresh
 // all the buttons when a new one is added. Otherwise new buttons default to
@@ -27,7 +27,7 @@ const actionManager = ActionManager.getInstance();
  * Updates all the buttons to ensure their state matches the current states in the frequencyData
  * variable. Assumes that frequencyData is updated by a received frequencyUpdate message.
  */
-const updateStationStatusButtons = () => {
+const updateStationStatusButtons = async () => {
   if (frequencyData === null) {
     return;
   }
@@ -35,37 +35,39 @@ const updateStationStatusButtons = () => {
   // Go through every active button and see if it's in the appropriate frequency array. If yes, set
   // the state to active. Relies on the frequencyData variable to contain the data received from a
   // frequencyUpdate message.
-  actionManager.getStationStatusActions().forEach((entry) => {
-    if (!entry.settings.listenTo || !entry.settings.callsign) {
-      return;
-    }
+  await Promise.all(
+    actionManager.getStationStatusActions().map(async (entry) => {
+      if (!entry.settings.callsign) {
+        return;
+      }
 
-    const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
-      (update) => update.pCallsign === entry.settings.callsign
-    );
-
-    // If the entry is found set both the state and the frequency. The frequency must be set
-    // so txBegin and rxBegin events can determine which buttons to light up
-    if (foundEntry) {
-      actionManager.listenBegin(entry.settings.callsign);
-      actionManager.setStationFrequency(
-        entry.settings.callsign,
-        foundEntry.pFrequencyHz
+      const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
+        (update) => update.pCallsign === entry.settings.callsign
       );
-    } else {
-      actionManager.listenEnd(entry.settings.callsign);
-      actionManager.setStationFrequency(entry.settings.callsign, 0);
-    }
-  });
+
+      // If the entry is found set both the state and the frequency. The frequency must be set
+      // so txBegin and rxBegin events can determine which buttons to light up
+      if (foundEntry) {
+        await actionManager.listenBegin(entry.settings.callsign);
+        actionManager.setStationFrequency(
+          entry.settings.callsign,
+          foundEntry.pFrequencyHz
+        );
+      } else {
+        await actionManager.listenEnd(entry.settings.callsign);
+        actionManager.setStationFrequency(entry.settings.callsign, 0);
+      }
+    })
+  );
 };
 
-const updateRxState = (data: RxBegin | RxEnd) => {
+const updateRxState = async (data: RxBegin | RxEnd) => {
   if (isRxBegin(data)) {
-    console.log(`Receive started on: ${data.value.pFrequencyHz}`);
-    actionManager.rxBegin(data.value.pFrequencyHz);
+    console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
+    await actionManager.rxBegin(data.value.pFrequencyHz);
   } else {
-    console.log(`Receive ended on: ${data.value.pFrequencyHz}`);
-    actionManager.rxEnd(data.value.pFrequencyHz);
+    console.log(`Receive ended on: ${data.value.pFrequencyHz.toString()}`);
+    await actionManager.rxEnd(data.value.pFrequencyHz);
   }
 };
 
@@ -91,32 +93,46 @@ streamDeck.actions.registerAction(new TrackAudioStatus());
 // Register event handlers for the TrackAudio connection
 trackAudio.on("connected", () => {
   console.log("Plugin detected connection to TrackAudio");
-  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
+  actionManager
+    .setTrackAudioConnectionState(trackAudio.isConnected())
+    .catch((error: unknown) => {
+      console.error(error);
+    });
 });
 
 trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
-  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
+  actionManager
+    .setTrackAudioConnectionState(trackAudio.isConnected())
+    .catch((error: unknown) => {
+      console.error(error);
+    });
 });
 
-trackAudio.on("frequencyUpdate", (data) => {
+trackAudio.on("frequencyUpdate", (data: FrequenciesUpdate) => {
   frequencyData = data;
-  updateStationStatusButtons();
+  updateStationStatusButtons().catch((error: unknown) => {
+    console.error(error);
+  });
 });
 
-trackAudio.on("rxBegin", (data) => {
-  updateRxState(data);
+trackAudio.on("rxBegin", (data: RxBegin) => {
+  updateRxState(data).catch((error: unknown) => {
+    console.error(error);
+  });
 });
 
-trackAudio.on("rxEnd", (data) => {
-  updateRxState(data);
+trackAudio.on("rxEnd", (data: RxEnd) => {
+  updateRxState(data).catch((error: unknown) => {
+    console.error(error);
+  });
 });
 
-trackAudio.on("txBegin", (data) => {
+trackAudio.on("txBegin", (data: TxBegin) => {
   updateTxState(data);
 });
 
-trackAudio.on("txEnd", (data) => {
+trackAudio.on("txEnd", (data: TxEnd) => {
   updateTxState(data);
 });
 
@@ -129,7 +145,9 @@ actionManager.on("stationStatusAdded", (count: number) => {
   // Force a refresh of the buttons so the new button gets the proper state
   // from the start, instead of having to wait for one of the states to change in
   // TrackAudio.
-  updateStationStatusButtons();
+  updateStationStatusButtons().catch((error: unknown) => {
+    console.error(error);
+  });
 });
 
 actionManager.on("vectorAudioStatusAdded", (count: number) => {
@@ -138,7 +156,11 @@ actionManager.on("vectorAudioStatusAdded", (count: number) => {
   }
 
   // Refresh the button state so the new button gets the proper state from the start.
-  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
+  actionManager
+    .setTrackAudioConnectionState(trackAudio.isConnected())
+    .catch((error: unknown) => {
+      console.error(error);
+    });
 });
 
 actionManager.on("removed", (count: number) => {
@@ -148,4 +170,4 @@ actionManager.on("removed", (count: number) => {
 });
 
 // Finally, connect to the Stream Deck.
-streamDeck.connect();
+await streamDeck.connect();

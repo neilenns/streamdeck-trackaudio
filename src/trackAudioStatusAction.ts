@@ -4,7 +4,7 @@ import { StatusAction } from "./actionManager";
 export class TrackAudioStatusAction {
   type = "trackAudioStatusAction";
   action: Action;
-  isConnected: boolean = false;
+  isConnected = false;
 
   /**
    * Creates a new TrackAudioStatusAction

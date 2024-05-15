@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import WebSocket from "ws";
 import {
   Message,
@@ -7,13 +8,12 @@ import {
   isTxBegin,
   isTxEnd,
 } from "./types/messages";
-import { EventEmitter } from "events";
 
 export default class TrackAudioManager extends EventEmitter {
-  private static instance: TrackAudioManager;
+  private static instance: TrackAudioManager | null;
   private socket: WebSocket | null = null;
   private reconnectInterval = 1000 * 5; // 5 seconds
-  private url: string = "ws://localhost:49080/ws";
+  private url = "ws://localhost:49080/ws";
   private reconnectTimer: NodeJS.Timeout | null = null;
 
   private constructor() {
@@ -67,12 +67,13 @@ export default class TrackAudioManager extends EventEmitter {
 
     this.socket.on("open", () => {
       console.log("WebSocket connection established.");
-      TrackAudioManager.instance.emit("connected");
+      TrackAudioManager.instance?.emit("connected");
     });
 
     this.socket.on("close", () => {
       console.log("WebSocket connection closed");
-      TrackAudioManager.instance.emit("disconnected");
+
+      TrackAudioManager.instance?.emit("disconnected");
       this.reconnect();
     });
 
@@ -87,26 +88,28 @@ export default class TrackAudioManager extends EventEmitter {
       this.reconnect();
     });
 
-    this.socket.on("message", this.processMessage);
+    this.socket.on("message", (message) => {
+      this.processMessage(message);
+    });
   }
 
-  private processMessage(message: string): void {
+  private processMessage(message: WebSocket.RawData): void {
     console.log("received: %s", message);
 
     // Parse the message as JSON
-    const data: Message = JSON.parse(message);
+    const data: Message = JSON.parse(message.toString());
 
     // Check if the received message is of the desired event type
     if (isFrequencyStateUpdate(data)) {
-      TrackAudioManager.instance.emit("frequencyUpdate", data);
+      TrackAudioManager.instance?.emit("frequencyUpdate", data);
     } else if (isRxBegin(data)) {
-      TrackAudioManager.instance.emit("rxBegin", data);
+      TrackAudioManager.instance?.emit("rxBegin", data);
     } else if (isRxEnd(data)) {
-      TrackAudioManager.instance.emit("rxEnd", data);
+      TrackAudioManager.instance?.emit("rxEnd", data);
     } else if (isTxBegin(data)) {
-      TrackAudioManager.instance.emit("txBegin", data);
+      TrackAudioManager.instance?.emit("txBegin", data);
     } else if (isTxEnd(data)) {
-      TrackAudioManager.instance.emit("txEnd", data);
+      TrackAudioManager.instance?.emit("txEnd", data);
     }
   }
 
@@ -138,18 +141,6 @@ export default class TrackAudioManager extends EventEmitter {
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
-    }
-  }
-
-  /**
-   * Sends a message to the TrackAudio instance
-   * @param data The data to send
-   */
-  public send(data: any): void {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(JSON.stringify(data));
-    } else {
-      console.warn("WebSocket is not connected.");
     }
   }
 }

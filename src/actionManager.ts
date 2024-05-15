@@ -13,7 +13,7 @@ import {
 export type StatusAction = StationStatusAction | TrackAudioStatusAction;
 
 export default class ActionManager extends EventEmitter {
-  private static instance: ActionManager;
+  private static instance: ActionManager | null = null;
   private actions: StatusAction[] = [];
 
   private constructor() {
@@ -85,110 +85,124 @@ export default class ActionManager extends EventEmitter {
    * Updates all actions that match the callsign to show the listen state.
    * @param callsign The callsign of the actions to update
    */
-  public listenBegin(callsign: string) {
-    this.getStationStatusActions()
-      .filter(
-        (entry) =>
-          entry.settings.callsign === callsign && entry.isListening === false
-      )
-      .forEach((entry) => {
-        entry.isListening = true;
-        entry.action.setImage(
-          entry.settings.listeningIconPath ??
-            "images/actions/station-status/green.svg"
-        );
-      });
+  public async listenBegin(callsign: string) {
+    await Promise.all(
+      this.getStationStatusActions()
+        .filter(
+          (entry) => entry.settings.callsign === callsign && entry.isListening
+        )
+        .map(async (entry) => {
+          entry.isListening = true;
+          await entry.action.setImage(
+            entry.settings.listeningIconPath ??
+              "images/actions/station-status/green.svg"
+          );
+        })
+    );
   }
 
   /**
    * Updates all actions that match the callsign to clear the listen state.
    * @param callsign The callsign of the actions to update
    */
-  public listenEnd(callsign: string) {
-    this.getStationStatusActions()
-      .filter(
-        (entry) =>
-          entry.settings.callsign === callsign && entry.isListening === true
-      )
-      .forEach((entry) => {
-        entry.isListening = false;
-        entry.action.setImage(
-          entry.settings.notListeningIconPath ??
-            "images/actions/station-status/black.svg"
-        );
-      });
+  public async listenEnd(callsign: string) {
+    await Promise.all(
+      this.getStationStatusActions()
+        .filter(
+          (entry) => entry.settings.callsign === callsign && entry.isListening
+        )
+        .map(async (entry) => {
+          entry.isListening = false;
+          await entry.action.setImage(
+            entry.settings.notListeningIconPath ??
+              "images/actions/station-status/black.svg"
+          );
+        })
+    );
   }
 
   /**
    * Updates all actions that match the frequency to show the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
-  public rxBegin(frequency: number) {
-    this.getStationStatusActions()
-      .filter(
-        (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "rx" &&
-          entry.isRx === false
-      )
-      .forEach((entry) => {
-        entry.action.setImage("images/actions/station-status/orange.svg");
-        entry.isRx = true;
-      });
+  public async rxBegin(frequency: number) {
+    await Promise.all(
+      this.getStationStatusActions()
+        .filter(
+          (entry) =>
+            entry.frequency === frequency &&
+            entry.settings.listenTo === "rx" &&
+            !entry.isRx
+        )
+        .map(async (entry) => {
+          await entry.action.setImage(
+            "images/actions/station-status/orange.svg"
+          );
+          entry.isRx = true;
+        })
+    );
   }
 
   /**
    * Updates all actions that match the callsign to clear the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
-  public rxEnd(frequency: number) {
-    this.getStationStatusActions()
-      .filter(
-        (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "rx" &&
-          entry.isRx === true
-      )
-      .forEach((entry) => {
-        entry.action.setImage();
-        entry.isRx = false;
-      });
+  public async rxEnd(frequency: number) {
+    await Promise.all(
+      this.getStationStatusActions()
+        .filter(
+          (entry) =>
+            entry.frequency === frequency &&
+            entry.settings.listenTo === "rx" &&
+            entry.isRx
+        )
+        .map(async (entry) => {
+          await entry.action.setImage();
+          entry.isRx = false;
+        })
+    );
   }
 
   /**
    * Updates all actions that match the frequency to show the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
-  public txBegin(frequency: number) {
-    this.getStationStatusActions()
-      .filter(
-        (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "tx" &&
-          entry.isTx === false
-      )
-      .forEach((entry) => {
-        entry.action.setImage("images/actions/station-status/orange.svg");
-        entry.isTx = true;
-      });
+  public async txBegin(frequency: number) {
+    await Promise.all(
+      this.getStationStatusActions()
+        .filter(
+          (entry) =>
+            entry.frequency === frequency &&
+            entry.settings.listenTo === "tx" &&
+            !entry.isTx
+        )
+        .map(async (entry) => {
+          entry.isTx = true;
+          await entry.action.setImage(
+            "images/actions/station-status/orange.svg"
+          );
+        })
+    );
   }
 
   /**
    * Updates all actions that match the callsign to clear the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
-  public txEnd(frequency: number) {
-    this.getStationStatusActions()
-      .filter(
-        (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "tx" &&
-          entry.isTx === true
-      )
-      .forEach((entry) => {
-        entry.action.setImage();
-        entry.isTx = false;
-      });
+  public async txEnd(frequency: number) {
+    await Promise.all(
+      this.getStationStatusActions()
+        .filter(
+          (entry) =>
+            entry.frequency === frequency &&
+            entry.settings.listenTo === "tx" &&
+            entry.isTx
+        )
+        .map(async (entry) => {
+          await entry.action.setImage();
+          entry.isTx = false;
+        })
+    );
   }
 
   /**
@@ -208,22 +222,24 @@ export default class ActionManager extends EventEmitter {
    * and updates the background image to the appropriate state image.
    * @param isConnected True if connected, false if not
    */
-  public setTrackAudioConnectionState(isConnected: boolean) {
-    this.getTrackAudioStatusActions().forEach((entry) => {
-      // Don't do anything if the state didn't change. This prevents repeated unnecessary updates
-      // when no connection is available and there's a reconnect attempt every 5 seconds.
-      if (entry.isConnected === isConnected) {
-        return;
-      }
+  public async setTrackAudioConnectionState(isConnected: boolean) {
+    await Promise.all(
+      this.getTrackAudioStatusActions().map(async (entry) => {
+        // Don't do anything if the state didn't change. This prevents repeated unnecessary updates
+        // when no connection is available and there's a reconnect attempt every 5 seconds.
+        if (entry.isConnected === isConnected) {
+          return;
+        }
 
-      entry.isConnected = isConnected;
+        entry.isConnected = isConnected;
 
-      if (isConnected) {
-        entry.action.setState(1);
-      } else {
-        entry.action.setState(0);
-      }
-    });
+        if (isConnected) {
+          await entry.action.setState(1);
+        } else {
+          await entry.action.setState(0);
+        }
+      })
+    );
   }
 
   /**
@@ -257,7 +273,11 @@ export default class ActionManager extends EventEmitter {
   /**
    * Temporarily shows an alert warning on all tracked actions.
    */
-  public showAlertOnAll() {
-    this.actions.forEach((entry) => entry.action.showAlert());
+  public async showAlertOnAll() {
+    await Promise.all(
+      this.actions.map(async (entry) => {
+        await entry.action.showAlert();
+      })
+    );
   }
 }
