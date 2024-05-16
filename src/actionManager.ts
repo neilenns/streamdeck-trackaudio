@@ -7,7 +7,7 @@ import {
 } from "./stationStatusAction";
 import {
   TrackAudioStatus,
-  isTrackAudioStatusAction,
+  isTrackAudioStatus,
 } from "./actions/trackAudio-status";
 
 /**
@@ -244,7 +244,7 @@ export default class ActionManager extends EventEmitter {
    */
   public getTrackAudioStatusActions(): TrackAudioStatus[] {
     return this.actions.filter((action) =>
-      isTrackAudioStatusAction(action)
+      isTrackAudioStatus(action)
     ) as TrackAudioStatus[];
   }
 

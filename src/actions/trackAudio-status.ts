@@ -70,11 +70,11 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
 }
 
 /**
- * Typeguard for TrackAudioStatusAction.
+ * Typeguard for TrackAudioStatus.
  * @param action The action
- * @returns True if the action is a TrackAudioStatusAction
+ * @returns True if the action is a TrackAudioStatus
  */
-export function isTrackAudioStatusAction(
+export function isTrackAudioStatus(
   action: StatusAction
 ): action is TrackAudioStatus {
   return action.type === "trackAudioStatusAction";
