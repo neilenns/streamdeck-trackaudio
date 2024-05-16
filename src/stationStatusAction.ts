@@ -29,9 +29,10 @@ export class StationStatusAction {
   type = "StationStatusAction";
   action: Action;
   frequency = 0;
-  isRx = false;
-  isTx = false;
-  isListening = false;
+
+  private _isRx = false;
+  private _isTx = false;
+  private _isListening = false;
 
   settings: StationStatusActionSettings = new StationStatusActionSettings();
 
@@ -47,6 +48,67 @@ export class StationStatusAction {
     this.settings.notListeningIconPath = options.notListeningIconPath;
     this.settings.listeningIconPath = options.listeningIconPath;
     this.settings.activeCommsIconPath = options.activeCommsIconPath;
+  }
+
+  // Getters and setters
+  /**
+   * True if the station is actively receiveing.
+   */
+  get isRx() {
+    return this._isRx;
+  }
+
+  /**
+   * Sets the isRx property and updates the action image accordingly.
+   */
+  set isRx(newValue: boolean) {
+    // Don't do anything if the state is the same
+    if (this._isRx === newValue) {
+      return;
+    }
+
+    this._isRx = newValue;
+    this.setActiveCommsImage();
+  }
+
+  /**
+   * True if the station is actively transmitting.
+   */
+  get isTx() {
+    return this._isTx;
+  }
+
+  /**
+   * Sets the isTx property and updates the action image accordingly.
+   */
+  set isTx(newValue: boolean) {
+    // Don't do anything if the state is the same
+    if (this._isTx === newValue) {
+      return;
+    }
+
+    this._isTx = newValue;
+    this.setActiveCommsImage();
+  }
+
+  /**
+   * True if the station is being listened to.
+   */
+  get isListening() {
+    return this._isListening;
+  }
+
+  /**
+   * Sets the isListening property and updates the action image accordingly.
+   */
+  set isListening(newValue: boolean) {
+    // Don't do anything if the state is the same
+    if (this._isListening === newValue) {
+      return;
+    }
+
+    this._isListening = newValue;
+    this.setListeningImage();
   }
 
   /**

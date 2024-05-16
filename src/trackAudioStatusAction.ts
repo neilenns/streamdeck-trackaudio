@@ -8,7 +8,8 @@ import { StatusAction } from "./actionManager";
 export class TrackAudioStatusAction {
   type = "trackAudioStatusAction";
   action: Action;
-  isConnected = false;
+
+  private _isConnected = false;
 
   /**
    * Creates a new TrackAudioStatusAction.
@@ -18,6 +19,25 @@ export class TrackAudioStatusAction {
     this.action = action;
   }
 
+  /**
+   * Returns true when the connected state is displayed.
+   */
+  get isConnected() {
+    return this._isConnected;
+  }
+
+  /**
+   * Sets the isConnected state
+   */
+  set isConnected(newValue: boolean) {
+    // Don't do anything if the state is the same
+    if (this._isConnected === newValue) {
+      return;
+    }
+
+    this._isConnected = newValue;
+    this.setConnectedImage();
+  }
   /**
    * Sets the action image based on the isConnected state
    */

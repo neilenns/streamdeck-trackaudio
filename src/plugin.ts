@@ -97,6 +97,7 @@ trackAudio.on("connected", () => {
 trackAudio.on("disconnected", () => {
   console.log("Plugin detected loss of connection to TrackAudio");
   actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
+  actionManager.setIsListeningOnAll(false);
 });
 
 trackAudio.on("frequencyUpdate", (data: FrequenciesUpdate) => {
