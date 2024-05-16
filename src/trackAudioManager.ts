@@ -1,13 +1,6 @@
 import { EventEmitter } from "events";
 import WebSocket from "ws";
-import {
-  Message,
-  isFrequencyStateUpdate,
-  isRxBegin,
-  isRxEnd,
-  isTxBegin,
-  isTxEnd,
-} from "./types/messages";
+import { Message } from "./types/messages";
 
 /**
  * Manages the websocket connection to TrackAudio.
@@ -104,20 +97,24 @@ export default class TrackAudioManager extends EventEmitter {
   private processMessage(message: string): void {
     console.log("received: %s", message);
 
-    // Parse the message as JSON
     const data = JSON.parse(message) as Message;
 
-    // Check if the received message is of the desired event type
-    if (isFrequencyStateUpdate(data)) {
-      this.emit("frequencyUpdate", data);
-    } else if (isRxBegin(data)) {
-      this.emit("rxBegin", data);
-    } else if (isRxEnd(data)) {
-      this.emit("rxEnd", data);
-    } else if (isTxBegin(data)) {
-      this.emit("txBegin", data);
-    } else if (isTxEnd(data)) {
-      this.emit("txEnd", data);
+    switch (data.type) {
+      case "kFrequenciesUpdate":
+        this.emit("frequencyUpdate", data);
+        break;
+      case "kRxBegin":
+        this.emit("rxBegin", data);
+        break;
+      case "kRxEnd":
+        this.emit("rxEnd", data);
+        break;
+      case "kTxBegin":
+        this.emit("txBegin", data);
+        break;
+      case "kTxEnd":
+        this.emit("txEnd", data);
+        break;
     }
   }
 
