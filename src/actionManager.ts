@@ -2,13 +2,13 @@ import { Action } from "@elgato/streamdeck";
 import { EventEmitter } from "events";
 import {
   StationStatusAction,
-  StationStatusActionSettings,
   isStationStatusAction,
 } from "./stationStatusAction";
 import {
   TrackAudioStatusAction,
   isTrackAudioStatusAction,
 } from "./trackAudioStatusAction";
+import { StationSettings } from "./actions/station-status";
 
 /**
  * Type union for all possible actions supported by this plugin
@@ -54,10 +54,7 @@ export default class ActionManager extends EventEmitter {
    * @param callsign The callsign associated with the action
    * @param action The action
    */
-  public addStation(
-    action: Action,
-    settings: StationStatusActionSettings
-  ): void {
+  public addStation(action: Action, settings: StationSettings): void {
     this.actions.push(new StationStatusAction(action, settings));
 
     this.emit("stationStatusAdded", this.actions.length);
@@ -68,7 +65,7 @@ export default class ActionManager extends EventEmitter {
    * @param action The action to update
    * @param settings The new settings to use
    */
-  public updateStation(action: Action, settings: StationStatusActionSettings) {
+  public updateStation(action: Action, settings: StationSettings) {
     const savedAction = this.getStationStatusActions().find(
       (entry) => entry.action.id === action.id
     );
@@ -89,7 +86,7 @@ export default class ActionManager extends EventEmitter {
    */
   public setStationFrequency(callsign: string, frequency: number) {
     this.getStationStatusActions()
-      .filter((entry) => entry.settings.callsign === callsign)
+      .filter((entry) => entry.callsign === callsign)
       .forEach((entry) => {
         entry.frequency = frequency;
       });
@@ -111,9 +108,7 @@ export default class ActionManager extends EventEmitter {
    */
   public listenBegin(callsign: string) {
     this.getStationStatusActions()
-      .filter(
-        (entry) => entry.settings.callsign === callsign && !entry.isListening
-      )
+      .filter((entry) => entry.callsign === callsign && !entry.isListening)
       .forEach((entry) => {
         entry.isListening = true;
       });
@@ -125,9 +120,7 @@ export default class ActionManager extends EventEmitter {
    */
   public listenEnd(callsign: string) {
     this.getStationStatusActions()
-      .filter(
-        (entry) => entry.settings.callsign === callsign && entry.isListening
-      )
+      .filter((entry) => entry.callsign === callsign && entry.isListening)
       .forEach((entry) => {
         entry.isListening = false;
       });
@@ -140,8 +133,7 @@ export default class ActionManager extends EventEmitter {
   public rxBegin(frequency: number) {
     this.getStationStatusActions()
       .filter(
-        (entry) =>
-          entry.frequency === frequency && entry.settings.listenTo === "rx"
+        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
       .forEach((entry) => {
         entry.isRx = true;
@@ -155,8 +147,7 @@ export default class ActionManager extends EventEmitter {
   public rxEnd(frequency: number) {
     this.getStationStatusActions()
       .filter(
-        (entry) =>
-          entry.frequency === frequency && entry.settings.listenTo === "rx"
+        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
       .forEach((entry) => {
         entry.isRx = false;
@@ -170,8 +161,7 @@ export default class ActionManager extends EventEmitter {
   public txBegin(frequency: number) {
     this.getStationStatusActions()
       .filter(
-        (entry) =>
-          entry.frequency === frequency && entry.settings.listenTo === "tx"
+        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
       )
       .forEach((entry) => {
         entry.isTx = true;
@@ -185,8 +175,7 @@ export default class ActionManager extends EventEmitter {
   public txEnd(frequency: number) {
     this.getStationStatusActions()
       .filter(
-        (entry) =>
-          entry.frequency === frequency && entry.settings.listenTo === "tx"
+        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
       )
       .forEach((entry) => {
         entry.isTx = false;
