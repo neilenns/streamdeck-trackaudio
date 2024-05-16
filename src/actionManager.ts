@@ -6,14 +6,14 @@ import {
   isStationStatusAction,
 } from "./stationStatusAction";
 import {
-  TrackAudioStatusAction,
+  TrackAudioStatus,
   isTrackAudioStatusAction,
-} from "./trackAudioStatusAction";
+} from "./actions/trackAudio-status";
 
 /**
  * Type union for all possible actions supported by this plugin
  */
-export type StatusAction = StationStatusAction | TrackAudioStatusAction;
+export type StatusAction = StationStatusAction | TrackAudioStatus;
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -42,8 +42,8 @@ export default class ActionManager extends EventEmitter {
    * after the action is added.
    * @param action The action to add
    */
-  public addTrackAudio(action: Action) {
-    this.actions.push(new TrackAudioStatusAction(action));
+  public addTrackAudio(action: TrackAudioStatus) {
+    this.actions.push(action);
 
     this.emit("trackAudioStatusAdded", this.actions.length);
   }
@@ -197,14 +197,14 @@ export default class ActionManager extends EventEmitter {
    */
   public remove(action: Action): void {
     this.actions = this.actions.filter(
-      (entry) => entry.action.id !== action.id
+      (entry) => entry.action?.id !== action.id
     );
 
     this.emit("removed", this.actions.length);
   }
 
   /**
-   * Sets the connection state on all VectorAudio status buttons to the specified state
+   * Sets the connection state on all TrackAudio status buttons to the specified state
    * and updates the background image to the appropriate state image.
    * @param isConnected True if connected, false if not
    */
@@ -242,10 +242,10 @@ export default class ActionManager extends EventEmitter {
    * Retrieves the list of all tracked TrackAudioStatusActions.
    * @returns An array of TrackAudioStatusActions
    */
-  public getTrackAudioStatusActions(): TrackAudioStatusAction[] {
+  public getTrackAudioStatusActions(): TrackAudioStatus[] {
     return this.actions.filter((action) =>
       isTrackAudioStatusAction(action)
-    ) as TrackAudioStatusAction[];
+    ) as TrackAudioStatus[];
   }
 
   /**
@@ -253,7 +253,7 @@ export default class ActionManager extends EventEmitter {
    */
   public showAlertOnAll() {
     this.actions.forEach((entry) => {
-      entry.action.showAlert().catch((error: unknown) => {
+      entry.action?.showAlert().catch((error: unknown) => {
         console.error(error);
       });
     });
