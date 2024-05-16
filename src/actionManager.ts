@@ -104,14 +104,7 @@ export default class ActionManager extends EventEmitter {
       )
       .forEach((entry) => {
         entry.isListening = true;
-        entry.action
-          .setImage(
-            entry.settings.listeningIconPath ??
-              "images/actions/station-status/green.svg"
-          )
-          .catch((error: unknown) => {
-            console.error(error);
-          });
+        entry.setListeningImage();
       });
   }
 
@@ -126,14 +119,7 @@ export default class ActionManager extends EventEmitter {
       )
       .forEach((entry) => {
         entry.isListening = false;
-        entry.action
-          .setImage(
-            entry.settings.notListeningIconPath ??
-              "images/actions/station-status/black.svg"
-          )
-          .catch((error: unknown) => {
-            console.log(error);
-          });
+        entry.setListeningImage();
       });
   }
 
@@ -150,12 +136,8 @@ export default class ActionManager extends EventEmitter {
           !entry.isRx
       )
       .forEach((entry) => {
-        entry.action
-          .setImage("images/actions/station-status/orange.svg")
-          .catch((error: unknown) => {
-            console.error(error);
-          });
         entry.isRx = true;
+        entry.setActiveCommsImage();
       });
   }
 
@@ -172,10 +154,8 @@ export default class ActionManager extends EventEmitter {
           entry.isRx
       )
       .forEach((entry) => {
-        entry.action.setImage().catch((error: unknown) => {
-          console.error(error);
-        });
         entry.isRx = false;
+        entry.setActiveCommsImage();
       });
   }
 
@@ -193,11 +173,7 @@ export default class ActionManager extends EventEmitter {
       )
       .forEach((entry) => {
         entry.isTx = true;
-        entry.action
-          .setImage("images/actions/station-status/orange.svg")
-          .catch((error: unknown) => {
-            console.error(error);
-          });
+        entry.setActiveCommsImage();
       });
   }
 
@@ -215,9 +191,7 @@ export default class ActionManager extends EventEmitter {
       )
       .forEach((entry) => {
         entry.isTx = false;
-        entry.action.setImage().catch((error: unknown) => {
-          console.error(error);
-        });
+        entry.setActiveCommsImage();
       });
   }
 
