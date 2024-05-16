@@ -78,6 +78,8 @@ export default class ActionManager extends EventEmitter {
     }
 
     savedAction.settings = settings;
+
+    this.emit("trackAudioStatusUpdated", savedAction);
   }
 
   /**

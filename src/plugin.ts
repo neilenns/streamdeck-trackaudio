@@ -13,6 +13,7 @@ import {
   isRxBegin,
   isTxBegin,
 } from "./types/messages";
+import { StationStatusAction } from "./stationStatusAction";
 
 // Remembers the last received list of frequency updates, used to refresh
 // all the buttons when a new one is added. Otherwise new buttons default to
@@ -140,6 +141,19 @@ actionManager.on("trackAudioStatusAdded", (count: number) => {
 
   // Refresh the button state so the new button gets the proper state from the start.
   actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
+});
+
+/**
+ * Handles station status actions getting updated by refreshing its current listening
+ * status then triggering an image refresh.
+ */
+actionManager.on("trackAudioStatusUpdated", (entry: StationStatusAction) => {
+  const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
+    (update) => update.pCallsign === entry.settings.callsign
+  );
+
+  entry.isListening = !(foundEntry === undefined);
+  entry.setActiveCommsImage();
 });
 
 actionManager.on("removed", (count: number) => {
