@@ -48,6 +48,50 @@ export class StationStatusAction {
     this.settings.listeningIconPath = options.listeningIconPath;
     this.settings.activeCommsIconPath = options.activeCommsIconPath;
   }
+
+  /**
+   * Sets the action image to the correct one for when comms are active,
+   * or resets it to the correct isListening image when coms are off.
+   */
+  public setActiveCommsImage() {
+    if (this.isRx || this.isTx) {
+      this.action
+        .setImage(
+          this.settings.activeCommsIconPath ??
+            "images/actions/station-status/orange.svg"
+        )
+        .catch((error: unknown) => {
+          console.error(error);
+        });
+    } else {
+      this.setListeningImage();
+    }
+  }
+
+  /**
+   * Sets the action image to the correct one given the current isListening value
+   */
+  public setListeningImage() {
+    if (this.isListening) {
+      this.action
+        .setImage(
+          this.settings.listeningIconPath ??
+            "images/actions/station-status/green.svg"
+        )
+        .catch((error: unknown) => {
+          console.error(error);
+        });
+    } else {
+      this.action
+        .setImage(
+          this.settings.notListeningIconPath ??
+            "images/actions/station-status/black.svg"
+        )
+        .catch((error: unknown) => {
+          console.error(error);
+        });
+    }
+  }
 }
 
 /**
