@@ -94,6 +94,16 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
+   * Sets the isListening state on all tracked actions.
+   * @param state The isListening state to set
+   */
+  public setIsListeningOnAll(isListening: boolean) {
+    this.getStationStatusActions().forEach((entry) => {
+      entry.isListening = isListening;
+    });
+  }
+
+  /**
    * Updates all actions that match the callsign to show the listen state.
    * @param callsign The callsign of the actions to update
    */
@@ -104,7 +114,6 @@ export default class ActionManager extends EventEmitter {
       )
       .forEach((entry) => {
         entry.isListening = true;
-        entry.setListeningImage();
       });
   }
 
@@ -119,7 +128,6 @@ export default class ActionManager extends EventEmitter {
       )
       .forEach((entry) => {
         entry.isListening = false;
-        entry.setListeningImage();
       });
   }
 
@@ -131,13 +139,10 @@ export default class ActionManager extends EventEmitter {
     this.getStationStatusActions()
       .filter(
         (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "rx" &&
-          !entry.isRx
+          entry.frequency === frequency && entry.settings.listenTo === "rx"
       )
       .forEach((entry) => {
         entry.isRx = true;
-        entry.setActiveCommsImage();
       });
   }
 
@@ -149,13 +154,10 @@ export default class ActionManager extends EventEmitter {
     this.getStationStatusActions()
       .filter(
         (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "rx" &&
-          entry.isRx
+          entry.frequency === frequency && entry.settings.listenTo === "rx"
       )
       .forEach((entry) => {
         entry.isRx = false;
-        entry.setActiveCommsImage();
       });
   }
 
@@ -167,13 +169,10 @@ export default class ActionManager extends EventEmitter {
     this.getStationStatusActions()
       .filter(
         (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "tx" &&
-          !entry.isTx
+          entry.frequency === frequency && entry.settings.listenTo === "tx"
       )
       .forEach((entry) => {
         entry.isTx = true;
-        entry.setActiveCommsImage();
       });
   }
 
@@ -185,13 +184,10 @@ export default class ActionManager extends EventEmitter {
     this.getStationStatusActions()
       .filter(
         (entry) =>
-          entry.frequency === frequency &&
-          entry.settings.listenTo === "tx" &&
-          entry.isTx
+          entry.frequency === frequency && entry.settings.listenTo === "tx"
       )
       .forEach((entry) => {
         entry.isTx = false;
-        entry.setActiveCommsImage();
       });
   }
 
@@ -221,7 +217,6 @@ export default class ActionManager extends EventEmitter {
       }
 
       entry.isConnected = isConnected;
-      entry.setConnectedImage();
     });
   }
 
