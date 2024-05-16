@@ -17,6 +17,21 @@ export class TrackAudioStatusAction {
   constructor(action: Action) {
     this.action = action;
   }
+
+  /**
+   * Sets the action image based on the isConnected state
+   */
+  public setConnectedImage() {
+    if (this.isConnected) {
+      this.action.setState(1).catch((error: unknown) => {
+        console.error(error);
+      });
+    } else {
+      this.action.setState(0).catch((error: unknown) => {
+        console.error(error);
+      });
+    }
+  }
 }
 
 /**

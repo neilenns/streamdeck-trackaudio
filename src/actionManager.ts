@@ -221,16 +221,7 @@ export default class ActionManager extends EventEmitter {
       }
 
       entry.isConnected = isConnected;
-
-      if (isConnected) {
-        entry.action.setState(1).catch((error: unknown) => {
-          console.error(error);
-        });
-      } else {
-        entry.action.setState(0).catch((error: unknown) => {
-          console.error(error);
-        });
-      }
+      entry.setConnectedImage();
     });
   }
 
