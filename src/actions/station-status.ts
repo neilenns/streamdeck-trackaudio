@@ -18,13 +18,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
-    ActionManager.getInstance().addStation(ev.action, {
-      callsign: ev.payload.settings.callsign,
-      listenTo: ev.payload.settings.listenTo ?? "rx",
-      listeningIconPath: ev.payload.settings.listeningIconPath,
-      notListeningIconPath: ev.payload.settings.notListeningIconPath,
-      activeCommsIconPath: ev.payload.settings.activeCommsIconPath,
-    });
+    ActionManager.getInstance().addStation(ev.action, ev.payload.settings);
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
@@ -52,13 +46,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<StationSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().updateStation(ev.action, {
-      callsign: ev.payload.settings.callsign,
-      listenTo: ev.payload.settings.listenTo ?? "rx",
-      listeningIconPath: ev.payload.settings.listeningIconPath,
-      notListeningIconPath: ev.payload.settings.notListeningIconPath,
-      activeCommsIconPath: ev.payload.settings.activeCommsIconPath,
-    });
+    ActionManager.getInstance().updateStation(ev.action, ev.payload.settings);
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
@@ -75,10 +63,10 @@ export class StationStatus extends SingletonAction<StationSettings> {
   }
 }
 
-interface StationSettings {
+export interface StationSettings {
   callsign: string;
   listenTo: ListenTo | null;
-  notListeningIconPath: string;
-  listeningIconPath: string;
-  activeCommsIconPath: string;
+  notListeningIconPath: string | null;
+  listeningIconPath: string | null;
+  activeCommsIconPath: string | null;
 }

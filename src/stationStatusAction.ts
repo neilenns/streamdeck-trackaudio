@@ -1,25 +1,11 @@
 import { Action } from "@elgato/streamdeck";
 import { StatusAction } from "./actionManager";
+import { StationSettings } from "./actions/station-status";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
 // in the kFrequenciesUpdate message.
 export type ListenTo = "rx" | "tx" | "xc";
-
-/**
- * Settings for the StationStatusAction. This tracks the values that
- * were provided from the Property Inspector so they are available for
- * use outside of StreamDeck events.
- */
-export class StationStatusActionSettings {
-  callsign = "";
-  listenTo: ListenTo = "rx";
-
-  // Icon paths
-  notListeningIconPath: string | undefined;
-  listeningIconPath: string | undefined;
-  activeCommsIconPath: string | undefined;
-}
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -30,27 +16,51 @@ export class StationStatusAction {
   action: Action;
   frequency = 0;
 
+  private _settings: StationSettings;
+
   private _isRx = false;
   private _isTx = false;
   private _isListening = false;
-
-  settings: StationStatusActionSettings = new StationStatusActionSettings();
 
   /**
    * Creates a new StationStatusAction object.
    * @param callsign The callsign for the action
    * @param options: The options for the action
    */
-  constructor(action: Action, options: StationStatusActionSettings) {
+  constructor(action: Action, settings: StationSettings) {
     this.action = action;
-    this.settings.callsign = options.callsign;
-    this.settings.listenTo = options.listenTo;
-    this.settings.notListeningIconPath = options.notListeningIconPath;
-    this.settings.listeningIconPath = options.listeningIconPath;
-    this.settings.activeCommsIconPath = options.activeCommsIconPath;
+    this._settings = settings;
   }
 
   // Getters and setters
+  /**
+   * Conveinence property to get the listenTo value of settings.
+   */
+  get listenTo() {
+    return this._settings.listenTo ?? "rx";
+  }
+
+  /**
+   * Convenience property to get the callsign value of settings.
+   */
+  get callsign() {
+    return this._settings.callsign;
+  }
+
+  /**
+   * Gets the settings.
+   */
+  get settings() {
+    return this._settings;
+  }
+
+  /**
+   * Sets the settings.
+   */
+  set settings(newValue: StationSettings) {
+    this._settings = newValue;
+  }
+
   /**
    * True if the station is actively receiveing.
    */
@@ -119,7 +129,7 @@ export class StationStatusAction {
     if (this.isRx || this.isTx) {
       this.action
         .setImage(
-          this.settings.activeCommsIconPath ??
+          this._settings.activeCommsIconPath ??
             "images/actions/station-status/orange.svg"
         )
         .catch((error: unknown) => {
@@ -137,7 +147,7 @@ export class StationStatusAction {
     if (this.isListening) {
       this.action
         .setImage(
-          this.settings.listeningIconPath ??
+          this._settings.listeningIconPath ??
             "images/actions/station-status/green.svg"
         )
         .catch((error: unknown) => {
@@ -146,7 +156,7 @@ export class StationStatusAction {
     } else {
       this.action
         .setImage(
-          this.settings.notListeningIconPath ??
+          this._settings.notListeningIconPath ??
             "images/actions/station-status/black.svg"
         )
         .catch((error: unknown) => {

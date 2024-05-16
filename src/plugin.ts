@@ -37,25 +37,25 @@ const updateStationStatusButtons = () => {
   // the state to active. Relies on the frequencyData variable to contain the data received from a
   // frequencyUpdate message.
   actionManager.getStationStatusActions().map((entry) => {
-    if (!entry.settings.callsign) {
+    if (!entry.callsign) {
       return;
     }
 
-    const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
-      (update) => update.pCallsign === entry.settings.callsign
+    const foundEntry = frequencyData?.value[entry.listenTo].find(
+      (update) => update.pCallsign === entry.callsign
     );
 
     // If the entry is found set both the state and the frequency. The frequency must be set
     // so txBegin and rxBegin events can determine which buttons to light up
     if (foundEntry) {
       actionManager.setStationFrequency(
-        entry.settings.callsign,
+        entry.callsign,
         foundEntry.pFrequencyHz
       );
-      actionManager.listenBegin(entry.settings.callsign);
+      actionManager.listenBegin(entry.callsign);
     } else {
-      actionManager.setStationFrequency(entry.settings.callsign, 0);
-      actionManager.listenEnd(entry.settings.callsign);
+      actionManager.setStationFrequency(entry.callsign, 0);
+      actionManager.listenEnd(entry.callsign);
     }
   });
 };
@@ -148,8 +148,8 @@ actionManager.on("trackAudioStatusAdded", (count: number) => {
  * status then triggering an image refresh.
  */
 actionManager.on("trackAudioStatusUpdated", (entry: StationStatusAction) => {
-  const foundEntry = frequencyData?.value[entry.settings.listenTo].find(
-    (update) => update.pCallsign === entry.settings.callsign
+  const foundEntry = frequencyData?.value[entry.listenTo].find(
+    (update) => update.pCallsign === entry.callsign
   );
 
   entry.isListening = !(foundEntry === undefined);
