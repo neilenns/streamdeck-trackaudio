@@ -2,7 +2,7 @@
  * Represents the kFrequenciesUpdate message from TrackAudio.
  */
 export interface FrequenciesUpdate {
-  type: "kFrequenciesUpdate";
+  type: "kFrequencyStateUpdate";
   value: {
     rx: {
       pFrequencyHz: number;
@@ -76,7 +76,7 @@ export type Message = FrequenciesUpdate | RxBegin | RxEnd | TxBegin | TxEnd;
 export function isFrequencyStateUpdate(
   message: Message
 ): message is FrequenciesUpdate {
-  return message.type === "kFrequenciesUpdate";
+  return message.type === "kFrequencyStateUpdate";
 }
 
 /**
