@@ -1,21 +1,18 @@
 /**
  * Represents the kFrequenciesUpdate message from TrackAudio.
  */
+export interface Radio {
+  pFrequencyHz: number;
+  pCallsign: string;
+}
+
 export interface FrequenciesUpdate {
   type: "kFrequencyStateUpdate";
   value: {
-    rx: {
-      pFrequencyHz: number;
-      pCallsign: string;
-    }[];
-    tx: {
-      pFrequencyHz: number;
-      pCallsign: string;
-    }[];
-    xc: {
-      pFrequencyHz: number;
-      pCallsign: string;
-    }[];
+    rx: Radio[];
+    tx: Radio[];
+    xc: Radio[];
+    allRadios: Radio[];
   };
 }
 

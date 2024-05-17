@@ -45,18 +45,24 @@ const updateStationStatusButtons = () => {
       (update) => update.pCallsign === entry.callsign
     );
 
-    // If the entry is found set both the state and the frequency. The frequency must be set
-    // so txBegin and rxBegin events can determine which buttons to light up
+    // If the entry is found set the state
     if (foundEntry) {
-      actionManager.setStationFrequency(
-        entry.callsign,
-        foundEntry.pFrequencyHz
-      );
       actionManager.listenBegin(entry.callsign);
     } else {
-      //      actionManager.setStationFrequency(entry.callsign, 0);
       actionManager.listenEnd(entry.callsign);
     }
+
+    // Update the frequency based on the value in the allRadios array
+    const allRadiosEntry = frequencyData?.value.allRadios.find(
+      (update) => update.pCallsign === entry.callsign
+    );
+
+    if (allRadiosEntry) {
+      entry.frequency = allRadiosEntry.pFrequencyHz;
+    }
+
+    // Update the image based on the new state
+    entry.setActiveCommsImage();
   });
 };
 
