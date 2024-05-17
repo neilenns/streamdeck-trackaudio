@@ -26,7 +26,8 @@ const actionManager = ActionManager.getInstance();
 
 /**
  * Updates all the buttons to ensure their state matches the current states in the frequencyData
- * variable. Assumes that frequencyData is updated by a received frequencyUpdate message.
+ * variable. Also updates the frequencies. Assumes that frequencyData is updated by a received
+ * frequencyUpdate message.
  */
 const updateStationStatusButtons = () => {
   if (frequencyData === null) {
