@@ -1,6 +1,7 @@
 import {
   action,
   DidReceiveSettingsEvent,
+  KeyDownEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
@@ -60,6 +61,17 @@ export class StationStatus extends SingletonAction<StationSettings> {
       .catch((error: unknown) => {
         console.error(error);
       });
+  }
+
+  // When the key is pressed send the request to toggle the current action to the ActionManager.
+  // That will take care of figuing out the frequency and listenTo value and sending
+  // the appropriate message to TrackAudio via a websocket.
+  onKeyDown(ev: KeyDownEvent<StationSettings>): void | Promise<void> {
+    ActionManager.getInstance().toggleFrequency(ev.action.id);
+
+    ev.action.showOk().catch((error: unknown) => {
+      console.error(error);
+    });
   }
 }
 

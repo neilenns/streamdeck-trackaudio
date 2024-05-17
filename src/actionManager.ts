@@ -9,6 +9,7 @@ import {
   isTrackAudioStatusAction,
 } from "./trackAudioStatusAction";
 import { StationSettings } from "./actions/station-status";
+import TrackAudioManager from "./trackAudioManager";
 
 /**
  * Type union for all possible actions supported by this plugin
@@ -192,6 +193,29 @@ export default class ActionManager extends EventEmitter {
     );
 
     this.emit("removed", this.actions.length);
+  }
+
+  /**
+   * Toggles the tx, rx, xc, or spkr state of a frequency bound to a StreamDeck action.
+   * @param id The action id to toggle the state of
+   */
+  public toggleFrequency(id: string): void {
+    const foundAction = this.actions.find((entry) => entry.action.id === id);
+
+    if (!foundAction || !isStationStatusAction(foundAction)) {
+      return;
+    }
+
+    // Send the message to TrackAudio.
+    TrackAudioManager.getInstance().sendMessage({
+      type: "kSetStationStatus",
+      value: {
+        frequency: foundAction.frequency,
+        rx: foundAction.listenTo === "rx" ? "toggle" : undefined,
+        tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
+        xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
+      },
+    });
   }
 
   /**

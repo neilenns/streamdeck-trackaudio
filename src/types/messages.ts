@@ -63,10 +63,30 @@ export interface RxEnd {
   };
 }
 
+export interface SetStationStatus {
+  type: "kSetStationStatus";
+  value: {
+    frequency: number;
+    tx: boolean | "toggle" | undefined;
+    rx: boolean | "toggle" | undefined;
+    xc: boolean | "toggle" | undefined;
+  };
+}
+
 /**
- * Type union for all possible websocket messages from TrackAudio
+ * Type union for all possible incoming websocket messages from TrackAudio
  */
-export type Message = FrequenciesUpdate | RxBegin | RxEnd | TxBegin | TxEnd;
+export type IncomingMessage =
+  | FrequenciesUpdate
+  | RxBegin
+  | RxEnd
+  | TxBegin
+  | TxEnd;
+
+/**
+ * Type union for all possible outgoing websocket messages to TrackAudio
+ */
+export type OutgoingMessage = SetStationStatus;
 
 /**
  * Typeguard for FrequencyStatusUpdate.
@@ -74,7 +94,7 @@ export type Message = FrequenciesUpdate | RxBegin | RxEnd | TxBegin | TxEnd;
  * @returns True if the message is a FrequencyStatusUpdate
  */
 export function isFrequencyStateUpdate(
-  message: Message
+  message: IncomingMessage
 ): message is FrequenciesUpdate {
   return message.type === "kFrequencyStateUpdate";
 }
@@ -84,7 +104,7 @@ export function isFrequencyStateUpdate(
  * @param message The message
  * @returns True if the message is a RxBegin
  */
-export function isRxBegin(message: Message): message is RxBegin {
+export function isRxBegin(message: IncomingMessage): message is RxBegin {
   return message.type === "kRxBegin";
 }
 
@@ -93,7 +113,7 @@ export function isRxBegin(message: Message): message is RxBegin {
  * @param message The message
  * @returns True if the message is a RxEnd
  */
-export function isRxEnd(message: Message): message is RxEnd {
+export function isRxEnd(message: IncomingMessage): message is RxEnd {
   return message.type === "kRxEnd";
 }
 
@@ -102,7 +122,7 @@ export function isRxEnd(message: Message): message is RxEnd {
  * @param message The message
  * @returns True if the message is a TxBegin
  */
-export function isTxBegin(message: Message): message is TxBegin {
+export function isTxBegin(message: IncomingMessage): message is TxBegin {
   return message.type === "kTxBegin";
 }
 
@@ -111,6 +131,6 @@ export function isTxBegin(message: Message): message is TxBegin {
  * @param message The message
  * @returns True if the message is a TxEnd
  */
-export function isTxEnd(message: Message): message is TxEnd {
+export function isTxEnd(message: IncomingMessage): message is TxEnd {
   return message.type === "kTxEnd";
 }

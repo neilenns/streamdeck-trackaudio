@@ -54,7 +54,7 @@ const updateStationStatusButtons = () => {
       );
       actionManager.listenBegin(entry.callsign);
     } else {
-      actionManager.setStationFrequency(entry.callsign, 0);
+      //      actionManager.setStationFrequency(entry.callsign, 0);
       actionManager.listenEnd(entry.callsign);
     }
   });

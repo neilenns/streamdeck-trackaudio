@@ -1,7 +1,8 @@
 import { EventEmitter } from "events";
 import WebSocket from "ws";
 import {
-  Message,
+  IncomingMessage,
+  OutgoingMessage,
   isFrequencyStateUpdate,
   isRxBegin,
   isRxEnd,
@@ -104,7 +105,7 @@ export default class TrackAudioManager extends EventEmitter {
   private processMessage(message: string): void {
     console.log("received: %s", message);
 
-    const data = JSON.parse(message) as Message;
+    const data = JSON.parse(message) as IncomingMessage;
 
     if (isFrequencyStateUpdate(data)) {
       this.emit("frequencyUpdate", data);
@@ -117,6 +118,10 @@ export default class TrackAudioManager extends EventEmitter {
     } else if (isTxEnd(data)) {
       this.emit("txEnd", data);
     }
+  }
+
+  public sendMessage(message: OutgoingMessage) {
+    this.socket?.send(JSON.stringify(message));
   }
 
   /**
