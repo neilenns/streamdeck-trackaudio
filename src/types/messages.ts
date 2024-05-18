@@ -17,6 +17,31 @@ export interface FrequenciesUpdate {
 }
 
 /**
+ * Represents the kStationStates message from TrackAudio.
+ */
+export interface StationStates {
+  type: "kStationStates";
+  value: {
+    stations: StationStateUpdate[];
+  };
+}
+
+/**
+ * Represents the kStationStateUpdate message from TrackAudio.
+ */
+export interface StationStateUpdate {
+  type: "kStationStateUpdate";
+  value: {
+    callsign: string | undefined;
+    frequency: number;
+    tx: boolean;
+    rx: boolean;
+    xc: boolean;
+    headset: boolean;
+  };
+}
+
+/**
  * Represents the kTxBegin message from TrackAudio.
  */
 export interface TxBegin {
@@ -60,8 +85,11 @@ export interface RxEnd {
   };
 }
 
-export interface SetStationStatus {
-  type: "kSetStationStatus";
+/**
+ * Represents the kSetStationState message to TrackAudio.
+ */
+export interface SetStationState {
+  type: "kSetStationState";
   value: {
     frequency: number;
     tx: boolean | "toggle" | undefined;
@@ -71,10 +99,19 @@ export interface SetStationStatus {
 }
 
 /**
+ * Represents the kGetStationStates message to TrackAudio.
+ */
+export interface GetStationStates {
+  type: "kGetStationStates";
+}
+
+/**
  * Type union for all possible incoming websocket messages from TrackAudio
  */
 export type IncomingMessage =
   | FrequenciesUpdate
+  | StationStates
+  | StationStateUpdate
   | RxBegin
   | RxEnd
   | TxBegin
@@ -83,7 +120,7 @@ export type IncomingMessage =
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
  */
-export type OutgoingMessage = SetStationStatus;
+export type OutgoingMessage = SetStationState | GetStationStates;
 
 /**
  * Typeguard for FrequencyStatusUpdate.
@@ -94,6 +131,28 @@ export function isFrequencyStateUpdate(
   message: IncomingMessage
 ): message is FrequenciesUpdate {
   return message.type === "kFrequencyStateUpdate";
+}
+
+/**
+ * Typeguard for StationStateUpdate.
+ * @param message The message
+ * @returns True if the message is a StationStateUpdate
+ */
+export function isStationStateUpdate(
+  message: IncomingMessage
+): message is StationStateUpdate {
+  return message.type === "kStationStateUpdate";
+}
+
+/**
+ * Typeguard for StationStates.
+ * @param message The message
+ * @returns True if the message is a StationStates
+ */
+export function isStationStates(
+  message: IncomingMessage
+): message is StationStates {
+  return message.type === "kStationStates";
 }
 
 /**

@@ -10,6 +10,7 @@ import {
 } from "./trackAudioStatusAction";
 import { StationSettings } from "./actions/station-status";
 import TrackAudioManager from "./trackAudioManager";
+import { StationStateUpdate } from "./types/messages";
 
 /**
  * Type union for all possible actions supported by this plugin
@@ -78,6 +79,32 @@ export default class ActionManager extends EventEmitter {
     savedAction.settings = settings;
 
     this.emit("trackAudioStatusUpdated", savedAction);
+  }
+
+  /**
+   * Updates stations to match the provided station state update.
+   * If a callsign is provided in the update then all stations with that callsign have their
+   * frequency set.
+   * @param data The StationStateUpdate message from TrackAudio
+   */
+  public updateStationState(data: StationStateUpdate) {
+    // First set the frequency if one was provided. This usually comes in the first
+    // station state update message from TrackAudio.
+    if (data.value.callsign) {
+      this.setStationFrequency(data.value.callsign, data.value.frequency);
+    }
+
+    // Set the listen state for all stations using the frequency.
+    this.getStationStatusActions()
+      .filter((entry) => entry.frequency === data.value.frequency)
+      .forEach((entry) => {
+        entry.isListening =
+          (data.value.rx && entry.listenTo === "rx") ||
+          (data.value.tx && entry.listenTo === "tx") ||
+          (data.value.xc && entry.listenTo === "xc");
+
+        entry.setActiveCommsImage();
+      });
   }
 
   /**
@@ -208,7 +235,7 @@ export default class ActionManager extends EventEmitter {
 
     // Send the message to TrackAudio.
     TrackAudioManager.getInstance().sendMessage({
-      type: "kSetStationStatus",
+      type: "kSetStationState",
       value: {
         frequency: foundAction.frequency,
         rx: foundAction.listenTo === "rx" ? "toggle" : undefined,

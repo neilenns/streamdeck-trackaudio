@@ -6,6 +6,8 @@ import {
   isFrequencyStateUpdate,
   isRxBegin,
   isRxEnd,
+  isStationStateUpdate,
+  isStationStates,
   isTxBegin,
   isTxEnd,
 } from "./types/messages";
@@ -109,6 +111,10 @@ export default class TrackAudioManager extends EventEmitter {
 
     if (isFrequencyStateUpdate(data)) {
       this.emit("frequencyUpdate", data);
+    } else if (isStationStateUpdate(data)) {
+      this.emit("stationStateUpdate", data);
+    } else if (isStationStates(data)) {
+      this.emit("stationStates", data);
     } else if (isRxBegin(data)) {
       this.emit("rxBegin", data);
     } else if (isRxEnd(data)) {
@@ -118,6 +124,13 @@ export default class TrackAudioManager extends EventEmitter {
     } else if (isTxEnd(data)) {
       this.emit("txEnd", data);
     }
+  }
+
+  /**
+   * Sends a message to TrackAudio to refresh the station states.
+   */
+  public refreshStationStates() {
+    this.sendMessage({ type: "kGetStationStates" });
   }
 
   public sendMessage(message: OutgoingMessage) {
