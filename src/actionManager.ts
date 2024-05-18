@@ -94,7 +94,8 @@ export default class ActionManager extends EventEmitter {
       this.setStationFrequency(data.value.callsign, data.value.frequency);
     }
 
-    // Set the listen state for all stations using the frequency.
+    // Set the listen state for all stations using the frequency and refresh the
+    // state image.
     this.getStationStatusActions()
       .filter((entry) => entry.frequency === data.value.frequency)
       .forEach((entry) => {

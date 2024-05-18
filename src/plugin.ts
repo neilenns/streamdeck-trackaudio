@@ -60,12 +60,20 @@ trackAudio.on("disconnected", () => {
   actionManager.setIsListeningOnAll(false);
 });
 
+/**
+ * Receives the state of all active stations from TrackAudio and updates the appropriate
+ * StreamDeck actions with the new data.
+ */
 trackAudio.on("stationStates", (data: StationStates) => {
   data.value.stations.forEach((station) => {
     actionManager.updateStationState(station);
   });
 });
 
+/**
+ * Receives the state for a single station from TrackAudio and updates the appropriate
+ * StreamDeck action with the new data.
+ */
 trackAudio.on("stationStateUpdate", (data: StationStateUpdate) => {
   actionManager.updateStationState(data);
 });
