@@ -14,6 +14,7 @@ import {
   isRxBegin,
   isTxBegin,
 } from "./types/messages";
+import { StationStatusAction } from "./stationStatusAction";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -95,9 +96,15 @@ trackAudio.on("txEnd", (data: TxEnd) => {
 });
 
 // Register event handlers for action addition and removal
-actionManager.on("stationStatusAdded", (count: number) => {
-  if (count === 1) {
+actionManager.on("stationStatusAdded", (callsign: string) => {
+  // If this is the first button added then connect to TrackAudio. That will
+  // also cause a dump of the current state of all stations in TrackAudio.
+  if (actionManager.getStationStatusActions().length === 1) {
     trackAudio.connect();
+  }
+  // Otherwise just request the state for the newly added station status.
+  else {
+    trackAudio.refreshStationState(callsign);
   }
 });
 
@@ -109,6 +116,17 @@ actionManager.on("trackAudioStatusAdded", (count: number) => {
   // Refresh the button state so the new button gets the proper state from the start.
   actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 });
+
+/**
+ * Handles refreshing the station status from TrackAudio when any of the settings are updated
+ * on a specific action.
+ */
+actionManager.on(
+  "stationStatusSettingsUpdated",
+  (action: StationStatusAction) => {
+    trackAudio.refreshStationState(action.settings.callsign);
+  }
+);
 
 /**
  * Handles station status actions getting updated by refreshing its current listening

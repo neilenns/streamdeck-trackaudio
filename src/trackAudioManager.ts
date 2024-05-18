@@ -133,6 +133,18 @@ export default class TrackAudioManager extends EventEmitter {
     this.sendMessage({ type: "kGetStationStates" });
   }
 
+  /**
+   * Sends a message to TrackAudio to refresh the state of a single station.
+   * @param callsign The callsign of the station to refresh
+   */
+  public refreshStationState(callsign: string) {
+    if (!callsign || callsign === "") {
+      return;
+    }
+
+    this.sendMessage({ type: "kGetStationState", value: { callsign } });
+  }
+
   public sendMessage(message: OutgoingMessage) {
     this.socket?.send(JSON.stringify(message));
   }

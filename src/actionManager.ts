@@ -59,7 +59,7 @@ export default class ActionManager extends EventEmitter {
   public addStation(action: Action, settings: StationSettings): void {
     this.actions.push(new StationStatusAction(action, settings));
 
-    this.emit("stationStatusAdded", this.actions.length);
+    this.emit("stationStatusAdded", settings.callsign);
   }
 
   /**
@@ -78,7 +78,7 @@ export default class ActionManager extends EventEmitter {
 
     savedAction.settings = settings;
 
-    this.emit("trackAudioStatusUpdated", savedAction);
+    this.emit("stationStatusSettingsUpdated", savedAction);
   }
 
   /**

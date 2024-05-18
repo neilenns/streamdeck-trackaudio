@@ -106,6 +106,16 @@ export interface GetStationStates {
 }
 
 /**
+ * Represents the kGetStationStates message to TrackAudio.
+ */
+export interface GetStationState {
+  type: "kGetStationState";
+  value: {
+    callsign: string;
+  };
+}
+
+/**
  * Type union for all possible incoming websocket messages from TrackAudio
  */
 export type IncomingMessage =
@@ -120,7 +130,10 @@ export type IncomingMessage =
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
  */
-export type OutgoingMessage = SetStationState | GetStationStates;
+export type OutgoingMessage =
+  | SetStationState
+  | GetStationStates
+  | GetStationState;
 
 /**
  * Typeguard for FrequencyStatusUpdate.
