@@ -1,22 +1,4 @@
 /**
- * Represents the kFrequenciesUpdate message from TrackAudio.
- */
-export interface Radio {
-  pFrequencyHz: number;
-  pCallsign: string;
-}
-
-export interface FrequenciesUpdate {
-  type: "kFrequencyStateUpdate";
-  value: {
-    rx: Radio[];
-    tx: Radio[];
-    xc: Radio[];
-    allRadios: Radio[];
-  };
-}
-
-/**
  * Represents the kStationStates message from TrackAudio.
  */
 export interface StationStates {
@@ -37,6 +19,7 @@ export interface StationStateUpdate {
     tx: boolean;
     rx: boolean;
     xc: boolean;
+    xca: boolean;
     headset: boolean;
   };
 }
@@ -95,6 +78,7 @@ export interface SetStationState {
     tx: boolean | "toggle" | undefined;
     rx: boolean | "toggle" | undefined;
     xc: boolean | "toggle" | undefined;
+    xca: boolean | "toggle" | undefined;
   };
 }
 
@@ -119,7 +103,6 @@ export interface GetStationState {
  * Type union for all possible incoming websocket messages from TrackAudio
  */
 export type IncomingMessage =
-  | FrequenciesUpdate
   | StationStates
   | StationStateUpdate
   | RxBegin
@@ -134,17 +117,6 @@ export type OutgoingMessage =
   | SetStationState
   | GetStationStates
   | GetStationState;
-
-/**
- * Typeguard for FrequencyStatusUpdate.
- * @param message The message
- * @returns True if the message is a FrequencyStatusUpdate
- */
-export function isFrequencyStateUpdate(
-  message: IncomingMessage
-): message is FrequenciesUpdate {
-  return message.type === "kFrequencyStateUpdate";
-}
 
 /**
  * Typeguard for StationStateUpdate.
