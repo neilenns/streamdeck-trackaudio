@@ -7,29 +7,22 @@ import {
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import ActionManager from "../actionManager";
-import { getDisplayTitle } from "../helpers/helpers";
-import { ListenTo } from "../stationStatusAction";
 
-@action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
+@action({ UUID: "com.neil-enns.trackaudio.hotline" })
 /**
  * Represents the status of a TrackAudio station
  */
-export class StationStatus extends SingletonAction<StationSettings> {
+export class Hotline extends SingletonAction<HotlineSettings> {
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
-  onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
-    ActionManager.getInstance().addStation(ev.action, ev.payload.settings);
+  onWillAppear(ev: WillAppearEvent<HotlineSettings>): void | Promise<void> {
+    ActionManager.getInstance().addHotline(ev.action, ev.payload.settings);
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
     ev.action
-      .setTitle(
-        getDisplayTitle(
-          ev.payload.settings.callsign,
-          ev.payload.settings.listenTo ?? "rx"
-        )
-      )
+      .setTitle(ev.payload.settings.hotlineCallsign)
       .catch((error: unknown) => {
         console.error(error);
       });
@@ -37,7 +30,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   onWillDisappear(
-    ev: WillDisappearEvent<StationSettings>
+    ev: WillDisappearEvent<HotlineSettings>
   ): void | Promise<void> {
     ActionManager.getInstance().remove(ev.action);
   }
@@ -45,19 +38,14 @@ export class StationStatus extends SingletonAction<StationSettings> {
   // When settings are received the ActionManager is called to update the existing
   // settings on the saved action.
   onDidReceiveSettings(
-    ev: DidReceiveSettingsEvent<StationSettings>
+    ev: DidReceiveSettingsEvent<HotlineSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().updateStation(ev.action, ev.payload.settings);
+    ActionManager.getInstance().updateHotline(ev.action, ev.payload.settings);
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
     ev.action
-      .setTitle(
-        getDisplayTitle(
-          ev.payload.settings.callsign,
-          ev.payload.settings.listenTo ?? "rx"
-        )
-      )
+      .setTitle(ev.payload.settings.hotlineCallsign)
       .catch((error: unknown) => {
         console.error(error);
       });
@@ -66,7 +54,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
   // When the key is pressed send the request to toggle the current action to the ActionManager.
   // That will take care of figuing out the frequency and listenTo value and sending
   // the appropriate message to TrackAudio via a websocket.
-  onKeyDown(ev: KeyDownEvent<StationSettings>): void | Promise<void> {
+  onKeyDown(ev: KeyDownEvent<HotlineSettings>): void | Promise<void> {
     ActionManager.getInstance().toggleHotline(ev.action.id);
 
     ev.action.showOk().catch((error: unknown) => {
@@ -75,10 +63,11 @@ export class StationStatus extends SingletonAction<StationSettings> {
   }
 }
 
-export interface StationSettings {
-  callsign: string;
-  listenTo: ListenTo | null;
-  notListeningIconPath: string | null;
-  listeningIconPath: string | null;
-  activeCommsIconPath: string | null;
+export interface HotlineSettings {
+  primaryCallsign: string;
+  hotlineCallsign: string;
+  primaryActiveImagePath: string | null;
+  hotlineActiveImagePath: string | null;
+  bothActiveImagePath: string | null;
+  neitherActiveImagePath: string | null;
 }

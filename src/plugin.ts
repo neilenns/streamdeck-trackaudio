@@ -15,6 +15,8 @@ import {
   isTxBegin,
 } from "./types/messages";
 import { StationStatusAction } from "./stationStatusAction";
+import { HotlineAction } from "./hotlineAction";
+import { Hotline } from "./actions/hotline";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -47,6 +49,7 @@ process.on("uncaughtException", (error) => {
 // Register the increment action.
 streamDeck.actions.registerAction(new StationStatus());
 streamDeck.actions.registerAction(new TrackAudioStatus());
+streamDeck.actions.registerAction(new Hotline());
 
 // Register event handlers for the TrackAudio connection
 trackAudio.on("connected", () => {
@@ -127,6 +130,15 @@ actionManager.on(
     trackAudio.refreshStationState(action.settings.callsign);
   }
 );
+
+/**
+ * Handles refreshing the hotline status from TrackAudio when any of the settings are updated
+ * on a specific action.
+ */
+actionManager.on("hotlineSettingsUpdated", (action: HotlineAction) => {
+  trackAudio.refreshStationState(action.primaryCallsign);
+  trackAudio.refreshStationState(action.hotlineCallsign);
+});
 
 /**
  * Handles station status actions getting updated by refreshing its current listening

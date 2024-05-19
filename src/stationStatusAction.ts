@@ -24,8 +24,8 @@ export class StationStatusAction {
 
   /**
    * Creates a new StationStatusAction object.
-   * @param callsign The callsign for the action
-   * @param options: The options for the action
+   * @param action The callsign for the action
+   * @param settings: The options for the action
    */
   constructor(action: Action, settings: StationSettings) {
     this.action = action;

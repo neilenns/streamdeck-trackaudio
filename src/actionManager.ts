@@ -11,11 +11,16 @@ import {
 import { StationSettings } from "./actions/station-status";
 import TrackAudioManager from "./trackAudioManager";
 import { StationStateUpdate } from "./types/messages";
+import { HotlineSettings } from "./actions/hotline";
+import { HotlineAction, isHotlineAction } from "./hotlineAction";
 
 /**
  * Type union for all possible actions supported by this plugin
  */
-export type StatusAction = StationStatusAction | TrackAudioStatusAction;
+export type StatusAction =
+  | StationStatusAction
+  | TrackAudioStatusAction
+  | HotlineAction;
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -50,6 +55,13 @@ export default class ActionManager extends EventEmitter {
     this.emit("trackAudioStatusAdded", this.actions.length);
   }
 
+  public addHotline(action: Action, settings: HotlineSettings) {
+    this.actions.push(new HotlineAction(action, settings));
+
+    // Force buttons to refresh so the newly added button shows the correct state.
+    this.emit("trackAudioStatusAdded", this.actions.length);
+  }
+
   /**
    * Adds a station status action to the list with the associated callsign. Emits a stationStatusAdded
    * event after the action is added.
@@ -81,6 +93,20 @@ export default class ActionManager extends EventEmitter {
     this.emit("stationStatusSettingsUpdated", savedAction);
   }
 
+  public updateHotline(action: Action, settings: HotlineSettings) {
+    const savedAction = this.getHotlineActions().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.settings = settings;
+
+    this.emit("hotlineSettingsUpdated", savedAction);
+  }
+
   /**
    * Updates stations to match the provided station state update.
    * If a callsign is provided in the update then all stations with that callsign have their
@@ -106,10 +132,23 @@ export default class ActionManager extends EventEmitter {
 
         entry.setActiveCommsImage();
       });
+
+    // Do the same for hotline actions
+    this.getHotlineActions().forEach((entry) => {
+      if (entry.primaryFrequency === data.value.frequency) {
+        entry.isTxPrimary = data.value.tx;
+      }
+      if (entry.hotlineFrequency === data.value.frequency) {
+        entry.isTxHotline = data.value.tx;
+      }
+
+      entry.setActiveCommsImage();
+    });
   }
 
   /**
-   * Updates the frequency on the first station status action that matches the callsign.
+   * Updates the frequency on all actions that use the callsign. This includes
+   * station status actions and hotline actions.
    * @param callsign The callsign of the station to update the frequency on
    * @param frequency The frequency to update to
    */
@@ -119,6 +158,15 @@ export default class ActionManager extends EventEmitter {
       .forEach((entry) => {
         entry.frequency = frequency;
       });
+
+    this.getHotlineActions().forEach((entry) => {
+      if (entry.primaryCallsign === callsign) {
+        entry.primaryFrequency = frequency;
+      }
+      if (entry.hotlineCallsign === callsign) {
+        entry.hotlineFrequency = frequency;
+      }
+    });
   }
 
   /**
@@ -129,30 +177,6 @@ export default class ActionManager extends EventEmitter {
     this.getStationStatusActions().forEach((entry) => {
       entry.isListening = isListening;
     });
-  }
-
-  /**
-   * Updates all actions that match the callsign to show the listen state.
-   * @param callsign The callsign of the actions to update
-   */
-  public listenBegin(callsign: string) {
-    this.getStationStatusActions()
-      .filter((entry) => entry.callsign === callsign && !entry.isListening)
-      .forEach((entry) => {
-        entry.isListening = true;
-      });
-  }
-
-  /**
-   * Updates all actions that match the callsign to clear the listen state.
-   * @param callsign The callsign of the actions to update
-   */
-  public listenEnd(callsign: string) {
-    this.getStationStatusActions()
-      .filter((entry) => entry.callsign === callsign && entry.isListening)
-      .forEach((entry) => {
-        entry.isListening = false;
-      });
   }
 
   /**
@@ -224,6 +248,41 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
+   * Toggles the tx on both the primary and hotline frequency.
+   * @param id The action id to toggle the state of
+   */
+  public toggleHotline(id: string): void {
+    const foundAction = this.actions.find((entry) => entry.action.id === id);
+
+    if (!foundAction || !isHotlineAction(foundAction)) {
+      return;
+    }
+
+    // Send the messages to TrackAudio.
+    TrackAudioManager.getInstance().sendMessage({
+      type: "kSetStationState",
+      value: {
+        frequency: foundAction.primaryFrequency,
+        tx: "toggle",
+        rx: undefined,
+        xc: undefined,
+        xca: undefined,
+      },
+    });
+
+    TrackAudioManager.getInstance().sendMessage({
+      type: "kSetStationState",
+      value: {
+        frequency: foundAction.hotlineFrequency,
+        tx: "toggle",
+        rx: undefined,
+        xc: undefined,
+        xca: undefined,
+      },
+    });
+  }
+
+  /**
    * Toggles the tx, rx, xc, or spkr state of a frequency bound to a StreamDeck action.
    * @param id The action id to toggle the state of
    */
@@ -242,6 +301,7 @@ export default class ActionManager extends EventEmitter {
         rx: foundAction.listenTo === "rx" ? "toggle" : undefined,
         tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
         xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
+        xca: undefined, // xca isn't supported right now
       },
     });
   }
@@ -279,6 +339,16 @@ export default class ActionManager extends EventEmitter {
     return this.actions.filter((action) =>
       isStationStatusAction(action)
     ) as StationStatusAction[];
+  }
+
+  /**
+   * Retrieves the list of all tracked HotlineActions.
+   * @returns An array of HotlineActions
+   */
+  public getHotlineActions(): HotlineAction[] {
+    return this.actions.filter((action) =>
+      isHotlineAction(action)
+    ) as HotlineAction[];
   }
 
   /**

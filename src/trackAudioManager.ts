@@ -3,7 +3,6 @@ import WebSocket from "ws";
 import {
   IncomingMessage,
   OutgoingMessage,
-  isFrequencyStateUpdate,
   isRxBegin,
   isRxEnd,
   isStationStateUpdate,
@@ -109,9 +108,7 @@ export default class TrackAudioManager extends EventEmitter {
 
     const data = JSON.parse(message) as IncomingMessage;
 
-    if (isFrequencyStateUpdate(data)) {
-      this.emit("frequencyUpdate", data);
-    } else if (isStationStateUpdate(data)) {
+    if (isStationStateUpdate(data)) {
       this.emit("stationStateUpdate", data);
     } else if (isStationStates(data)) {
       this.emit("stationStates", data);
