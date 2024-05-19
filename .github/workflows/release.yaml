@@ -32,10 +32,7 @@ jobs:
         uses: restackio/update-json-file-action@2.1
         with:
           file: com.neil-enns.trackaudio.sdPlugin/manifest.json
-          # Setting Nodejs.Debug to disabled is a bit of a hack to disable debugging in the release builds.
-          # It isn't officially supported. It winds up getting passed as a command line argument to node.js
-          # and seems to just be ignored, which works well enough.
-          fields: '{"Version": "${{ steps.get_version.outputs.version-without-v }}.0", "Nodejs.Debug": "disabled"}'
+          fields: '{"Version": "${{ steps.get_version.outputs.version-without-v }}.0"}'
 
       - name: Build
         run: npm run build
