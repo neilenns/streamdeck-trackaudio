@@ -41,7 +41,7 @@
     {
       "Name": "Hotline",
       "UUID": "com.neil-enns.trackaudio.hotline",
-      "Icon": "images/plugin/headphones-solid",
+      "Icon": "images/plugin/phone-solid",
       "Tooltip": "Toggles Tx for a hotline frequency.",
       "PropertyInspectorPath": "hotline.html",
       "DisableAutomaticStates": true,
