@@ -67,7 +67,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
   // That will take care of figuing out the frequency and listenTo value and sending
   // the appropriate message to TrackAudio via a websocket.
   onKeyDown(ev: KeyDownEvent<StationSettings>): void | Promise<void> {
-    ActionManager.getInstance().toggleHotline(ev.action.id);
+    ActionManager.getInstance().toggleFrequency(ev.action.id);
 
     ev.action.showOk().catch((error: unknown) => {
       console.error(error);
