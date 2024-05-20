@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" baseProfile="tiny" version="1.2" viewBox="0 0 144 144">
+  <rect x=".5" y=".5" width="143" height="143" fill="#900" stroke-width="0"/>
+  <path d="M143,1v142H1V1h142M144,0H0v144h144V0h0Z" fill="#000" stroke-width="0"/>
+  <path d="M52.6,16.3c-1.3-3-4.6-4.6-7.7-3.8l-14.3,3.9c-2.8.8-4.8,3.4-4.8,6.3,0,40.3,32.7,72.9,72.9,72.9s5.5-2,6.3-4.8l3.9-14.3c.9-3.2-.7-6.5-3.8-7.7l-15.6-6.5c-2.7-1.1-5.7-.3-7.5,1.9l-6.6,8c-11.5-5.4-20.7-14.7-26.2-26.2l8-6.6c2.2-1.8,3-4.9,1.9-7.5l-6.5-15.6h0Z" fill="#fff" stroke-width="0"/>
+</svg>

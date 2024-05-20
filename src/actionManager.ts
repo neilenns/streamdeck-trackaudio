@@ -88,9 +88,17 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
+    // This avoids unnecessary calls to TrackAudio when the callsigns aren't the setting
+    const requiresStationRefresh = savedAction.callsign !== settings.callsign;
+
     savedAction.settings = settings;
 
-    this.emit("stationStatusSettingsUpdated", savedAction);
+    // Refreshes the icons in case that's what changed in settings
+    savedAction.setActiveCommsImage();
+
+    if (requiresStationRefresh) {
+      this.emit("stationStatusSettingsUpdated", savedAction);
+    }
   }
 
   public updateHotline(action: Action, settings: HotlineSettings) {
@@ -102,9 +110,20 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
+    // This avoids unnecessary calls to TrackAudio when the callsigns aren't the setting
+    // that changed.
+    const requiresStationRefresh =
+      savedAction.primaryCallsign !== settings.primaryCallsign ||
+      savedAction.hotlineCallsign !== settings.hotlineCallsign;
+
     savedAction.settings = settings;
 
-    this.emit("hotlineSettingsUpdated", savedAction);
+    // Refreshes the icons in case that's what changed in settings
+    savedAction.setActiveCommsImage();
+
+    if (requiresStationRefresh) {
+      this.emit("hotlineSettingsUpdated", savedAction);
+    }
   }
 
   /**
@@ -140,6 +159,7 @@ export default class ActionManager extends EventEmitter {
       }
       if (entry.hotlineFrequency === data.value.frequency) {
         entry.isTxHotline = data.value.tx;
+        entry.isRxHotline = data.value.rx;
       }
 
       entry.setActiveCommsImage();
@@ -176,6 +196,12 @@ export default class ActionManager extends EventEmitter {
   public setIsListeningOnAll(isListening: boolean) {
     this.getStationStatusActions().forEach((entry) => {
       entry.isListening = isListening;
+    });
+
+    this.getHotlineActions().forEach((entry) => {
+      entry.isRxHotline = false;
+      entry.isTxHotline = false;
+      entry.isTxPrimary = false;
     });
   }
 

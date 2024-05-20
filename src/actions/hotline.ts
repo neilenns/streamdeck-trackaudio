@@ -51,22 +51,16 @@ export class Hotline extends SingletonAction<HotlineSettings> {
       });
   }
 
-  // When the key is pressed send the request to toggle the current action to the ActionManager.
-  // That will take care of figuing out the frequency and listenTo value and sending
-  // the appropriate message to TrackAudio via a websocket.
+  // When the key is pressed send the request to toggle the hotline.
   onKeyDown(ev: KeyDownEvent<HotlineSettings>): void | Promise<void> {
     ActionManager.getInstance().toggleHotline(ev.action.id);
-
-    ev.action.showOk().catch((error: unknown) => {
-      console.error(error);
-    });
   }
 }
 
 export interface HotlineSettings {
   primaryCallsign: string;
   hotlineCallsign: string;
-  primaryActiveImagePath: string | null;
+  listeningImagePath: string | null;
   hotlineActiveImagePath: string | null;
   bothActiveImagePath: string | null;
   neitherActiveImagePath: string | null;

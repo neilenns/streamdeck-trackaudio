@@ -16,6 +16,7 @@ export class HotlineAction {
 
   private _isTxPrimary = false;
   private _isTxHotline = false;
+  private _isRxHotline = false;
 
   /**
    * Creates a new HotlineAction object.
@@ -56,6 +57,20 @@ export class HotlineAction {
   }
 
   /**
+   * True if the station has Rx enabled on the hotline frequency.
+   */
+  get isRxHotline() {
+    return this._isRxHotline;
+  }
+
+  /**
+   * Sets the state of the hotline frequency Rx.
+   */
+  set isRxHotline(value: boolean) {
+    this._isRxHotline = value;
+  }
+
+  /**
    * Convenience property to get the primaryCallsign value of settings.
    */
   get primaryCallsign() {
@@ -90,40 +105,41 @@ export class HotlineAction {
       this.action
         .setImage(
           this._settings.bothActiveImagePath ??
-            "images/actions/station-status/red.svg"
+            "images/actions/hotline-status/conflict.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
         });
     }
-    // Primary only active, nice and chill.
-    else if (this.isTxPrimary) {
-      this.action
-        .setImage(
-          this._settings.primaryActiveImagePath ??
-            "images/actions/station-status/green.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-    }
-    // Hotline is active.
+    // Hotline is active tx, takes priority over active rx.
     else if (this.isTxHotline) {
       this.action
         .setImage(
           this._settings.hotlineActiveImagePath ??
-            "images/actions/station-status/orange.svg"
+            "images/actions/hotline-status/talking.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
         });
     }
+    // Primary active rx.
+    else if (this.isRxHotline) {
+      this.action
+        .setImage(
+          this._settings.listeningImagePath ??
+            "images/actions/hotline-status/listening.svg"
+        )
+        .catch((error: unknown) => {
+          console.error(error);
+        });
+    }
+
     // Nothing is active.
     else {
       this.action
         .setImage(
           this._settings.neitherActiveImagePath ??
-            "images/actions/station-status/black.svg"
+            "images/actions/hotline-status/notConnected.svg"
         )
         .catch((error: unknown) => {
           console.error(error);

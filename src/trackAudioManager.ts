@@ -147,6 +147,7 @@ export default class TrackAudioManager extends EventEmitter {
       return;
     }
 
+    console.log(`Sending: ${JSON.stringify(message)}`);
     this.socket?.send(JSON.stringify(message));
   }
 
