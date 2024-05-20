@@ -258,23 +258,34 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
-    // Send the messages to TrackAudio.
+    // Catches the case where for some reason both primary and hotline are both
+    // set to tx, which should never happen. In that situation pretend the primary
+    // is off and hotline is on, which will mean the button push causes the primary
+    // to turn on and the hotline to turn off.
+    if (foundAction.isTxPrimary === foundAction.isTxHotline) {
+      foundAction.isTxPrimary = false;
+      foundAction.isTxHotline = true;
+    }
+
+    // The primary frequency always gets its xc state toggled to match the tx state,
+    // ensuring xc is re-enabled when tx turns on.
     TrackAudioManager.getInstance().sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.primaryFrequency,
-        tx: "toggle",
+        tx: !foundAction.isTxPrimary,
         rx: undefined,
-        xc: undefined,
+        xc: !foundAction.isTxPrimary,
         xca: undefined,
       },
     });
 
+    // The hotline frequency gets its tx state toggled
     TrackAudioManager.getInstance().sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.hotlineFrequency,
-        tx: "toggle",
+        tx: !foundAction.isTxHotline,
         rx: undefined,
         xc: undefined,
         xca: undefined,

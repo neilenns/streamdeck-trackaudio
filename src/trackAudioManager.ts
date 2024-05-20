@@ -143,6 +143,10 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   public sendMessage(message: OutgoingMessage) {
+    if (!this.isConnected()) {
+      return;
+    }
+
     this.socket?.send(JSON.stringify(message));
   }
 
