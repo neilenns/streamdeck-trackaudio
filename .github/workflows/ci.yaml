@@ -32,7 +32,6 @@ jobs:
       - name: Pack
         uses: neilenns/streamdeck-cli-pack@neilenns/issue2
         with:
-          forceUpdateCheck: true
           noUpdateCheck: true
 
       - name: Save packaged plugin
