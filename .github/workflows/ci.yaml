@@ -30,9 +30,7 @@ jobs:
         run: npm run lint
 
       - name: Pack
-        uses: neilenns/streamdeck-cli-pack@neilenns/issue2
-        with:
-          dryRun: true
+        uses: neilenns/streamdeck-cli-pack@v1
 
       - name: Save packaged plugin
         uses: actions/upload-artifact@v4
