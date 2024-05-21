@@ -31,8 +31,6 @@ jobs:
 
       - name: Pack
         uses: neilenns/streamdeck-cli-pack@initial-version
-        with:
-          version: "0.0.1"
 
       - name: Save packaged plugin
         uses: actions/upload-artifact@v4
