@@ -29,7 +29,7 @@ jobs:
         run: npm run lint
 
       - name: Pack
-        uses: neilenns/streamdeck-cli-pack@initial-version
+        uses: neilenns/streamdeck-cli-pack@v1
 
       - name: Upload plugin
         uses: softprops/action-gh-release@v2
