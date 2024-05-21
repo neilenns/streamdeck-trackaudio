@@ -30,7 +30,9 @@ jobs:
         run: npm run lint
 
       - name: Pack
-        run: npm run pack
+        uses: neilenns/streamdeck-cli-pack@initial-version
+        with:
+          path: com.neil-enns.trackaudio.streamDeckPlugin
 
       - name: Save packaged plugin
         uses: actions/upload-artifact@v4
