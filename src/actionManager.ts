@@ -234,28 +234,23 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Updates all actions that match the frequency to show the transmission in progress state.
+   * Updates all actions that are listening to tx to show the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
-  public txBegin(frequency: number) {
+  public txBegin() {
     this.getStationStatusActions()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
-      )
+      .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
       .forEach((entry) => {
         entry.isTx = true;
       });
   }
 
   /**
-   * Updates all actions that match the callsign to clear the transmission in progress state.
-   * @param frequency The callsign of the actions to update
+   * Updates all actions that are listening to tx to clear the transmission in progress state.
    */
-  public txEnd(frequency: number) {
+  public txEnd() {
     this.getStationStatusActions()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "tx"
-      )
+      .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
       .forEach((entry) => {
         entry.isTx = false;
       });

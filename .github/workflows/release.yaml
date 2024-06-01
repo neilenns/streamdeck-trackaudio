@@ -22,18 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Get release version
-        id: get_version
-        uses: maltoze/get-version-action@v1
-
-      # Makes updates to the manifest.json, replacing various properties like the
-      # version and debug enabled status.
-      - name: Update package manifest
-        uses: restackio/update-json-file-action@2.1
-        with:
-          file: com.neil-enns.trackaudio.sdPlugin/manifest.json
-          fields: '{"Version": "${{ steps.get_version.outputs.version-without-v }}.0"}'
-
       - name: Build
         run: npm run build
 
@@ -41,7 +29,7 @@ jobs:
         run: npm run lint
 
       - name: Pack
-        run: npm run pack
+        uses: neilenns/streamdeck-cli-pack@v1
 
       - name: Upload plugin
         uses: softprops/action-gh-release@v2

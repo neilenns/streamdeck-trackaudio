@@ -33,9 +33,9 @@ const updateRxState = (data: RxBegin | RxEnd) => {
 
 const updateTxState = (data: TxBegin | TxEnd) => {
   if (isTxBegin(data)) {
-    console.log(`Transmit started on: ${data.value.callsign}`);
+    actionManager.txBegin();
   } else {
-    console.log(`Transmit started on: ${data.value.callsign}`);
+    actionManager.txEnd();
   }
 };
 
