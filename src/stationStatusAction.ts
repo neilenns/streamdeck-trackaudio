@@ -18,8 +18,8 @@ export class StationStatusAction {
 
   private _settings: StationSettings;
 
-  private _isRx = false;
-  private _isTx = false;
+  private _isReceiving = false;
+  private _isTransmitting = false;
   private _isListening = false;
 
   /**
@@ -64,40 +64,40 @@ export class StationStatusAction {
   /**
    * True if the station is actively receiveing.
    */
-  get isRx() {
-    return this._isRx;
+  get isReceiving() {
+    return this._isReceiving;
   }
 
   /**
-   * Sets the isRx property and updates the action image accordingly.
+   * Sets the isReceiving property and updates the action image accordingly.
    */
-  set isRx(newValue: boolean) {
+  set isReceiving(newValue: boolean) {
     // Don't do anything if the state is the same
-    if (this._isRx === newValue) {
+    if (this._isReceiving === newValue) {
       return;
     }
 
-    this._isRx = newValue;
+    this._isReceiving = newValue;
     this.setActiveCommsImage();
   }
 
   /**
    * True if the station is actively transmitting.
    */
-  get isTx() {
-    return this._isTx;
+  get isTransmitting() {
+    return this._isTransmitting;
   }
 
   /**
-   * Sets the isTx property and updates the action image accordingly.
+   * Sets the isTransmitting property and updates the action image accordingly.
    */
-  set isTx(newValue: boolean) {
+  set isTransmitting(newValue: boolean) {
     // Don't do anything if the state is the same
-    if (this._isTx === newValue) {
+    if (this._isTransmitting === newValue) {
       return;
     }
 
-    this._isTx = newValue;
+    this._isTransmitting = newValue;
     this.setActiveCommsImage();
   }
 
@@ -126,7 +126,7 @@ export class StationStatusAction {
    * or resets it to the correct isListening image when coms are off.
    */
   public setActiveCommsImage() {
-    if (this.isRx || this.isTx) {
+    if (this.isReceiving || this.isTransmitting) {
       this.action
         .setImage(
           this._settings.activeCommsIconPath ??

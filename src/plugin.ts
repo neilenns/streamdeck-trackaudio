@@ -21,24 +21,6 @@ import { Hotline } from "./actions/hotline";
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
 
-const updateRxState = (data: RxBegin | RxEnd) => {
-  if (isRxBegin(data)) {
-    console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
-    actionManager.rxBegin(data.value.pFrequencyHz);
-  } else {
-    console.log(`Receive ended on: ${data.value.pFrequencyHz.toString()}`);
-    actionManager.rxEnd(data.value.pFrequencyHz);
-  }
-};
-
-const updateTxState = (data: TxBegin | TxEnd) => {
-  if (isTxBegin(data)) {
-    actionManager.txBegin();
-  } else {
-    actionManager.txEnd();
-  }
-};
-
 // streamDeck.logger.setLevel(LogLevel.TRACE);
 
 // Register for uncaught exceptions
@@ -73,6 +55,24 @@ trackAudio.on("stationStates", (data: StationStates) => {
     actionManager.updateStationState(station);
   });
 });
+
+const updateRxState = (data: RxBegin | RxEnd) => {
+  if (isRxBegin(data)) {
+    console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
+    actionManager.rxBegin(data.value.pFrequencyHz);
+  } else {
+    console.log(`Receive ended on: ${data.value.pFrequencyHz.toString()}`);
+    actionManager.rxEnd(data.value.pFrequencyHz);
+  }
+};
+
+const updateTxState = (data: TxBegin | TxEnd) => {
+  if (isTxBegin(data)) {
+    actionManager.txBegin();
+  } else {
+    actionManager.txEnd();
+  }
+};
 
 /**
  * Receives the state for a single station from TrackAudio and updates the appropriate

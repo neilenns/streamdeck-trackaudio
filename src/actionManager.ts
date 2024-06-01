@@ -215,7 +215,15 @@ export default class ActionManager extends EventEmitter {
         (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
       .forEach((entry) => {
-        entry.isRx = true;
+        entry.isReceiving = true;
+      });
+
+    // Hotline actions that have a hotline frequency matching the rxBegin frequency
+    // also update to show a transmission is occurring.
+    this.getHotlineActions()
+      .filter((entry) => entry.hotlineFrequency === frequency)
+      .forEach((entry) => {
+        entry.isReceiving = true;
       });
   }
 
@@ -229,7 +237,15 @@ export default class ActionManager extends EventEmitter {
         (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
       .forEach((entry) => {
-        entry.isRx = false;
+        entry.isReceiving = false;
+      });
+
+    // Hotline actions that have a hotline frequency matching the rxBegin frequency
+    // also update to show a transmission is occurring.
+    this.getHotlineActions()
+      .filter((entry) => entry.hotlineFrequency === frequency)
+      .forEach((entry) => {
+        entry.isReceiving = false;
       });
   }
 
@@ -241,7 +257,7 @@ export default class ActionManager extends EventEmitter {
     this.getStationStatusActions()
       .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
       .forEach((entry) => {
-        entry.isTx = true;
+        entry.isTransmitting = true;
       });
   }
 
@@ -252,7 +268,7 @@ export default class ActionManager extends EventEmitter {
     this.getStationStatusActions()
       .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
       .forEach((entry) => {
-        entry.isTx = false;
+        entry.isTransmitting = false;
       });
   }
 

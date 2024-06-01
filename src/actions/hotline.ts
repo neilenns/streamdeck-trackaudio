@@ -60,6 +60,7 @@ export class Hotline extends SingletonAction<HotlineSettings> {
 export interface HotlineSettings {
   primaryCallsign: string;
   hotlineCallsign: string;
+  receivingImagePath: string | null;
   listeningImagePath: string | null;
   hotlineActiveImagePath: string | null;
   bothActiveImagePath: string | null;

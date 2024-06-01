@@ -17,6 +17,7 @@ export class HotlineAction {
   private _isTxPrimary = false;
   private _isTxHotline = false;
   private _isRxHotline = false;
+  private _isReceiving = false;
 
   /**
    * Creates a new HotlineAction object.
@@ -26,6 +27,26 @@ export class HotlineAction {
   constructor(action: Action, settings: HotlineSettings) {
     this.action = action;
     this._settings = settings;
+  }
+
+  /**
+   * Sets whether the hotline frequency is actively receiving a communication.
+   */
+  set isReceiving(newValue: boolean) {
+    // Don't do anything if the state is the same
+    if (this._isReceiving === newValue) {
+      return;
+    }
+
+    this._isReceiving = newValue;
+    this.setActiveCommsImage();
+  }
+
+  /**
+   * True if the hotline frequency is actively receicving a communication.
+   */
+  get isReceiving() {
+    return this._isReceiving;
   }
 
   /**
@@ -117,6 +138,15 @@ export class HotlineAction {
         .setImage(
           this._settings.hotlineActiveImagePath ??
             "images/actions/hotline-status/talking.svg"
+        )
+        .catch((error: unknown) => {
+          console.error(error);
+        });
+    } else if (this.isReceiving) {
+      this.action
+        .setImage(
+          this._settings.receivingImagePath ??
+            "images/actions/hotline-status/receiving.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
