@@ -38,6 +38,7 @@ export class TrackAudioStatusAction {
     this._isConnected = newValue;
     this.setConnectedImage();
   }
+
   /**
    * Sets the action image based on the isConnected state
    */
