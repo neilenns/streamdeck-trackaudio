@@ -1,5 +1,5 @@
-import ActionManager from "../actionManager";
-import TrackAudioManager from "../trackAudioManager";
+import ActionManager from "../../actionManager";
+import TrackAudioManager from "../../trackAudioManager";
 
 export const handleConnected = () => {
   const actionManager = ActionManager.getInstance();
