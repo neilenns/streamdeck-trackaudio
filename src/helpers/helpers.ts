@@ -7,7 +7,7 @@ import {
   TxEnd,
   isRxBegin,
   isTxBegin,
-} from "../interfaces/messages";
+} from "@interfaces/messages";
 
 /**
  * Updates the rx state for all actions that are tracking the receiveing frequency.

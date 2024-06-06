@@ -1,6 +1,6 @@
 import { Action } from "@elgato/streamdeck";
-import { HotlineSettings } from "./actions/hotline";
-import { StatusAction } from "./actionManager";
+import { HotlineSettings } from "@actions/hotline";
+import { StatusAction } from "@root/actionManager";
 
 /**
  * A HotlineAction action, for use with ActionManager. Tracks the settings,

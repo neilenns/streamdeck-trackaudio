@@ -1,5 +1,5 @@
 import { Action } from "@elgato/streamdeck";
-import { StatusAction } from "./actionManager";
+import { StatusAction } from "@root/actionManager";
 
 /**
  * A TrackAudioStatusAction action, for use with ActionManager. Tracks the

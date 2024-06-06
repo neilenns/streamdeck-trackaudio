@@ -1,6 +1,6 @@
 import { Action } from "@elgato/streamdeck";
-import { StatusAction } from "./actionManager";
-import { StationSettings } from "./actions/station-status";
+import { StatusAction } from "@root/actionManager";
+import { StationSettings } from "@actions/station-status";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio

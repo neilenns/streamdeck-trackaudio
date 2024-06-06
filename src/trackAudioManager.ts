@@ -9,7 +9,7 @@ import {
   isStationStates,
   isTxBegin,
   isTxEnd,
-} from "./interfaces/messages";
+} from "@interfaces/messages";
 
 /**
  * Manages the websocket connection to TrackAudio.
