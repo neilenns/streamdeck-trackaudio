@@ -10,8 +10,7 @@ import {
 } from "../types/messages";
 
 /**
- * Updates the rx state for all actions that
- * are tracking the receiveing frequency.
+ * Updates the rx state for all actions that are tracking the receiveing frequency.
  * @param data The data from TrackAudio
  */
 export const updateRxState = (data: RxBegin | RxEnd) => {
@@ -27,8 +26,7 @@ export const updateRxState = (data: RxBegin | RxEnd) => {
 };
 
 /**
- * Updates the tx state for all actions that
- * are tracking the transmitting frequency.
+ * Updates the tx state for all actions that are tracking the transmitting frequency.
  * @param data The data from TrackAudio
  */
 export const updateTxState = (data: TxBegin | TxEnd) => {
