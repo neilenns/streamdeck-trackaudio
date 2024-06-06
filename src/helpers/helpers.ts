@@ -1,4 +1,45 @@
+import ActionManager from "../actionManager";
 import { ListenTo } from "../stationStatusAction";
+import {
+  RxBegin,
+  RxEnd,
+  TxBegin,
+  TxEnd,
+  isRxBegin,
+  isTxBegin,
+} from "../types/messages";
+
+/**
+ * Updates the rx state for all actions that
+ * are tracking the receiveing frequency.
+ * @param data The data from TrackAudio
+ */
+export const updateRxState = (data: RxBegin | RxEnd) => {
+  const actionManager = ActionManager.getInstance();
+
+  if (isRxBegin(data)) {
+    console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
+    actionManager.rxBegin(data.value.pFrequencyHz);
+  } else {
+    console.log(`Receive ended on: ${data.value.pFrequencyHz.toString()}`);
+    actionManager.rxEnd(data.value.pFrequencyHz);
+  }
+};
+
+/**
+ * Updates the tx state for all actions that
+ * are tracking the transmitting frequency.
+ * @param data The data from TrackAudio
+ */
+export const updateTxState = (data: TxBegin | TxEnd) => {
+  const actionManager = ActionManager.getInstance();
+
+  if (isTxBegin(data)) {
+    actionManager.txBegin();
+  } else {
+    actionManager.txEnd();
+  }
+};
 
 /**
  * Takes a callsign and listenTo and converts it to a display title. If the callsign

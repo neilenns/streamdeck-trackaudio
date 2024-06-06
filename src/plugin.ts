@@ -1,22 +1,24 @@
 import streamDeck from "@elgato/streamdeck";
-
 import ActionManager from "./actionManager";
+import { Hotline } from "./actions/hotline";
 import { StationStatus } from "./actions/station-status";
 import { TrackAudioStatus } from "./actions/trackAudio-status";
 import TrackAudioManager from "./trackAudioManager";
-import {
-  RxBegin,
-  RxEnd,
-  StationStateUpdate,
-  StationStates,
-  TxBegin,
-  TxEnd,
-  isRxBegin,
-  isTxBegin,
-} from "./types/messages";
-import { StationStatusAction } from "./stationStatusAction";
-import { HotlineAction } from "./hotlineAction";
-import { Hotline } from "./actions/hotline";
+
+// Event handlers
+import { handleHotlineSettingsUpdated } from "./eventHandlers/actionManager/hotlineSettingsUpdated";
+import { handleRemoved } from "./eventHandlers/actionManager/removed";
+import { handleStationStatusAdded } from "./eventHandlers/actionManager/stationStatusAdded";
+import { handleStationStatusSettingsUpdated } from "./eventHandlers/actionManager/stationStatusSettingsUpdated";
+import { handleTrackAudioStatusAdded } from "./eventHandlers/actionManager/trackAudioStatusAdded";
+import { handleConnected } from "./eventHandlers/trackAudio/connected";
+import { handleDisconnected } from "./eventHandlers/trackAudio/disconnected";
+import { handleRxBegin } from "./eventHandlers/trackAudio/rxBegin";
+import { handleRxEnd } from "./eventHandlers/trackAudio/rxEnd";
+import { handleStationStateUpdate } from "./eventHandlers/trackAudio/stationStateUpdate";
+import { handleStationStates } from "./eventHandlers/trackAudio/stationStates";
+import { handleTxBegin } from "./eventHandlers/trackAudio/txBegin";
+import { handleTxEnd } from "./eventHandlers/trackAudio/txEnd";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -28,131 +30,29 @@ process.on("uncaughtException", (error) => {
   console.error("Uncaught Exception:", error);
 });
 
-// Register the increment action.
+// Register all the event handlers
 streamDeck.actions.registerAction(new StationStatus());
 streamDeck.actions.registerAction(new TrackAudioStatus());
 streamDeck.actions.registerAction(new Hotline());
 
-// Register event handlers for the TrackAudio connection
-trackAudio.on("connected", () => {
-  console.log("Plugin detected connection to TrackAudio");
-  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
-  trackAudio.refreshStationStates();
-});
+trackAudio.on("connected", () => handleConnected);
+trackAudio.on("disconnected", () => handleDisconnected);
+trackAudio.on("stationStates", handleStationStates);
+trackAudio.on("stationStateUpdate", handleStationStateUpdate);
+trackAudio.on("rxBegin", handleRxBegin);
+trackAudio.on("rxEnd", handleRxEnd);
+trackAudio.on("txBegin", handleTxBegin);
+trackAudio.on("txEnd", handleTxEnd);
 
-trackAudio.on("disconnected", () => {
-  console.log("Plugin detected loss of connection to TrackAudio");
-  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
-  actionManager.setIsListeningOnAll(false);
-});
-
-/**
- * Receives the state of all active stations from TrackAudio and updates the appropriate
- * StreamDeck actions with the new data.
- */
-trackAudio.on("stationStates", (data: StationStates) => {
-  data.value.stations.forEach((station) => {
-    actionManager.updateStationState(station);
-  });
-});
-
-const updateRxState = (data: RxBegin | RxEnd) => {
-  if (isRxBegin(data)) {
-    console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
-    actionManager.rxBegin(data.value.pFrequencyHz);
-  } else {
-    console.log(`Receive ended on: ${data.value.pFrequencyHz.toString()}`);
-    actionManager.rxEnd(data.value.pFrequencyHz);
-  }
-};
-
-const updateTxState = (data: TxBegin | TxEnd) => {
-  if (isTxBegin(data)) {
-    actionManager.txBegin();
-  } else {
-    actionManager.txEnd();
-  }
-};
-
-/**
- * Receives the state for a single station from TrackAudio and updates the appropriate
- * StreamDeck action with the new data.
- */
-trackAudio.on("stationStateUpdate", (data: StationStateUpdate) => {
-  actionManager.updateStationState(data);
-});
-
-trackAudio.on("rxBegin", (data: RxBegin) => {
-  updateRxState(data);
-});
-
-trackAudio.on("rxEnd", (data: RxEnd) => {
-  updateRxState(data);
-});
-
-trackAudio.on("txBegin", (data: TxBegin) => {
-  updateTxState(data);
-});
-
-trackAudio.on("txEnd", (data: TxEnd) => {
-  updateTxState(data);
-});
-
-// Register event handlers for action addition and removal
-actionManager.on("stationStatusAdded", (callsign: string) => {
-  // If this is the first button added then connect to TrackAudio. That will
-  // also cause a dump of the current state of all stations in TrackAudio.
-  if (actionManager.getStationStatusActions().length === 1) {
-    trackAudio.connect();
-  }
-  // Otherwise just request the state for the newly added station status.
-  else {
-    trackAudio.refreshStationState(callsign);
-  }
-});
-
-actionManager.on("trackAudioStatusAdded", (count: number) => {
-  if (count === 1) {
-    trackAudio.connect();
-  }
-
-  // Refresh the button state so the new button gets the proper state from the start.
-  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
-});
-
-/**
- * Handles refreshing the station status from TrackAudio when any of the settings are updated
- * on a specific action.
- */
+actionManager.on("stationStatusAdded", handleStationStatusAdded);
+actionManager.on("trackAudioStatusAdded", handleTrackAudioStatusAdded);
 actionManager.on(
   "stationStatusSettingsUpdated",
-  (action: StationStatusAction) => {
-    trackAudio.refreshStationState(action.settings.callsign);
-  }
+  handleStationStatusSettingsUpdated
 );
-
-/**
- * Handles refreshing the hotline status from TrackAudio when any of the settings are updated
- * on a specific action.
- */
-actionManager.on("hotlineSettingsUpdated", (action: HotlineAction) => {
-  trackAudio.refreshStationState(action.primaryCallsign);
-  trackAudio.refreshStationState(action.hotlineCallsign);
-});
-
-/**
- * Handles station status actions getting updated by refreshing its current listening
- * status then triggering an image refresh.
- */
-actionManager.on("trackAudioStatusUpdated", () => {
-  trackAudio.refreshStationStates();
-});
-
-actionManager.on("removed", (count: number) => {
-  if (count === 0) {
-    trackAudio.disconnect();
-  }
-});
+actionManager.on("hotlineSettingsUpdated", handleHotlineSettingsUpdated);
+actionManager.on("trackAudioStatusUpdated", handleTrackAudioStatusAdded);
+actionManager.on("removed", handleRemoved);
 
 // Finally, connect to the Stream Deck.
 await streamDeck.connect();
