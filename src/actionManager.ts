@@ -1,18 +1,18 @@
 import { Action } from "@elgato/streamdeck";
 import { EventEmitter } from "events";
+import { HotlineSettings } from "./actions/hotline";
+import { StationSettings } from "./actions/station-status";
+import { HotlineAction, isHotlineAction } from "./hotlineAction";
 import {
   StationStatusAction,
   isStationStatusAction,
 } from "./stationStatusAction";
+import TrackAudioManager from "./trackAudioManager";
 import {
   TrackAudioStatusAction,
   isTrackAudioStatusAction,
 } from "./trackAudioStatusAction";
-import { StationSettings } from "./actions/station-status";
-import TrackAudioManager from "./trackAudioManager";
 import { StationStateUpdate } from "./types/messages";
-import { HotlineSettings } from "./actions/hotline";
-import { HotlineAction, isHotlineAction } from "./hotlineAction";
 
 /**
  * Type union for all possible actions supported by this plugin
@@ -55,6 +55,12 @@ export default class ActionManager extends EventEmitter {
     this.emit("trackAudioStatusAdded", this.actions.length);
   }
 
+  /**
+   * Adds a hotline actiont to the action list. Emits a trackAudioStatusAdded event
+   * after the action is added.
+   * @param action The action to add
+   * @param settings The settings for the action
+   */
   public addHotline(action: Action, settings: HotlineSettings) {
     this.actions.push(new HotlineAction(action, settings));
 
@@ -63,10 +69,10 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Adds a station status action to the list with the associated callsign. Emits a stationStatusAdded
+   * Adds a station status action to the action list. Emits a stationStatusAdded
    * event after the action is added.
-   * @param callsign The callsign associated with the action
    * @param action The action
+   * @param settings The settings for the action
    */
   public addStation(action: Action, settings: StationSettings): void {
     this.actions.push(new StationStatusAction(action, settings));
@@ -76,6 +82,8 @@ export default class ActionManager extends EventEmitter {
 
   /**
    * Updates the settings associated with a station status action.
+   * Emits a stationStatusSettingsUpdated event if the settings require
+   * the action to refresh.
    * @param action The action to update
    * @param settings The new settings to use
    */
@@ -88,7 +96,8 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
-    // This avoids unnecessary calls to TrackAudio when the callsigns aren't the setting
+    // This avoids unnecessary calls to TrackAudio when the callsign isn't the setting
+    // that updated.
     const requiresStationRefresh = savedAction.callsign !== settings.callsign;
 
     savedAction.settings = settings;
@@ -101,6 +110,13 @@ export default class ActionManager extends EventEmitter {
     }
   }
 
+  /**
+   * Updates the settings associated with a hotline status action.
+   * Emits a hotlineSettingsUpdated event if the settings require
+   * the action to refresh.
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
   public updateHotline(action: Action, settings: HotlineSettings) {
     const savedAction = this.getHotlineActions().find(
       (entry) => entry.action.id === action.id
@@ -110,7 +126,7 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
-    // This avoids unnecessary calls to TrackAudio when the callsigns aren't the setting
+    // This avoids unnecessary calls to TrackAudio when the callsigns aren't the settings
     // that changed.
     const requiresStationRefresh =
       savedAction.primaryCallsign !== settings.primaryCallsign ||
@@ -128,8 +144,8 @@ export default class ActionManager extends EventEmitter {
 
   /**
    * Updates stations to match the provided station state update.
-   * If a callsign is provided in the update then all stations with that callsign have their
-   * frequency set.
+   * If a callsign is provided in the update then all stations with that callsign
+   * have their frequency set.
    * @param data The StationStateUpdate message from TrackAudio
    */
   public updateStationState(data: StationStateUpdate) {
