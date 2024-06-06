@@ -1,18 +1,18 @@
+import { HotlineSettings } from "@actions/hotline";
+import { StationSettings } from "@actions/station-status";
 import { Action } from "@elgato/streamdeck";
-import { EventEmitter } from "events";
-import { HotlineSettings } from "./actions/hotline";
-import { StationSettings } from "./actions/station-status";
-import { HotlineAction, isHotlineAction } from "./hotlineAction";
+import { StationStateUpdate } from "@interfaces/messages";
+import { HotlineAction, isHotlineAction } from "@root/hotlineAction";
 import {
   StationStatusAction,
   isStationStatusAction,
-} from "./stationStatusAction";
-import TrackAudioManager from "./trackAudioManager";
+} from "@root/stationStatusAction";
+import TrackAudioManager from "@root/trackAudioManager";
 import {
   TrackAudioStatusAction,
   isTrackAudioStatusAction,
-} from "./trackAudioStatusAction";
-import { StationStateUpdate } from "./types/messages";
+} from "@root/trackAudioStatusAction";
+import { EventEmitter } from "events";
 
 /**
  * Type union for all possible actions supported by this plugin

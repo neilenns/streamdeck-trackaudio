@@ -1,5 +1,5 @@
-import { StationStatusAction } from "../../stationStatusAction";
-import TrackAudioManager from "../../trackAudioManager";
+import { StationStatusAction } from "@root/stationStatusAction";
+import TrackAudioManager from "@root/trackAudioManager";
 
 /**
  * Handles refreshing the station status from TrackAudio when any of the settings are updated

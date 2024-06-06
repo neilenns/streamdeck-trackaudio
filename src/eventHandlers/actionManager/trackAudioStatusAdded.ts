@@ -1,5 +1,5 @@
-import ActionManager from "../../actionManager";
-import TrackAudioManager from "../../trackAudioManager";
+import ActionManager from "@root/actionManager";
+import TrackAudioManager from "@root/trackAudioManager";
 
 export const handleTrackAudioStatusAdded = (count: number) => {
   const actionManager = ActionManager.getInstance();

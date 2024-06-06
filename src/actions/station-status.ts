@@ -6,9 +6,9 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager from "../actionManager";
-import { getDisplayTitle } from "../helpers/helpers";
-import { ListenTo } from "../stationStatusAction";
+import { getDisplayTitle } from "@helpers/helpers";
+import ActionManager from "@root/actionManager";
+import { ListenTo } from "@root/stationStatusAction";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 /**

@@ -1,5 +1,5 @@
-import ActionManager from "../../actionManager";
-import TrackAudioManager from "../../trackAudioManager";
+import ActionManager from "@root/actionManager";
+import TrackAudioManager from "@root/trackAudioManager";
 
 export const handleStationStatusAdded = (callsign: string) => {
   const trackAudio = TrackAudioManager.getInstance();

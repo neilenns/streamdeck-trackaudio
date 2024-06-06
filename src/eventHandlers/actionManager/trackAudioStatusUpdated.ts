@@ -1,4 +1,4 @@
-import TrackAudioManager from "../../trackAudioManager";
+import TrackAudioManager from "@root/trackAudioManager";
 
 /**
  * Handles station status actions getting updated by refreshing its current listening

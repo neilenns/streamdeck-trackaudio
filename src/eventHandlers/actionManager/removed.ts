@@ -1,4 +1,4 @@
-import TrackAudioManager from "../../trackAudioManager";
+import TrackAudioManager from "@root/trackAudioManager";
 
 export const handleRemoved = (count: number) => {
   if (count === 0) {

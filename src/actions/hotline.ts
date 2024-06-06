@@ -6,7 +6,7 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager from "../actionManager";
+import ActionManager from "@root/actionManager";
 
 @action({ UUID: "com.neil-enns.trackaudio.hotline" })
 /**
