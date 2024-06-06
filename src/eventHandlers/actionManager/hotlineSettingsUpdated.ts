@@ -1,5 +1,5 @@
+import TrackAudioManager from "@root/trackAudioManager";
 import { HotlineAction } from "../../hotlineAction";
-import TrackAudioManager from "../../trackAudioManager";
 
 /**
  * Handles refreshing the hotline status from TrackAudio when any of the settings are updated

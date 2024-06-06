@@ -1,5 +1,5 @@
-import ActionManager from "../../actionManager";
-import { StationStateUpdate } from "../../types/messages";
+import ActionManager from "@root/actionManager";
+import { StationStateUpdate } from "../../interfaces/messages";
 
 /**
  * Receives the state for a single station from TrackAudio and updates the appropriate
