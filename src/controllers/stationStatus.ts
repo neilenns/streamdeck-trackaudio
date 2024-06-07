@@ -1,6 +1,6 @@
+import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
-import { StatusAction } from "@root/actionManager";
-import { StationSettings } from "@actions/station-status";
+import { Controller } from "@interfaces/controller";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -11,8 +11,8 @@ export type ListenTo = "rx" | "tx" | "xc";
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class StationStatusAction {
-  type = "StationStatusAction";
+export class StationStatusController {
+  type = "StationStatusController";
   action: Action;
   frequency = 0;
 
@@ -23,7 +23,7 @@ export class StationStatusAction {
   private _isListening = false;
 
   /**
-   * Creates a new StationStatusAction object.
+   * Creates a new StationStatusController object.
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
@@ -167,12 +167,12 @@ export class StationStatusAction {
 }
 
 /**
- * Typeguard for StationStatusAction.
+ * Typeguard for StationStatusController.
  * @param action The action
- * @returns True if the action is a StationStatusAction
+ * @returns True if the action is a StationStatusController
  */
-export function isStationStatusAction(
-  action: StatusAction
-): action is StationStatusAction {
-  return action.type === "StationStatusAction";
+export function isStationStatusController(
+  action: Controller
+): action is StationStatusController {
+  return action.type === "StationStatusController";
 }

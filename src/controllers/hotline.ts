@@ -1,13 +1,13 @@
-import { Action } from "@elgato/streamdeck";
 import { HotlineSettings } from "@actions/hotline";
-import { StatusAction } from "@root/actionManager";
+import { Action } from "@elgato/streamdeck";
+import { Controller } from "@interfaces/controller";
 
 /**
- * A HotlineAction action, for use with ActionManager. Tracks the settings,
+ * A HotlineController action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class HotlineAction {
-  type = "HotlineAction";
+export class HotlineController {
+  type = "HotlineController";
   action: Action;
   primaryFrequency = 0;
   hotlineFrequency = 0;
@@ -20,7 +20,7 @@ export class HotlineAction {
   private _isReceiving = false;
 
   /**
-   * Creates a new HotlineAction object.
+   * Creates a new HotlineController object.
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
@@ -179,10 +179,12 @@ export class HotlineAction {
 }
 
 /*
- * Typeguard for HotlineAction.
+ * Typeguard for HotlineController.
  * @param action The action
- * @returns True if the action is a HotlineAction
+ * @returns True if the action is a HotlineController
  */
-export function isHotlineAction(action: StatusAction): action is HotlineAction {
-  return action.type === "HotlineAction";
+export function isHotlineController(
+  action: Controller
+): action is HotlineController {
+  return action.type === "HotlineController";
 }

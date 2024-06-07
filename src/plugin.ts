@@ -1,11 +1,11 @@
 import { Hotline } from "@actions/hotline";
-import { StationStatus } from "@actions/station-status";
-import { TrackAudioStatus } from "@actions/trackAudio-status";
+import { StationStatus } from "@actions/stationStatus";
 import streamDeck from "@elgato/streamdeck";
-import ActionManager from "@root/actionManager";
-import TrackAudioManager from "@root/trackAudioManager";
+import ActionManager from "@managers/action";
+import TrackAudioManager from "@managers/trackAudio";
 
 // Event handlers
+import { TrackAudioStatus } from "@actions/trackAudioStatus";
 import { handleHotlineSettingsUpdated } from "@eventHandlers/actionManager/hotlineSettingsUpdated";
 import { handleRemoved } from "@eventHandlers/actionManager/removed";
 import { handleStationStatusAdded } from "@eventHandlers/actionManager/stationStatusAdded";

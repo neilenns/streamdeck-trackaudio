@@ -5,10 +5,12 @@
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "paths": {
-      "@eventHandlers/*": ["./src/eventHandlers/*"],
       "@actions/*": ["./src/actions/*"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@eventHandlers/*": ["./src/eventHandlers/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@interfaces/*": ["./src/interfaces/*"],
+      "@managers/*": ["./src/managers/*"],
       "@root/*": ["./src/*"]
     }
   },

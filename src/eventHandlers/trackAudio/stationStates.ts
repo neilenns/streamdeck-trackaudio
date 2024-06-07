@@ -1,5 +1,5 @@
-import ActionManager from "@root/actionManager";
 import { StationStates } from "@interfaces/messages";
+import ActionManager from "@managers/action";
 
 /**
  * Receives the state of all active stations from TrackAudio and updates the appropriate

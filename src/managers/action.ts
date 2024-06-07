@@ -1,33 +1,26 @@
 import { HotlineSettings } from "@actions/hotline";
-import { StationSettings } from "@actions/station-status";
+import { StationSettings } from "@actions/stationStatus";
+import { HotlineController, isHotlineController } from "@controllers/hotline";
+import {
+  StationStatusController,
+  isStationStatusController,
+} from "@controllers/stationStatus";
+import {
+  TrackAudioStatusController,
+  isTrackAudioStatusController,
+} from "@controllers/trackAudioStatus";
 import { Action } from "@elgato/streamdeck";
+import { Controller } from "@interfaces/controller";
 import { StationStateUpdate } from "@interfaces/messages";
-import { HotlineAction, isHotlineAction } from "@root/hotlineAction";
-import {
-  StationStatusAction,
-  isStationStatusAction,
-} from "@root/stationStatusAction";
-import TrackAudioManager from "@root/trackAudioManager";
-import {
-  TrackAudioStatusAction,
-  isTrackAudioStatusAction,
-} from "@root/trackAudioStatusAction";
+import TrackAudioManager from "@managers/trackAudio";
 import { EventEmitter } from "events";
-
-/**
- * Type union for all possible actions supported by this plugin
- */
-export type StatusAction =
-  | StationStatusAction
-  | TrackAudioStatusAction
-  | HotlineAction;
 
 /**
  * Singleton class that manages StreamDeck actions
  */
 export default class ActionManager extends EventEmitter {
   private static instance: ActionManager | null = null;
-  private actions: StatusAction[] = [];
+  private actions: Controller[] = [];
 
   private constructor() {
     super();
@@ -50,7 +43,7 @@ export default class ActionManager extends EventEmitter {
    * @param action The action to add
    */
   public addTrackAudio(action: Action) {
-    this.actions.push(new TrackAudioStatusAction(action));
+    this.actions.push(new TrackAudioStatusController(action));
 
     this.emit("trackAudioStatusAdded", this.actions.length);
   }
@@ -62,7 +55,7 @@ export default class ActionManager extends EventEmitter {
    * @param settings The settings for the action
    */
   public addHotline(action: Action, settings: HotlineSettings) {
-    this.actions.push(new HotlineAction(action, settings));
+    this.actions.push(new HotlineController(action, settings));
 
     // Force buttons to refresh so the newly added button shows the correct state.
     this.emit("trackAudioStatusAdded", this.actions.length);
@@ -75,7 +68,7 @@ export default class ActionManager extends EventEmitter {
    * @param settings The settings for the action
    */
   public addStation(action: Action, settings: StationSettings): void {
-    this.actions.push(new StationStatusAction(action, settings));
+    this.actions.push(new StationStatusController(action, settings));
 
     this.emit("stationStatusAdded", settings.callsign);
   }
@@ -88,7 +81,7 @@ export default class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateStation(action: Action, settings: StationSettings) {
-    const savedAction = this.getStationStatusActions().find(
+    const savedAction = this.getStationStatusControllers().find(
       (entry) => entry.action.id === action.id
     );
 
@@ -118,7 +111,7 @@ export default class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateHotline(action: Action, settings: HotlineSettings) {
-    const savedAction = this.getHotlineActions().find(
+    const savedAction = this.getHotlineControllers().find(
       (entry) => entry.action.id === action.id
     );
 
@@ -157,7 +150,7 @@ export default class ActionManager extends EventEmitter {
 
     // Set the listen state for all stations using the frequency and refresh the
     // state image.
-    this.getStationStatusActions()
+    this.getStationStatusControllers()
       .filter((entry) => entry.frequency === data.value.frequency)
       .forEach((entry) => {
         entry.isListening =
@@ -169,7 +162,7 @@ export default class ActionManager extends EventEmitter {
       });
 
     // Do the same for hotline actions
-    this.getHotlineActions().forEach((entry) => {
+    this.getHotlineControllers().forEach((entry) => {
       if (entry.primaryFrequency === data.value.frequency) {
         entry.isTxPrimary = data.value.tx;
       }
@@ -189,13 +182,13 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The frequency to update to
    */
   public setStationFrequency(callsign: string, frequency: number) {
-    this.getStationStatusActions()
+    this.getStationStatusControllers()
       .filter((entry) => entry.callsign === callsign)
       .forEach((entry) => {
         entry.frequency = frequency;
       });
 
-    this.getHotlineActions().forEach((entry) => {
+    this.getHotlineControllers().forEach((entry) => {
       if (entry.primaryCallsign === callsign) {
         entry.primaryFrequency = frequency;
       }
@@ -210,11 +203,11 @@ export default class ActionManager extends EventEmitter {
    * @param state The isListening state to set
    */
   public setIsListeningOnAll(isListening: boolean) {
-    this.getStationStatusActions().forEach((entry) => {
+    this.getStationStatusControllers().forEach((entry) => {
       entry.isListening = isListening;
     });
 
-    this.getHotlineActions().forEach((entry) => {
+    this.getHotlineControllers().forEach((entry) => {
       entry.isRxHotline = false;
       entry.isTxHotline = false;
       entry.isTxPrimary = false;
@@ -226,7 +219,7 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The callsign of the actions to update
    */
   public rxBegin(frequency: number) {
-    this.getStationStatusActions()
+    this.getStationStatusControllers()
       .filter(
         (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
@@ -236,7 +229,7 @@ export default class ActionManager extends EventEmitter {
 
     // Hotline actions that have a hotline frequency matching the rxBegin frequency
     // also update to show a transmission is occurring.
-    this.getHotlineActions()
+    this.getHotlineControllers()
       .filter((entry) => entry.hotlineFrequency === frequency)
       .forEach((entry) => {
         entry.isReceiving = true;
@@ -248,7 +241,7 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The callsign of the actions to update
    */
   public rxEnd(frequency: number) {
-    this.getStationStatusActions()
+    this.getStationStatusControllers()
       .filter(
         (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
@@ -258,7 +251,7 @@ export default class ActionManager extends EventEmitter {
 
     // Hotline actions that have a hotline frequency matching the rxBegin frequency
     // also update to show a transmission is occurring.
-    this.getHotlineActions()
+    this.getHotlineControllers()
       .filter((entry) => entry.hotlineFrequency === frequency)
       .forEach((entry) => {
         entry.isReceiving = false;
@@ -270,7 +263,7 @@ export default class ActionManager extends EventEmitter {
    * @param frequency The callsign of the actions to update
    */
   public txBegin() {
-    this.getStationStatusActions()
+    this.getStationStatusControllers()
       .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
       .forEach((entry) => {
         entry.isTransmitting = true;
@@ -281,7 +274,7 @@ export default class ActionManager extends EventEmitter {
    * Updates all actions that are listening to tx to clear the transmission in progress state.
    */
   public txEnd() {
-    this.getStationStatusActions()
+    this.getStationStatusControllers()
       .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
       .forEach((entry) => {
         entry.isTransmitting = false;
@@ -307,7 +300,7 @@ export default class ActionManager extends EventEmitter {
   public toggleHotline(id: string): void {
     const foundAction = this.actions.find((entry) => entry.action.id === id);
 
-    if (!foundAction || !isHotlineAction(foundAction)) {
+    if (!foundAction || !isHotlineController(foundAction)) {
       return;
     }
 
@@ -353,7 +346,7 @@ export default class ActionManager extends EventEmitter {
   public toggleFrequency(id: string): void {
     const foundAction = this.actions.find((entry) => entry.action.id === id);
 
-    if (!foundAction || !isStationStatusAction(foundAction)) {
+    if (!foundAction || !isStationStatusController(foundAction)) {
       return;
     }
 
@@ -376,7 +369,7 @@ export default class ActionManager extends EventEmitter {
    * @param isConnected True if connected, false if not
    */
   public setTrackAudioConnectionState(isConnected: boolean) {
-    this.getTrackAudioStatusActions().forEach((entry) => {
+    this.getTrackAudioStatusControllers().forEach((entry) => {
       // Don't do anything if the state didn't change. This prevents repeated unnecessary updates
       // when no connection is available and there's a reconnect attempt every 5 seconds.
       if (entry.isConnected === isConnected) {
@@ -391,38 +384,38 @@ export default class ActionManager extends EventEmitter {
    * Returns an array of all the actions tracked by the action manager.
    * @returns An array of the currently tracked actions
    */
-  public getActions(): StatusAction[] {
+  public getActions(): Controller[] {
     return this.actions;
   }
 
   /**
-   * Retrieves the list of all tracked StationStatusActions.
-   * @returns An array of StationStatusActions
+   * Retrieves the list of all tracked StationStatusControllers.
+   * @returns An array of StationStatusControllers
    */
-  public getStationStatusActions(): StationStatusAction[] {
+  public getStationStatusControllers(): StationStatusController[] {
     return this.actions.filter((action) =>
-      isStationStatusAction(action)
-    ) as StationStatusAction[];
+      isStationStatusController(action)
+    ) as StationStatusController[];
   }
 
   /**
-   * Retrieves the list of all tracked HotlineActions.
-   * @returns An array of HotlineActions
+   * Retrieves the list of all tracked HotlineControllers.
+   * @returns An array of HotlineControllers
    */
-  public getHotlineActions(): HotlineAction[] {
+  public getHotlineControllers(): HotlineController[] {
     return this.actions.filter((action) =>
-      isHotlineAction(action)
-    ) as HotlineAction[];
+      isHotlineController(action)
+    ) as HotlineController[];
   }
 
   /**
-   * Retrieves the list of all tracked TrackAudioStatusActions.
-   * @returns An array of TrackAudioStatusActions
+   * Retrieves the list of all tracked TrackAudioStatusControllers.
+   * @returns An array of TrackAudioStatusControllers
    */
-  public getTrackAudioStatusActions(): TrackAudioStatusAction[] {
+  public getTrackAudioStatusControllers(): TrackAudioStatusController[] {
     return this.actions.filter((action) =>
-      isTrackAudioStatusAction(action)
-    ) as TrackAudioStatusAction[];
+      isTrackAudioStatusController(action)
+    ) as TrackAudioStatusController[];
   }
 
   /**

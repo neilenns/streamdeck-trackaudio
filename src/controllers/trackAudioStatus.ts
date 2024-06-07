@@ -1,18 +1,18 @@
 import { Action } from "@elgato/streamdeck";
-import { StatusAction } from "@root/actionManager";
+import { Controller } from "@interfaces/controller";
 
 /**
- * A TrackAudioStatusAction action, for use with ActionManager. Tracks the
+ * A TrackAudioStatusController action, for use with ActionManager. Tracks the
  * state and StreamDeck action for an individual action in a profile.
  */
-export class TrackAudioStatusAction {
-  type = "trackAudioStatusAction";
+export class TrackAudioStatusController {
+  type = "TrackAudioStatusController";
   action: Action;
 
   private _isConnected = false;
 
   /**
-   * Creates a new TrackAudioStatusAction.
+   * Creates a new TrackAudioStatusController.
    * @param action The StreamDeck action object
    */
   constructor(action: Action) {
@@ -56,12 +56,12 @@ export class TrackAudioStatusAction {
 }
 
 /**
- * Typeguard for TrackAudioStatusAction.
+ * Typeguard for TrackAudioStatusController.
  * @param action The action
- * @returns True if the action is a TrackAudioStatusAction
+ * @returns True if the action is a TrackAudioStatusController
  */
-export function isTrackAudioStatusAction(
-  action: StatusAction
-): action is TrackAudioStatusAction {
-  return action.type === "trackAudioStatusAction";
+export function isTrackAudioStatusController(
+  action: Controller
+): action is TrackAudioStatusController {
+  return action.type === "TrackAudioStatusController";
 }

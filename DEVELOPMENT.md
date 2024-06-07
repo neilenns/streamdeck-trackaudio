@@ -21,13 +21,36 @@ way to do this. I'll figure it out someday.
 ## About the code
 
 This code my first attempt at writing a StreamDeck plugin using the (as of this writing) [beta node.js SDK](https://github.com/elgatosf/streamdeck)
-in conjunction with websockets to read and display data from another app. Here are some bits and pieces that might be interesting:
+in conjunction with websockets to read and display data from another app.
 
-* `src/actionManager.ts` is a singleton class that keeps track of the plugin's actions as they are added to a StreamDeck profile. It exposes methods that are called to set the state, image, or display text in response to websocket messages.
-* `src/trackAudioManager.ts` is a singleton class that manages the websocket connection with TrackAudio. It listens to various messages from TrackAudio then fires its own events that are handled by the plugin to update the buttons. The connection to TrackAudio is only opened if the profile has at least one button from this plugin in it, and it disconnects from TrackAudio if all plugin buttons are removed.
-* `src/plugin.ts` has all the event handlers for events fired by the `TrackAudioManager`. It processes those events and then calls the appropriate methods on the `ActionManager` to update the buttons.
-* `eslint` is used with strict TypeScript rules to validate the code
-* `markdownlint` is used to validate the markdown files
+Here is how the code is structured:
+
+* `src/actions`: These are all the StreamDeck SingletonAction classes. They do very little except responding to StreamDeck events then firing off their own events that get handled in `src/plugin.ts`.
+
+* `src/controllers`: These classes manage individual instances of an action on a profile. They track the action object provided by StreamDeck as well as the settings and other associated properties.
+
+* `src/eventHandlers`: These functions manage all the events fired by the controllers or managers.
+
+* `src/helpers`: Random bits of code that are used across all the other files.
+
+* `src/interfaces`: Types and interfaces used across all the other files.
+
+* `src/managers`: Singleton classes that manage global state. `ActionManager` keeps track of every action added to a profile. `TrackAudioManager` handles all the websocket communication with TrackAudio.
+
+Here are some bits and pieces that might be interesting:
+
+* `src/managers/action.ts` is a singleton class that keeps track of the plugin's actions as they are added to a StreamDeck profile. It exposes methods that are called to set the state, image, or display text in response to websocket messages.
+
+* `src/managers/trackAudio.ts` is a singleton class that manages the websocket connection with TrackAudio. It listens to various messages from TrackAudio then fires its own events that are handled by the plugin to update the buttons. The connection to TrackAudio is only opened if the profile has at least one button from this plugin in it, and it disconnects from TrackAudio if all plugin buttons are removed.
+
+* `src/plugin.ts` does nothing more than register the actions with StreamDeck and a bunch of event handlers.
+
+* `eslint` is used with strict TypeScript rules to validate the code.
+
+* `markdownlint` is used to validate the markdown files.
+
 * Automated CI/CD builds are handled with GitHub workflows in the `.github/workflows` folder. This includes automatically setting the plugin version to the GitHub release version and attaching the built plugin package to the pull request and release page.
+
 * F5 debugging in Visual Studio Code using `.vscode/launch.json` and `.vscode/tasks.json` configuration files.
+
 * Suggested Visual Studio Code extensions using a workspace file.

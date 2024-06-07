@@ -1,5 +1,4 @@
-import ActionManager from "@root/actionManager";
-import { ListenTo } from "@root/stationStatusAction";
+import { ListenTo } from "@controllers/stationStatus";
 import {
   RxBegin,
   RxEnd,
@@ -8,6 +7,7 @@ import {
   isRxBegin,
   isTxBegin,
 } from "@interfaces/messages";
+import ActionManager from "@managers/action";
 
 /**
  * Updates the rx state for all actions that are tracking the receiveing frequency.
