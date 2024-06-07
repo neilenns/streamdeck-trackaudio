@@ -51,7 +51,7 @@ Here are some bits and pieces that might be interesting:
 
 * `markdownlint` is used to validate the markdown files.
 
-* Automated CI/CD builds are handled with GitHub workflows in the `.github/workflows` folder. This includes automatically setting the plugin version to the GitHub release version and attaching the built plugin package to the pull request and release page.
+* Automated CI/CD builds are handled with GitHub workflows in the `.github/workflows` folder. This includes automatically setting the plugin version to the GitHub release version using a custom GitHub action and attaching the built plugin package to the pull request and release page.
 
 * F5 debugging in Visual Studio Code using `.vscode/launch.json` and `.vscode/tasks.json` configuration files.
 
