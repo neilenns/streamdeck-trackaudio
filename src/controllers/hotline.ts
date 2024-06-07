@@ -126,7 +126,7 @@ export class HotlineController {
       this.action
         .setImage(
           this._settings.bothActiveImagePath ??
-            "images/actions/hotline-status/conflict.svg"
+            "images/actions/hotline/conflict.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -137,7 +137,7 @@ export class HotlineController {
       this.action
         .setImage(
           this._settings.hotlineActiveImagePath ??
-            "images/actions/hotline-status/talking.svg"
+            "images/actions/hotline/talking.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -146,7 +146,7 @@ export class HotlineController {
       this.action
         .setImage(
           this._settings.receivingImagePath ??
-            "images/actions/hotline-status/receiving.svg"
+            "images/actions/hotline/receiving.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -157,7 +157,7 @@ export class HotlineController {
       this.action
         .setImage(
           this._settings.listeningImagePath ??
-            "images/actions/hotline-status/listening.svg"
+            "images/actions/hotline/listening.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -169,7 +169,7 @@ export class HotlineController {
       this.action
         .setImage(
           this._settings.neitherActiveImagePath ??
-            "images/actions/hotline-status/notConnected.svg"
+            "images/actions/hotline/notConnected.svg"
         )
         .catch((error: unknown) => {
           console.error(error);

@@ -25,6 +25,8 @@ in conjunction with websockets to read and display data from another app.
 
 Here is how the code is structured:
 
+* `com.neil-enns.trackaudio.sdPlugin`: These are the support files used to build the final plugin. The `manifest.json`, all property inspector pages (in the `pi` folder), and all image assets live here.
+
 * `src/actions`: These are all the StreamDeck SingletonAction classes. They do very little except responding to StreamDeck events then firing off their own events that get handled in `src/plugin.ts`.
 
 * `src/controllers`: These classes manage individual instances of an action on a profile. They track the action object provided by StreamDeck as well as the settings and other associated properties.

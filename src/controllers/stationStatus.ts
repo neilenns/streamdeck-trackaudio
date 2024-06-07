@@ -130,7 +130,7 @@ export class StationStatusController {
       this.action
         .setImage(
           this._settings.activeCommsIconPath ??
-            "images/actions/station-status/orange.svg"
+            "images/actions/stationStatus/orange.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -148,7 +148,7 @@ export class StationStatusController {
       this.action
         .setImage(
           this._settings.listeningIconPath ??
-            "images/actions/station-status/green.svg"
+            "images/actions/stationStatus/green.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -157,7 +157,7 @@ export class StationStatusController {
       this.action
         .setImage(
           this._settings.notListeningIconPath ??
-            "images/actions/station-status/black.svg"
+            "images/actions/stationStatus/black.svg"
         )
         .catch((error: unknown) => {
           console.error(error);

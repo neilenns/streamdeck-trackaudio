@@ -10,10 +10,10 @@
       "Tooltip": "Shows the status of a station.",
       "DisableAutomaticStates": true,
       "Controllers": ["Keypad"],
-      "PropertyInspectorPath": "pi/station-status.html",
+      "PropertyInspectorPath": "pi/stationStatus.html",
       "States": [
         {
-          "Image": "images/actions/station-status/black",
+          "Image": "images/actions/stationStatus/black",
           "TitleAlignment": "middle"
         }
       ]
@@ -28,11 +28,11 @@
       "Controllers": ["Keypad"],
       "States": [
         {
-          "Image": "images/actions/trackAudio-status/notConnected",
+          "Image": "images/actions/trackAudioStatus/notConnected",
           "TitleAlignment": "middle"
         },
         {
-          "Image": "images/actions/trackAudio-status/connected",
+          "Image": "images/actions/trackAudioStatus/connected",
           "TitleAlignment": "middle"
         }
       ]
@@ -48,7 +48,7 @@
       "Controllers": ["Keypad"],
       "States": [
         {
-          "Image": "images/actions/hotline-status/notConnected",
+          "Image": "images/actions/hotline/notConnected",
           "TitleAlignment": "bottom",
           "Title": "HOTLINE"
         }
