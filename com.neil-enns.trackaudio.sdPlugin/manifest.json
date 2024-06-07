@@ -6,7 +6,7 @@
     {
       "Name": "Push to talk",
       "UUID": "com.neil-enns.trackaudio.pushtotalk",
-      "Icon": "images/plugin/headphones-solid",
+      "Icon": "images/plugin/microphone-solid",
       "Tooltip": "Triggers transmit via push-to-talk.",
       "DisableAutomaticStates": true,
       "Controllers": ["Keypad"],
