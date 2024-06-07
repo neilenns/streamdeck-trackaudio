@@ -4,6 +4,24 @@
   "Author": "Neil Enns",
   "Actions": [
     {
+      "Name": "Push to talk",
+      "UUID": "com.neil-enns.trackaudio.pushtotalk",
+      "Icon": "images/plugin/headphones-solid",
+      "Tooltip": "Triggers transmit via push-to-talk.",
+      "DisableAutomaticStates": true,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/pushToTalk/black",
+          "TitleAlignment": "middle"
+        },
+        {
+          "Image": "images/actions/pushToTalk/orange",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
       "Name": "Station status",
       "UUID": "com.neil-enns.trackaudio.stationstatus",
       "Icon": "images/plugin/headphones-solid",

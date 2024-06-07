@@ -19,6 +19,7 @@ import { handleStationStateUpdate } from "@eventHandlers/trackAudio/stationState
 import { handleStationStates } from "@eventHandlers/trackAudio/stationStates";
 import { handleTxBegin } from "@eventHandlers/trackAudio/txBegin";
 import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
+import { PushToTalk } from "@actions/pushToTalk";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -31,9 +32,10 @@ process.on("uncaughtException", (error) => {
 });
 
 // Register all the event handlers
+streamDeck.actions.registerAction(new Hotline());
+streamDeck.actions.registerAction(new PushToTalk());
 streamDeck.actions.registerAction(new StationStatus());
 streamDeck.actions.registerAction(new TrackAudioStatus());
-streamDeck.actions.registerAction(new Hotline());
 
 trackAudio.on("connected", handleConnected);
 trackAudio.on("disconnected", handleDisconnected);

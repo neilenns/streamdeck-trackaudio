@@ -2,6 +2,10 @@ import { HotlineSettings } from "@actions/hotline";
 import { StationSettings } from "@actions/stationStatus";
 import { HotlineController, isHotlineController } from "@controllers/hotline";
 import {
+  PushToTalkController,
+  isPushToTalkController,
+} from "@controllers/pushToTalk";
+import {
   StationStatusController,
   isStationStatusController,
 } from "@controllers/stationStatus";
@@ -71,6 +75,17 @@ export default class ActionManager extends EventEmitter {
     this.actions.push(new StationStatusController(action, settings));
 
     this.emit("stationStatusAdded", settings.callsign);
+  }
+
+  /**
+   * Adds a push-to-talk action to the action list. Emits a pushToTalkAdded event
+   * after the action is added.
+   * @param action The action
+   */
+  public addPushToTalk(action: Action): void {
+    this.actions.push(new PushToTalkController(action));
+
+    this.emit("pushToTalkAdded");
   }
 
   /**
@@ -268,6 +283,10 @@ export default class ActionManager extends EventEmitter {
       .forEach((entry) => {
         entry.isTransmitting = true;
       });
+
+    this.getPushToTalkControllers().forEach((entry) => {
+      entry.isTransmitting = true;
+    });
   }
 
   /**
@@ -279,6 +298,10 @@ export default class ActionManager extends EventEmitter {
       .forEach((entry) => {
         entry.isTransmitting = false;
       });
+
+    this.getPushToTalkControllers().forEach((entry) => {
+      entry.isTransmitting = false;
+    });
   }
 
   /**
@@ -419,6 +442,16 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
+   * Retrieves the list of all tracked PushToTalkControllers.
+   * @returns An array of PushToTalkControllers
+   */
+  public getPushToTalkControllers(): PushToTalkController[] {
+    return this.actions.filter((action) =>
+      isPushToTalkController(action)
+    ) as PushToTalkController[];
+  }
+
+  /**
    * Temporarily shows an alert warning on all tracked actions.
    */
   public showAlertOnAll() {
@@ -427,5 +460,19 @@ export default class ActionManager extends EventEmitter {
         console.error(error);
       });
     });
+  }
+
+  /**
+   * Sends a message via TrackAudioManager to indicate a PushToTalk action was pressed.
+   */
+  public pttPressed() {
+    TrackAudioManager.getInstance().sendMessage({ type: "kPttPressed" });
+  }
+
+  /**
+   * Sends a message via TrackAudioManager to indicate a PushToTalk action was released.
+   */
+  public pttReleased() {
+    TrackAudioManager.getInstance().sendMessage({ type: "kPttReleased" });
   }
 }

@@ -28,4 +28,4 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
 }
 
 // Currently no settings are needed for this action
-type TrackAudioStatusSettings = Record<string, never>;
+export type TrackAudioStatusSettings = Record<string, never>;

@@ -100,6 +100,20 @@ export interface GetStationState {
 }
 
 /**
+ * Represents the kPttPressed message to TrackAudio.
+ */
+export interface PttPressed {
+  type: "kPttPressed";
+}
+
+/**
+ * Represents the kPttReleased message to TrackAudio.
+ */
+export interface PttReleased {
+  type: "kPttReleased";
+}
+
+/**
  * Type union for all possible incoming websocket messages from TrackAudio
  */
 export type IncomingMessage =
@@ -116,7 +130,9 @@ export type IncomingMessage =
 export type OutgoingMessage =
   | SetStationState
   | GetStationStates
-  | GetStationState;
+  | GetStationState
+  | PttPressed
+  | PttReleased;
 
 /**
  * Typeguard for StationStateUpdate.
