@@ -35,8 +35,8 @@ streamDeck.actions.registerAction(new StationStatus());
 streamDeck.actions.registerAction(new TrackAudioStatus());
 streamDeck.actions.registerAction(new Hotline());
 
-trackAudio.on("connected", () => handleConnected);
-trackAudio.on("disconnected", () => handleDisconnected);
+trackAudio.on("connected", handleConnected);
+trackAudio.on("disconnected", handleDisconnected);
 trackAudio.on("rxBegin", handleRxBegin);
 trackAudio.on("rxEnd", handleRxEnd);
 trackAudio.on("stationStates", handleStationStates);
