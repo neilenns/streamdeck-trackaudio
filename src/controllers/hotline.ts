@@ -6,7 +6,7 @@ import { Controller } from "@interfaces/controller";
  * A HotlineController action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class HotlineController {
+export class HotlineController implements Controller {
   type = "HotlineController";
   action: Action;
   primaryFrequency = 0;

@@ -11,7 +11,7 @@ export type ListenTo = "rx" | "tx" | "xc";
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class StationStatusController {
+export class StationStatusController implements Controller {
   type = "StationStatusController";
   action: Action;
   frequency = 0;

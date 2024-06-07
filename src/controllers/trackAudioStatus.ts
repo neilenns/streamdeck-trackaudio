@@ -5,7 +5,7 @@ import { Controller } from "@interfaces/controller";
  * A TrackAudioStatusController action, for use with ActionManager. Tracks the
  * state and StreamDeck action for an individual action in a profile.
  */
-export class TrackAudioStatusController {
+export class TrackAudioStatusController implements Controller {
   type = "TrackAudioStatusController";
   action: Action;
 

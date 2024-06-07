@@ -1,11 +1,9 @@
-import { HotlineController } from "@controllers/hotline";
-import { StationStatusController } from "@controllers/stationStatus";
-import { TrackAudioStatusController } from "@controllers/trackAudioStatus";
+import { Action } from "@elgato/streamdeck";
 
 /**
- * Type union for all possible actions supported by this plugin
+ * Interface for all actions supported by this plugin
  */
-export type Controller =
-  | StationStatusController
-  | TrackAudioStatusController
-  | HotlineController;
+export interface Controller {
+  type: string;
+  action: Action;
+}
