@@ -1,6 +1,7 @@
-import { updateRxState } from "@helpers/helpers";
 import { RxEnd } from "@interfaces/messages";
+import ActionManager from "@managers/action";
 
 export const handleRxEnd = (data: RxEnd) => {
-  updateRxState(data);
+  console.log(`Receive started on: ${data.value.pFrequencyHz.toString()}`);
+  ActionManager.getInstance().rxEnd(data.value.pFrequencyHz);
 };

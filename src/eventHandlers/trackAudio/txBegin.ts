@@ -1,6 +1,5 @@
-import { updateTxState } from "@helpers/helpers";
-import { TxBegin } from "@interfaces/messages";
+import ActionManager from "@managers/action";
 
-export const handleTxBegin = (data: TxBegin) => {
-  updateTxState(data);
+export const handleTxBegin = () => {
+  ActionManager.getInstance().txBegin();
 };
