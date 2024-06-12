@@ -15,7 +15,7 @@ Run `npm run package`. Make sure `npm run build` was done first.
 
 ## Debugging
 
-A launch profile for VSCode is included. Simply press `F5` to start debugging.
+A launch profile for VSCode is included. Simply press `F5` to start debugging. Sometimes the debug connection drops, I've never figured out why. If that happens just go to the debug tab in VSCode and press the `Run` button. It will reconnect to the plugin and start debugging again.
 
 ## About the code
 
