@@ -15,8 +15,7 @@ Run `npm run package`. Make sure `npm run build` was done first.
 
 ## Debugging
 
-VSCode can debug using the `Attach to Plugin` profile. Select the appropriate node.js instance. Yes, there should be a better, more automatic,
-way to do this. I'll figure it out someday.
+A launch profile for VSCode is included. Simply press `F5` to start debugging.
 
 ## About the code
 
