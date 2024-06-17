@@ -19,7 +19,7 @@
     "@tsconfig/node20": "^20.1.2",
     "@types/node": "20.14.2",
     "@types/ws": "^8.5.10",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.2.0",
     "markdownlint": "^0.34.0",
