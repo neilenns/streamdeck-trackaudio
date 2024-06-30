@@ -243,6 +243,7 @@ export default class ActionManager extends EventEmitter {
    * @returns An array of StationStatusActions
    */
   public getStationStatusActions(): StationStatusAction[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return this.actions.filter((action) =>
       isStationStatusAction(action)
     ) as StationStatusAction[];
@@ -253,6 +254,7 @@ export default class ActionManager extends EventEmitter {
    * @returns An array of TrackAudioStatusActions
    */
   public getTrackAudioStatusActions(): TrackAudioStatusAction[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return this.actions.filter((action) =>
       isTrackAudioStatusAction(action)
     ) as TrackAudioStatusAction[];
