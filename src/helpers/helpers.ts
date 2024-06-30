@@ -1,4 +1,4 @@
-import { ListenTo } from "../stationStatusAction";
+import { ListenTo } from "@controllers/stationStatus";
 
 /**
  * Takes a callsign and listenTo and converts it to a display title. If the callsign

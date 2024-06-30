@@ -1,3 +1,4 @@
+import { ListenTo } from "@controllers/stationStatus";
 import {
   action,
   DidReceiveSettingsEvent,
@@ -6,9 +7,8 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager from "../actionManager";
-import { getDisplayTitle } from "../helpers/helpers";
-import { ListenTo } from "../stationStatusAction";
+import { getDisplayTitle } from "@helpers/helpers";
+import ActionManager from "@managers/action";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 /**
@@ -68,10 +68,6 @@ export class StationStatus extends SingletonAction<StationSettings> {
   // the appropriate message to TrackAudio via a websocket.
   onKeyDown(ev: KeyDownEvent<StationSettings>): void | Promise<void> {
     ActionManager.getInstance().toggleFrequency(ev.action.id);
-
-    ev.action.showOk().catch((error: unknown) => {
-      console.error(error);
-    });
   }
 }
 

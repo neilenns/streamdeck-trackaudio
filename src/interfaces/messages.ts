@@ -1,21 +1,26 @@
 /**
- * Represents the kFrequenciesUpdate message from TrackAudio.
+ * Represents the kStationStates message from TrackAudio.
  */
-export interface FrequenciesUpdate {
-  type: "kFrequencyStateUpdate";
+export interface StationStates {
+  type: "kStationStates";
   value: {
-    rx: {
-      pFrequencyHz: number;
-      pCallsign: string;
-    }[];
-    tx: {
-      pFrequencyHz: number;
-      pCallsign: string;
-    }[];
-    xc: {
-      pFrequencyHz: number;
-      pCallsign: string;
-    }[];
+    stations: StationStateUpdate[];
+  };
+}
+
+/**
+ * Represents the kStationStateUpdate message from TrackAudio.
+ */
+export interface StationStateUpdate {
+  type: "kStationStateUpdate";
+  value: {
+    callsign: string | undefined;
+    frequency: number;
+    tx: boolean;
+    rx: boolean;
+    xc: boolean;
+    xca: boolean;
+    headset: boolean;
   };
 }
 
@@ -63,13 +68,34 @@ export interface RxEnd {
   };
 }
 
-export interface SetStationStatus {
-  type: "kSetStationStatus";
+/**
+ * Represents the kSetStationState message to TrackAudio.
+ */
+export interface SetStationState {
+  type: "kSetStationState";
   value: {
     frequency: number;
     tx: boolean | "toggle" | undefined;
     rx: boolean | "toggle" | undefined;
     xc: boolean | "toggle" | undefined;
+    xca: boolean | "toggle" | undefined;
+  };
+}
+
+/**
+ * Represents the kGetStationStates message to TrackAudio.
+ */
+export interface GetStationStates {
+  type: "kGetStationStates";
+}
+
+/**
+ * Represents the kGetStationStates message to TrackAudio.
+ */
+export interface GetStationState {
+  type: "kGetStationState";
+  value: {
+    callsign: string;
   };
 }
 
@@ -77,7 +103,8 @@ export interface SetStationStatus {
  * Type union for all possible incoming websocket messages from TrackAudio
  */
 export type IncomingMessage =
-  | FrequenciesUpdate
+  | StationStates
+  | StationStateUpdate
   | RxBegin
   | RxEnd
   | TxBegin
@@ -86,17 +113,31 @@ export type IncomingMessage =
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
  */
-export type OutgoingMessage = SetStationStatus;
+export type OutgoingMessage =
+  | SetStationState
+  | GetStationStates
+  | GetStationState;
 
 /**
- * Typeguard for FrequencyStatusUpdate.
+ * Typeguard for StationStateUpdate.
  * @param message The message
- * @returns True if the message is a FrequencyStatusUpdate
+ * @returns True if the message is a StationStateUpdate
  */
-export function isFrequencyStateUpdate(
+export function isStationStateUpdate(
   message: IncomingMessage
-): message is FrequenciesUpdate {
-  return message.type === "kFrequencyStateUpdate";
+): message is StationStateUpdate {
+  return message.type === "kStationStateUpdate";
+}
+
+/**
+ * Typeguard for StationStates.
+ * @param message The message
+ * @returns True if the message is a StationStates
+ */
+export function isStationStates(
+  message: IncomingMessage
+): message is StationStates {
+  return message.type === "kStationStates";
 }
 
 /**

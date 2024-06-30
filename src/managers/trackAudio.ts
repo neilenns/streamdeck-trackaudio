@@ -3,12 +3,13 @@ import WebSocket from "ws";
 import {
   IncomingMessage,
   OutgoingMessage,
-  isFrequencyStateUpdate,
   isRxBegin,
   isRxEnd,
+  isStationStateUpdate,
+  isStationStates,
   isTxBegin,
   isTxEnd,
-} from "./types/messages";
+} from "@interfaces/messages";
 
 /**
  * Manages the websocket connection to TrackAudio.
@@ -107,8 +108,10 @@ export default class TrackAudioManager extends EventEmitter {
 
     const data = JSON.parse(message) as IncomingMessage;
 
-    if (isFrequencyStateUpdate(data)) {
-      this.emit("frequencyUpdate", data);
+    if (isStationStateUpdate(data)) {
+      this.emit("stationStateUpdate", data);
+    } else if (isStationStates(data)) {
+      this.emit("stationStates", data);
     } else if (isRxBegin(data)) {
       this.emit("rxBegin", data);
     } else if (isRxEnd(data)) {
@@ -120,7 +123,30 @@ export default class TrackAudioManager extends EventEmitter {
     }
   }
 
+  /**
+   * Sends a message to TrackAudio to refresh the station states.
+   */
+  public refreshStationStates() {
+    this.sendMessage({ type: "kGetStationStates" });
+  }
+
+  /**
+   * Sends a message to TrackAudio to refresh the state of a single station.
+   * @param callsign The callsign of the station to refresh
+   */
+  public refreshStationState(callsign: string) {
+    if (!callsign || callsign === "") {
+      return;
+    }
+
+    this.sendMessage({ type: "kGetStationState", value: { callsign } });
+  }
+
   public sendMessage(message: OutgoingMessage) {
+    if (!this.isConnected()) {
+      return;
+    }
+
     this.socket?.send(JSON.stringify(message));
   }
 

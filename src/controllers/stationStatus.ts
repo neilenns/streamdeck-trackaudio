@@ -1,6 +1,6 @@
+import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
-import { StatusAction } from "./actionManager";
-import { StationSettings } from "./actions/station-status";
+import { Controller } from "@interfaces/controller";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -11,21 +11,21 @@ export type ListenTo = "rx" | "tx" | "xc";
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class StationStatusAction {
-  type = "StationStatusAction";
+export class StationStatusController implements Controller {
+  type = "StationStatusController";
   action: Action;
   frequency = 0;
 
   private _settings: StationSettings;
 
-  private _isRx = false;
-  private _isTx = false;
+  private _isReceiving = false;
+  private _isTransmitting = false;
   private _isListening = false;
 
   /**
-   * Creates a new StationStatusAction object.
-   * @param callsign The callsign for the action
-   * @param options: The options for the action
+   * Creates a new StationStatusController object.
+   * @param action The callsign for the action
+   * @param settings: The options for the action
    */
   constructor(action: Action, settings: StationSettings) {
     this.action = action;
@@ -64,40 +64,40 @@ export class StationStatusAction {
   /**
    * True if the station is actively receiveing.
    */
-  get isRx() {
-    return this._isRx;
+  get isReceiving() {
+    return this._isReceiving;
   }
 
   /**
-   * Sets the isRx property and updates the action image accordingly.
+   * Sets the isReceiving property and updates the action image accordingly.
    */
-  set isRx(newValue: boolean) {
+  set isReceiving(newValue: boolean) {
     // Don't do anything if the state is the same
-    if (this._isRx === newValue) {
+    if (this._isReceiving === newValue) {
       return;
     }
 
-    this._isRx = newValue;
+    this._isReceiving = newValue;
     this.setActiveCommsImage();
   }
 
   /**
    * True if the station is actively transmitting.
    */
-  get isTx() {
-    return this._isTx;
+  get isTransmitting() {
+    return this._isTransmitting;
   }
 
   /**
-   * Sets the isTx property and updates the action image accordingly.
+   * Sets the isTransmitting property and updates the action image accordingly.
    */
-  set isTx(newValue: boolean) {
+  set isTransmitting(newValue: boolean) {
     // Don't do anything if the state is the same
-    if (this._isTx === newValue) {
+    if (this._isTransmitting === newValue) {
       return;
     }
 
-    this._isTx = newValue;
+    this._isTransmitting = newValue;
     this.setActiveCommsImage();
   }
 
@@ -126,11 +126,11 @@ export class StationStatusAction {
    * or resets it to the correct isListening image when coms are off.
    */
   public setActiveCommsImage() {
-    if (this.isRx || this.isTx) {
+    if (this.isReceiving || this.isTransmitting) {
       this.action
         .setImage(
           this._settings.activeCommsIconPath ??
-            "images/actions/station-status/orange.svg"
+            "images/actions/stationStatus/orange.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -148,7 +148,7 @@ export class StationStatusAction {
       this.action
         .setImage(
           this._settings.listeningIconPath ??
-            "images/actions/station-status/green.svg"
+            "images/actions/stationStatus/green.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -157,7 +157,7 @@ export class StationStatusAction {
       this.action
         .setImage(
           this._settings.notListeningIconPath ??
-            "images/actions/station-status/black.svg"
+            "images/actions/stationStatus/black.svg"
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -167,12 +167,12 @@ export class StationStatusAction {
 }
 
 /**
- * Typeguard for StationStatusAction.
+ * Typeguard for StationStatusController.
  * @param action The action
- * @returns True if the action is a StationStatusAction
+ * @returns True if the action is a StationStatusController
  */
-export function isStationStatusAction(
-  action: StatusAction
-): action is StationStatusAction {
-  return action.type === "StationStatusAction";
+export function isStationStatusController(
+  action: Controller
+): action is StationStatusController {
+  return action.type === "StationStatusController";
 }

@@ -4,7 +4,7 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager from "../actionManager";
+import ActionManager from "@managers/action";
 
 @action({ UUID: "com.neil-enns.trackaudio.trackaudiostatus" })
 /**
@@ -16,7 +16,6 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   onWillAppear(
     ev: WillAppearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
-    console.log("Hello");
     ActionManager.getInstance().addTrackAudio(ev.action);
   }
 

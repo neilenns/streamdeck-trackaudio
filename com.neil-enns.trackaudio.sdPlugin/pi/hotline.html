@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
+  </head>
+  <body>
+    <sdpi-item label="Primary callsign">
+      <sdpi-textfield
+        setting="primaryCallsign"
+        placeholder="Primary callsign, e.g. SEA_16_CTR"
+        required
+      ></sdpi-textfield>
+    </sdpi-item>
+
+    <sdpi-item label="Hotline callsign">
+      <sdpi-textfield
+        setting="hotlineCallsign"
+        placeholder="Hotline callsign, e.g. ZSE-ZOA"
+        required
+      ></sdpi-textfield>
+    </sdpi-item>
+
+    <sdpi-item label="Listening">
+      <sdpi-file
+        setting="listeningImagePath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item label="Receiving">
+      <sdpi-file
+        setting="receivingImagePath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item label="Hotline active">
+      <sdpi-file
+        setting="hotlineActiveImagePath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item label="Both active">
+      <sdpi-file
+        setting="bothActiveImagePath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item label="Neither active">
+      <sdpi-file
+        setting="neitherActiveImagePath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+  </body>
+</html>
