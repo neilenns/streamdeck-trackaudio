@@ -393,6 +393,7 @@ export default class ActionManager extends EventEmitter {
    * @returns An array of StationStatusControllers
    */
   public getStationStatusControllers(): StationStatusController[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return this.actions.filter((action) =>
       isStationStatusController(action)
     ) as StationStatusController[];
@@ -403,6 +404,7 @@ export default class ActionManager extends EventEmitter {
    * @returns An array of HotlineControllers
    */
   public getHotlineControllers(): HotlineController[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return this.actions.filter((action) =>
       isHotlineController(action)
     ) as HotlineController[];
@@ -413,6 +415,7 @@ export default class ActionManager extends EventEmitter {
    * @returns An array of TrackAudioStatusControllers
    */
   public getTrackAudioStatusControllers(): TrackAudioStatusController[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return this.actions.filter((action) =>
       isTrackAudioStatusController(action)
     ) as TrackAudioStatusController[];
