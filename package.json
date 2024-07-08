@@ -17,7 +17,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
     "@tsconfig/node20": "^20.1.2",
-    "@types/node": "20.14.9",
+    "@types/node": "20.14.10",
     "@types/ws": "^8.5.10",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
