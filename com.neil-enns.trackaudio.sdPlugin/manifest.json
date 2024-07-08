@@ -21,7 +21,7 @@
     {
       "Name": "TrackAudio status",
       "UUID": "com.neil-enns.trackaudio.trackaudiostatus",
-      "Icon": "images/plugin/trackAudio",
+      "Icon": "images/plugin/pluginIcon",
       "Tooltip": "Shows the status of the connection to TrackAudio.",
       "DisableAutomaticStates": true,
       "UserTitleEnabled": true,
@@ -56,7 +56,7 @@
     }
   ],
   "Category": "TrackAudio",
-  "CategoryIcon": "images/plugin/headphones-solid",
+  "CategoryIcon": "images/plugin/categoryIcon",
   "CodePath": "bin/plugin.js",
   "Description": "Provides buttons for controlling TrackAudio",
   "Icon": "images/plugin/pluginIcon",
