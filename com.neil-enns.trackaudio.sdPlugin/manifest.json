@@ -53,6 +53,24 @@
           "Title": "HOTLINE"
         }
       ]
+    },
+    {
+      "Name": "Push to talk",
+      "UUID": "com.neil-enns.trackaudio.pushtotalk",
+      "Icon": "images/plugin/microphone-solid",
+      "Tooltip": "Triggers transmit via push-to-talk.",
+      "DisableAutomaticStates": true,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/pushToTalk/black",
+          "TitleAlignment": "middle"
+        },
+        {
+          "Image": "images/actions/pushToTalk/orange",
+          "TitleAlignment": "middle"
+        }
+      ]
     }
   ],
   "Category": "TrackAudio",

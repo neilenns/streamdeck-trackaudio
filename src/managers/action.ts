@@ -2,6 +2,10 @@ import { HotlineSettings } from "@actions/hotline";
 import { StationSettings } from "@actions/stationStatus";
 import { HotlineController, isHotlineController } from "@controllers/hotline";
 import {
+  isPushToTalkController,
+  PushToTalkController,
+} from "@controllers/pushToTalk";
+import {
   StationStatusController,
   isStationStatusController,
 } from "@controllers/stationStatus";
@@ -35,6 +39,17 @@ export default class ActionManager extends EventEmitter {
       ActionManager.instance = new ActionManager();
     }
     return ActionManager.instance;
+  }
+
+  /**
+   * Adds a push-to-talk action to the action list. Emits a pushToTalkAdded event
+   * after the action is added.
+   * @param action The action
+   */
+  public addPushToTalk(action: Action): void {
+    this.actions.push(new PushToTalkController(action));
+
+    this.emit("pushToTalkAdded");
   }
 
   /**
@@ -268,6 +283,10 @@ export default class ActionManager extends EventEmitter {
       .forEach((entry) => {
         entry.isTransmitting = true;
       });
+
+    this.getPushToTalkControllers().forEach((entry) => {
+      entry.isTransmitting = true;
+    });
   }
 
   /**
@@ -279,6 +298,10 @@ export default class ActionManager extends EventEmitter {
       .forEach((entry) => {
         entry.isTransmitting = false;
       });
+
+    this.getPushToTalkControllers().forEach((entry) => {
+      entry.isTransmitting = false;
+    });
   }
 
   /**
@@ -381,6 +404,20 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
+   * Sends a message via TrackAudioManager to indicate a PushToTalk action was pressed.
+   */
+  public pttPressed() {
+    TrackAudioManager.getInstance().sendMessage({ type: "kPttPressed" });
+  }
+
+  /**
+   * Sends a message via TrackAudioManager to indicate a PushToTalk action was released.
+   */
+  public pttReleased() {
+    TrackAudioManager.getInstance().sendMessage({ type: "kPttReleased" });
+  }
+
+  /**
    * Returns an array of all the actions tracked by the action manager.
    * @returns An array of the currently tracked actions
    */
@@ -397,6 +434,17 @@ export default class ActionManager extends EventEmitter {
     return this.actions.filter((action) =>
       isStationStatusController(action)
     ) as StationStatusController[];
+  }
+
+  /**
+   * Retrieves the list of all tracked PushToTalkControllers.
+   * @returns An array of PushToTalkControllers
+   */
+  public getPushToTalkControllers(): PushToTalkController[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    return this.actions.filter((action) =>
+      isPushToTalkController(action)
+    ) as PushToTalkController[];
   }
 
   /**
