@@ -116,7 +116,9 @@ export type IncomingMessage =
 export type OutgoingMessage =
   | SetStationState
   | GetStationStates
-  | GetStationState;
+  | GetStationState
+  | PttPressed
+  | PttReleased;
 
 /**
  * Typeguard for StationStateUpdate.
@@ -174,4 +176,18 @@ export function isTxBegin(message: IncomingMessage): message is TxBegin {
  */
 export function isTxEnd(message: IncomingMessage): message is TxEnd {
   return message.type === "kTxEnd";
+}
+
+/**
+ * Represents the kPttPressed message to TrackAudio.
+ */
+export interface PttPressed {
+  type: "kPttPressed";
+}
+
+/**
+ * Represents the kPttReleased message to TrackAudio.
+ */
+export interface PttReleased {
+  type: "kPttReleased";
 }
