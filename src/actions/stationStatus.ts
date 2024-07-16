@@ -7,7 +7,6 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import { getDisplayTitle } from "@helpers/helpers";
 import ActionManager from "@managers/action";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
@@ -20,19 +19,6 @@ export class StationStatus extends SingletonAction<StationSettings> {
   // to something useful.
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
     ActionManager.getInstance().addStation(ev.action, ev.payload.settings);
-
-    // Set the default title to the provided callsign. StreamDeck will use this if the user
-    // didn't specify a custom title.
-    ev.action
-      .setTitle(
-        getDisplayTitle(
-          ev.payload.settings.callsign,
-          ev.payload.settings.listenTo ?? "rx"
-        )
-      )
-      .catch((error: unknown) => {
-        console.error(error);
-      });
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
@@ -48,19 +34,6 @@ export class StationStatus extends SingletonAction<StationSettings> {
     ev: DidReceiveSettingsEvent<StationSettings>
   ): void | Promise<void> {
     ActionManager.getInstance().updateStation(ev.action, ev.payload.settings);
-
-    // Set the default title to the provided callsign. StreamDeck will use this if the user
-    // didn't specify a custom title.
-    ev.action
-      .setTitle(
-        getDisplayTitle(
-          ev.payload.settings.callsign,
-          ev.payload.settings.listenTo ?? "rx"
-        )
-      )
-      .catch((error: unknown) => {
-        console.error(error);
-      });
   }
 
   // When the key is pressed send the request to toggle the current action to the ActionManager.
@@ -72,6 +45,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
 }
 
 export interface StationSettings {
+  title?: string;
   callsign: string;
   listenTo: ListenTo | null;
   notListeningIconPath: string | null;

@@ -33,6 +33,8 @@ export class StationStatusController implements Controller {
   constructor(action: Action, settings: StationSettings) {
     this.action = action;
     this._settings = settings;
+
+    this.showTitle();
   }
 
   // Getters and setters
@@ -48,6 +50,18 @@ export class StationStatusController implements Controller {
    */
   get callsign() {
     return this._settings.callsign;
+  }
+
+  /**
+   * Returns the title specified by the user in the property inspector,
+   * or the default title if no user title was specified.
+   */
+  get title() {
+    if (this._settings.title !== undefined && this._settings.title !== "") {
+      return this._settings.title;
+    } else {
+      return getDisplayTitle(this.callsign, this.listenTo);
+    }
   }
 
   /**
@@ -142,21 +156,7 @@ export class StationStatusController implements Controller {
   set lastReceivedCallsign(callsign: string | undefined) {
     this._lastReceivedcallsign = callsign;
 
-    const baseTitle = getDisplayTitle(this.callsign, this.listenTo);
-
-    if (this.lastReceivedCallsign) {
-      this.action
-        .setTitle(`${baseTitle}\n\n${this.lastReceivedCallsign}`)
-        .catch((error: unknown) => {
-          const err = error as Error;
-          console.error(`Unable to set action title: ${err.message}`);
-        });
-    } else {
-      this.action.setTitle(baseTitle).catch((error: unknown) => {
-        const err = error as Error;
-        console.error(`Unable to set action title: ${err.message}`);
-      });
-    }
+    this.showTitle();
   }
 
   /**
@@ -212,6 +212,25 @@ export class StationStatusController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
+    }
+  }
+
+  /**
+   * Shows the title on the action.
+   */
+  public showTitle() {
+    if (this.lastReceivedCallsign) {
+      this.action
+        .setTitle(`${this.title}\n\n${this.lastReceivedCallsign}`)
+        .catch((error: unknown) => {
+          const err = error as Error;
+          console.error(`Unable to set action title: ${err.message}`);
+        });
+    } else {
+      this.action.setTitle(this.title).catch((error: unknown) => {
+        const err = error as Error;
+        console.error(`Unable to set action title: ${err.message}`);
+      });
     }
   }
 }

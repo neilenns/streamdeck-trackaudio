@@ -110,7 +110,8 @@ export default class ActionManager extends EventEmitter {
 
     savedAction.settings = settings;
 
-    // Refreshes the icons in case that's what changed in settings
+    // Refreshes the title and icons in case that's what changed in settings
+    savedAction.showTitle();
     savedAction.setActiveCommsImage();
 
     if (requiresStationRefresh) {
