@@ -1,5 +1,6 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
+import { getDisplayTitle } from "@helpers/helpers";
 import { Controller } from "@interfaces/controller";
 
 // Valid values for the ListenTo property. This must match
@@ -22,6 +23,8 @@ export class StationStatusController implements Controller {
   private _isTransmitting = false;
   private _isListening = false;
 
+  private _lastReceivedcallsign?: string;
+
   /**
    * Creates a new StationStatusController object.
    * @param action The callsign for the action
@@ -30,9 +33,18 @@ export class StationStatusController implements Controller {
   constructor(action: Action, settings: StationSettings) {
     this.action = action;
     this._settings = settings;
+
+    this.showTitle();
   }
 
   // Getters and setters
+  /**
+   * Convenience property to get the showLastReceivedCallsign value of settings.
+   */
+  get showLastReceivedCallsign() {
+    return this._settings.showLastReceivedCallsign;
+  }
+
   /**
    * Conveinence property to get the listenTo value of settings.
    */
@@ -45,6 +57,18 @@ export class StationStatusController implements Controller {
    */
   get callsign() {
     return this._settings.callsign;
+  }
+
+  /**
+   * Returns the title specified by the user in the property inspector,
+   * or the default title if no user title was specified.
+   */
+  get title() {
+    if (this._settings.title !== undefined && this._settings.title !== "") {
+      return this._settings.title;
+    } else {
+      return getDisplayTitle(this.callsign, this.listenTo);
+    }
   }
 
   /**
@@ -118,7 +142,40 @@ export class StationStatusController implements Controller {
     }
 
     this._isListening = newValue;
+
+    if (!this._isListening) {
+      this.lastReceivedCallsign = undefined;
+    }
+
     this.setListeningImage();
+  }
+
+  /**
+   * Returns the last received callsign or undefined if no last received callsign is available.
+   */
+  get lastReceivedCallsign(): string | undefined {
+    return this._lastReceivedcallsign;
+  }
+
+  /**
+   * Sets the last received callsign property and updates the action title accordingly.
+   */
+  set lastReceivedCallsign(callsign: string | undefined) {
+    this._lastReceivedcallsign = callsign;
+
+    this.showTitle();
+  }
+
+  /**
+   * Resets the action to the initial display state: no last received callsign
+   * and no active coms image.
+   */
+  public reset() {
+    this.lastReceivedCallsign = undefined; // This automatically updates the title
+
+    this.isReceiving = false;
+    this.isTransmitting = false;
+    this.setActiveCommsImage();
   }
 
   /**
@@ -162,6 +219,26 @@ export class StationStatusController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
+    }
+  }
+
+  /**
+   * Shows the title on the action. Appends the last received callsign to
+   * the base title if it exists and showLastReceivedCallsign is enabled in settings.
+   */
+  public showTitle() {
+    if (this.lastReceivedCallsign && this.showLastReceivedCallsign) {
+      this.action
+        .setTitle(`${this.title}\n\n${this.lastReceivedCallsign}`)
+        .catch((error: unknown) => {
+          const err = error as Error;
+          console.error(`Unable to set action title: ${err.message}`);
+        });
+    } else {
+      this.action.setTitle(this.title).catch((error: unknown) => {
+        const err = error as Error;
+        console.error(`Unable to set action title: ${err.message}`);
+      });
     }
   }
 }

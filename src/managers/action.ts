@@ -110,7 +110,8 @@ export default class ActionManager extends EventEmitter {
 
     savedAction.settings = settings;
 
-    // Refreshes the icons in case that's what changed in settings
+    // Refreshes the title and icons in case that's what changed in settings
+    savedAction.showTitle();
     savedAction.setActiveCommsImage();
 
     if (requiresStationRefresh) {
@@ -234,13 +235,14 @@ export default class ActionManager extends EventEmitter {
    * Updates all actions that match the frequency to show the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
-  public rxBegin(frequency: number) {
+  public rxBegin(frequency: number, callsign: string) {
     this.getStationStatusControllers()
       .filter(
         (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
       .forEach((entry) => {
         entry.isReceiving = true;
+        entry.lastReceivedCallsign = callsign;
       });
 
     // Hotline actions that have a hotline frequency matching the rxBegin frequency

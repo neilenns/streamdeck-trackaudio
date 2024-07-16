@@ -27,13 +27,15 @@ station status action like this:
 
 ### Station status settings
 
-| Setting       | Description                                                                                      |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| Callsign      | The callsign for the station you want to display status for. Required.                           |
-| Listen to     | What status to display on the button, either RX, TX, XC, or XCA. Required.                       |
-| Not listening | The image to display when the station is not currently active. Optional, defaults to black.      |
-| Listening     | The image to display when the station is active. Optional, defaults to green.                    |
-| Active comms  | The image to display when a transmission is actively taking place. Optional, defaults to orange. |
+| Setting                     | Description                                                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Title                       | The title to show on the action. If omitted the station callsign and listen to value will be shown.                     |
+| Callsign                    | The callsign for the station you want to display status for. Required.                                                  |
+| Listen to                   | What status to display on the button, either RX, TX, XC, or XCA. Required.                                              |
+| Show last received callsign | When checked, the last received callsign will be appended to the action title. Only applies to actions listening to RX. |
+| Not listening               | The image to display when the station is not currently active. Optional, defaults to black.                             |
+| Listening                   | The image to display when the station is active. Optional, defaults to green.                                           |
+| Active comms                | The image to display when a transmission is actively taking place. Optional, defaults to orange.                        |
 
 ## Configuring a TrackAudio status action
 

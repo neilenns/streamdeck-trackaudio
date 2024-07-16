@@ -11,6 +11,7 @@
       "DisableAutomaticStates": true,
       "Controllers": ["Keypad"],
       "PropertyInspectorPath": "pi/stationStatus.html",
+      "UserTitleEnabled": false,
       "States": [
         {
           "Image": "images/actions/stationStatus/black",
