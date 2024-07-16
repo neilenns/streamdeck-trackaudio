@@ -39,6 +39,13 @@ export class StationStatusController implements Controller {
 
   // Getters and setters
   /**
+   * Convenience property to get the showLastReceivedCallsign value of settings.
+   */
+  get showLastReceivedCallsign() {
+    return this._settings.showLastReceivedCallsign;
+  }
+
+  /**
    * Conveinence property to get the listenTo value of settings.
    */
   get listenTo() {
@@ -216,10 +223,11 @@ export class StationStatusController implements Controller {
   }
 
   /**
-   * Shows the title on the action.
+   * Shows the title on the action. Appends the last received callsign to
+   * the base title if it exists and showLastReceivedCallsign is enabled in settings.
    */
   public showTitle() {
-    if (this.lastReceivedCallsign) {
+    if (this.lastReceivedCallsign && this.showLastReceivedCallsign) {
       this.action
         .setTitle(`${this.title}\n\n${this.lastReceivedCallsign}`)
         .catch((error: unknown) => {

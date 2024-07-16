@@ -47,6 +47,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
 export interface StationSettings {
   title?: string;
   callsign: string;
+  showLastReceivedCallsign: boolean;
   listenTo: ListenTo | null;
   notListeningIconPath: string | null;
   listeningIconPath: string | null;
