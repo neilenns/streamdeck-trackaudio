@@ -5,6 +5,7 @@
     "schedule:weekly",
     "schedule:automergeWeekly"
   ],
+  "labels": ["dependencies"],
   "packageRules": [
     {
       "groupName": "definitelyTyped",
