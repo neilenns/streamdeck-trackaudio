@@ -1,4 +1,18 @@
 /**
+ * Represents the kVoiceConnected message from TrackAudio.
+ */
+export interface VoiceConnected {
+  type: "kVoiceConnected";
+}
+
+/**
+ * Represents the kVoiceDisconnected message from TrackAudio.
+ */
+export interface VoiceDisconnected {
+  type: "kVoiceDisconnected";
+}
+
+/**
  * Represents the kStationStates message from TrackAudio.
  */
 export interface StationStates {
@@ -108,7 +122,9 @@ export type IncomingMessage =
   | RxBegin
   | RxEnd
   | TxBegin
-  | TxEnd;
+  | TxEnd
+  | VoiceConnected
+  | VoiceDisconnected;
 
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
@@ -119,6 +135,28 @@ export type OutgoingMessage =
   | GetStationState
   | PttPressed
   | PttReleased;
+
+/**
+ * Typeguard for VoiceConnected.
+ * @param message The message
+ * @returns True if the message is a VoiceConnected
+ */
+export function isVoiceConnected(
+  message: IncomingMessage
+): message is VoiceConnected {
+  return message.type === "kVoiceConnected";
+}
+
+/**
+ * Typeguard for VoiceDisconnected.
+ * @param message The message
+ * @returns True if the message is a VoiceDisconnected
+ */
+export function isVoiceDisconnected(
+  message: IncomingMessage
+): message is VoiceDisconnected {
+  return message.type === "kVoiceDisconnected";
+}
 
 /**
  * Typeguard for StationStateUpdate.
