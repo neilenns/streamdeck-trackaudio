@@ -5,7 +5,7 @@ import { Controller } from "@interfaces/controller";
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
 // in the kFrequenciesUpdate message.
-export type ListenTo = "rx" | "tx" | "xc";
+export type ListenTo = "rx" | "tx" | "xc" | "xca";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,

@@ -171,7 +171,8 @@ export default class ActionManager extends EventEmitter {
         entry.isListening =
           (data.value.rx && entry.listenTo === "rx") ||
           (data.value.tx && entry.listenTo === "tx") ||
-          (data.value.xc && entry.listenTo === "xc");
+          (data.value.xc && entry.listenTo === "xc") ||
+          (data.value.xca && entry.listenTo === "xca");
 
         entry.setActiveCommsImage();
       });
@@ -381,7 +382,7 @@ export default class ActionManager extends EventEmitter {
         rx: foundAction.listenTo === "rx" ? "toggle" : undefined,
         tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
         xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
-        xca: undefined, // xca isn't supported right now
+        xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
       },
     });
   }
