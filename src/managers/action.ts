@@ -234,13 +234,14 @@ export default class ActionManager extends EventEmitter {
    * Updates all actions that match the frequency to show the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
-  public rxBegin(frequency: number) {
+  public rxBegin(frequency: number, callsign: string) {
     this.getStationStatusControllers()
       .filter(
         (entry) => entry.frequency === frequency && entry.listenTo === "rx"
       )
       .forEach((entry) => {
         entry.isReceiving = true;
+        entry.lastReceivedCallsign = callsign;
       });
 
     // Hotline actions that have a hotline frequency matching the rxBegin frequency

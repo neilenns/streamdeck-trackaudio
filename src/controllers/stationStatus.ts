@@ -1,5 +1,6 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
+import { getDisplayTitle } from "@helpers/helpers";
 import { Controller } from "@interfaces/controller";
 
 // Valid values for the ListenTo property. This must match
@@ -21,6 +22,8 @@ export class StationStatusController implements Controller {
   private _isReceiving = false;
   private _isTransmitting = false;
   private _isListening = false;
+
+  private _lastReceivedcallsign?: string;
 
   /**
    * Creates a new StationStatusController object.
@@ -118,7 +121,54 @@ export class StationStatusController implements Controller {
     }
 
     this._isListening = newValue;
+
+    if (!this._isListening) {
+      this.lastReceivedCallsign = undefined;
+    }
+
     this.setListeningImage();
+  }
+
+  /**
+   * Returns the last received callsign or undefined if no last received callsign is available.
+   */
+  get lastReceivedCallsign(): string | undefined {
+    return this._lastReceivedcallsign;
+  }
+
+  /**
+   * Sets the last received callsign property and updates the action title accordingly.
+   */
+  set lastReceivedCallsign(callsign: string | undefined) {
+    this._lastReceivedcallsign = callsign;
+
+    const baseTitle = getDisplayTitle(this.callsign, this.listenTo);
+
+    if (this.lastReceivedCallsign) {
+      this.action
+        .setTitle(`${baseTitle}\n\n${this.lastReceivedCallsign}`)
+        .catch((error: unknown) => {
+          const err = error as Error;
+          console.error(`Unable to set action title: ${err.message}`);
+        });
+    } else {
+      this.action.setTitle(baseTitle).catch((error: unknown) => {
+        const err = error as Error;
+        console.error(`Unable to set action title: ${err.message}`);
+      });
+    }
+  }
+
+  /**
+   * Resets the action to the initial display state: no last received callsign
+   * and no active coms image.
+   */
+  public reset() {
+    this.lastReceivedCallsign = undefined; // This automatically updates the title
+
+    this.isReceiving = false;
+    this.isTransmitting = false;
+    this.setActiveCommsImage();
   }
 
   /**
