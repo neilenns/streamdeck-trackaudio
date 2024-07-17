@@ -22,7 +22,8 @@
 			],
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**"
-			]
+			],
+			"preLaunchTask": "npm: watch"
 		},
 	]
 }
