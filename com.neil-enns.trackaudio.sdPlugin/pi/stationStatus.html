@@ -56,5 +56,15 @@
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
+
+    <script type="text/javascript">
+      document
+        .querySelector('[setting="listenTo"]')
+        .addEventListener("valuechange", function (ev) {
+          document.querySelector(
+            '[setting="showLastReceivedCallsign"]'
+          ).disabled = ev.target.value !== "rx";
+        });
+    </script>
   </body>
 </html>

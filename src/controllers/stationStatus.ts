@@ -224,10 +224,15 @@ export class StationStatusController implements Controller {
 
   /**
    * Shows the title on the action. Appends the last received callsign to
-   * the base title if it exists and showLastReceivedCallsign is enabled in settings.
+   * the base title if it exists, showLastReceivedCallsign is enabled in settings,
+   * and the action is listening to RX.
    */
   public showTitle() {
-    if (this.lastReceivedCallsign && this.showLastReceivedCallsign) {
+    if (
+      this.lastReceivedCallsign &&
+      this.showLastReceivedCallsign &&
+      this.listenTo === "rx"
+    ) {
       this.action
         .setTitle(`${this.title}\n\n${this.lastReceivedCallsign}`)
         .catch((error: unknown) => {
