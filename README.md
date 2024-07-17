@@ -37,11 +37,6 @@ station status action like this:
 | Listening                   | The image to display when the station is active. Optional, defaults to green.                                           |
 | Active comms                | The image to display when a transmission is actively taking place. Optional, defaults to orange.                        |
 
-## Configuring a TrackAudio status action
-
-The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio. Simply
-add the action to your profile and, optionally, configure an image for the disconnected and connected states.
-
 ## Configuring a hotline action
 
 The hotline action provides a quick way to toggle between two stations for voice transmissions. Start by adding
@@ -58,3 +53,8 @@ your primary station in TrackAudio with XCA enabled and the hotline station in T
 | Hotline active   | The image to display when transmitting on the hotline frequency. Optional, defaults to orange.                                                                                                                                |
 | Both active      | The image to display when both the primary and hotline and frequencies are the active frequency. This should never happen, as it means your voice transmissions will get sent to both frequencies. Optional, defaults to red. |
 | Neither active   | The iamge to display when neither the primary nor the hotline frequencies have TX enabled. Optional, defaults to black.                                                                                                       |
+
+## Configuring a TrackAudio status action
+
+The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio. Simply
+add the action to your profile and, optionally, configure an image for the disconnected and connected states.

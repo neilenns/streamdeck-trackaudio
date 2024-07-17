@@ -5,6 +5,13 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Debug property inspectors",
+			"request": "launch",
+			"type": "msedge",
+			"url": "http://localhost:23654",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
 			"name": "Debug plugin",
 			"type": "node",
 			"request": "attach",
