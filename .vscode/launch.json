@@ -15,7 +15,7 @@
 			"name": "Debug plugin",
 			"type": "node",
 			"request": "attach",
-			"port": 23654,
+			"port": 54545,
 			"restart": true,
 			"outFiles": [
 				"${workspaceFolder}/bin/**/*.js"
