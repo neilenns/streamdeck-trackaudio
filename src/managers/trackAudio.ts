@@ -137,7 +137,7 @@ export default class TrackAudioManager extends EventEmitter {
    * Sends a message to TrackAudio to refresh the state of a single station.
    * @param callsign The callsign of the station to refresh
    */
-  public refreshStationState(callsign: string) {
+  public refreshStationState(callsign?: string) {
     if (!callsign || callsign === "") {
       return;
     }
