@@ -1,6 +1,5 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
-import { getDisplayTitle } from "@helpers/helpers";
 import { Controller } from "@interfaces/controller";
 
 // Valid values for the ListenTo property. This must match
@@ -67,7 +66,7 @@ export class StationStatusController implements Controller {
     if (this._settings.title !== undefined && this._settings.title !== "") {
       return this._settings.title;
     } else {
-      return getDisplayTitle(this.callsign, this.listenTo);
+      return `${this.callsign ?? "Not set"}\n${this.listenTo.toUpperCase()}`;
     }
   }
 
@@ -234,7 +233,7 @@ export class StationStatusController implements Controller {
       this.listenTo === "rx"
     ) {
       this.action
-        .setTitle(`${this.title}\n\n${this.lastReceivedCallsign}`)
+        .setTitle(`${this.title}\n${this.lastReceivedCallsign}`)
         .catch((error: unknown) => {
           const err = error as Error;
           console.error(`Unable to set action title: ${err.message}`);
