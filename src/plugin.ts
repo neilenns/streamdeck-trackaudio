@@ -21,6 +21,7 @@ import { handleTxBegin } from "@eventHandlers/trackAudio/txBegin";
 import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
 import { PushToTalk } from "@actions/pushToTalk";
 import { handleVoiceDisconnected } from "@eventHandlers/trackAudio/voiceDisconnected";
+import { handleVoiceConnected } from "@eventHandlers/trackAudio/voiceConnected";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -46,6 +47,7 @@ trackAudio.on("stationStates", handleStationStates);
 trackAudio.on("stationStateUpdate", handleStationStateUpdate);
 trackAudio.on("txBegin", handleTxBegin);
 trackAudio.on("txEnd", handleTxEnd);
+trackAudio.on("voiceConnected", handleVoiceConnected);
 trackAudio.on("voiceDisconnected", handleVoiceDisconnected);
 
 actionManager.on("hotlineSettingsUpdated", handleHotlineSettingsUpdated);

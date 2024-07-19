@@ -9,6 +9,7 @@ import {
   isStationStates,
   isTxBegin,
   isTxEnd,
+  isVoiceConnected,
   isVoiceDisconnected,
 } from "@interfaces/messages";
 
@@ -121,6 +122,8 @@ export default class TrackAudioManager extends EventEmitter {
       this.emit("txBegin", data);
     } else if (isTxEnd(data)) {
       this.emit("txEnd", data);
+    } else if (isVoiceConnected(data)) {
+      this.emit("voiceConnected");
     } else if (isVoiceDisconnected(data)) {
       this.emit("voiceDisconnected");
     }

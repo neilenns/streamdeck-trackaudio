@@ -1,5 +1,6 @@
 import {
   action,
+  DidReceiveSettingsEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
@@ -16,7 +17,7 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   onWillAppear(
     ev: WillAppearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().addTrackAudio(ev.action);
+    ActionManager.getInstance().addTrackAudio(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
@@ -25,7 +26,20 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   ): void | Promise<void> {
     ActionManager.getInstance().remove(ev.action);
   }
+
+  onDidReceiveSettings(
+    ev: DidReceiveSettingsEvent<TrackAudioStatusSettings>
+  ): Promise<void> | void {
+    ActionManager.getInstance().updateTrackAudioStatus(
+      ev.action,
+      ev.payload.settings
+    );
+  }
 }
 
 // Currently no settings are needed for this action
-type TrackAudioStatusSettings = Record<string, never>;
+export interface TrackAudioStatusSettings {
+  notConnectedIconPath: string | null;
+  connectedIconPath: string | null;
+  voiceConnectedIconPath: string | null;
+}
