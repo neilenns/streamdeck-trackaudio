@@ -9,8 +9,7 @@ import {
   isStationStates,
   isTxBegin,
   isTxEnd,
-  isVoiceConnected,
-  isVoiceDisconnected,
+  isVoiceConnectedState,
 } from "@interfaces/messages";
 
 /**
@@ -122,10 +121,8 @@ export default class TrackAudioManager extends EventEmitter {
       this.emit("txBegin", data);
     } else if (isTxEnd(data)) {
       this.emit("txEnd", data);
-    } else if (isVoiceConnected(data)) {
-      this.emit("voiceConnected");
-    } else if (isVoiceDisconnected(data)) {
-      this.emit("voiceDisconnected");
+    } else if (isVoiceConnectedState(data)) {
+      this.emit("voiceConnectedState", data);
     }
   }
 
@@ -134,6 +131,13 @@ export default class TrackAudioManager extends EventEmitter {
    */
   public refreshStationStates() {
     this.sendMessage({ type: "kGetStationStates" });
+  }
+
+  /**
+   * Sends a message to TrackAudio to refresh the voice connected state.
+   */
+  public refreshVoiceConnectedState() {
+    this.sendMessage({ type: "kGetVoiceConnectedState" });
   }
 
   /**
