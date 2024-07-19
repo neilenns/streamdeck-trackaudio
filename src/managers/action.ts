@@ -1,5 +1,6 @@
 import { HotlineSettings } from "@actions/hotline";
 import { StationSettings } from "@actions/stationStatus";
+import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import { HotlineController, isHotlineController } from "@controllers/hotline";
 import {
   isPushToTalkController,
@@ -57,8 +58,8 @@ export default class ActionManager extends EventEmitter {
    * after the action is added.
    * @param action The action to add
    */
-  public addTrackAudio(action: Action) {
-    this.actions.push(new TrackAudioStatusController(action));
+  public addTrackAudio(action: Action, settings: TrackAudioStatusSettings) {
+    this.actions.push(new TrackAudioStatusController(action, settings));
 
     this.emit("trackAudioStatusAdded", this.actions.length);
   }
@@ -117,6 +118,26 @@ export default class ActionManager extends EventEmitter {
     if (requiresStationRefresh) {
       this.emit("stationStatusSettingsUpdated", savedAction);
     }
+  }
+
+  /**
+   * Updates the settings associated with a TrackAudio status action.
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
+  public updateTrackAudioStatus(
+    action: Action,
+    settings: TrackAudioStatusSettings
+  ) {
+    const savedAction = this.getTrackAudioStatusControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.settings = settings;
   }
 
   /**
@@ -403,6 +424,16 @@ export default class ActionManager extends EventEmitter {
       }
 
       entry.isConnected = isConnected;
+    });
+  }
+
+  public setTrackAudioVoiceConnectedState(isVoiceConnected: boolean) {
+    this.getTrackAudioStatusControllers().forEach((entry) => {
+      if (entry.isVoiceConnected === isVoiceConnected) {
+        return;
+      }
+
+      entry.isVoiceConnected = isVoiceConnected;
     });
   }
 

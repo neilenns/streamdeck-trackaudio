@@ -56,5 +56,13 @@ your primary station in TrackAudio with XCA enabled and the hotline station in T
 
 ## Configuring a TrackAudio status action
 
-The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio. Simply
-add the action to your profile and, optionally, configure an image for the disconnected and connected states.
+The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio, and whether
+the voice connection in TrackAudio is up.
+
+### TrackAudio status action settings
+
+| Setting         | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| Not connected   | The image to display when not connected to TrackAudio. Optional, defaults to white.               |
+| Connected       | The image to display when connected to TrackAudio. Optional, defaults to blue.                    |
+| Voice connected | The image to display when the TrackAudio voice connection is active. Optional, defaults to green. |

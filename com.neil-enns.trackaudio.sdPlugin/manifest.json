@@ -24,16 +24,13 @@
       "UUID": "com.neil-enns.trackaudio.trackaudiostatus",
       "Icon": "images/plugin/pluginIcon",
       "Tooltip": "Shows the status of the connection to TrackAudio.",
+      "PropertyInspectorPath": "pi/trackAudioStatus.html",
       "DisableAutomaticStates": true,
       "UserTitleEnabled": true,
       "Controllers": ["Keypad"],
       "States": [
         {
           "Image": "images/actions/trackAudioStatus/notConnected",
-          "TitleAlignment": "middle"
-        },
-        {
-          "Image": "images/actions/trackAudioStatus/connected",
           "TitleAlignment": "middle"
         }
       ]
