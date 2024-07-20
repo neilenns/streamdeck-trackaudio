@@ -14,6 +14,7 @@ export class AtisLetterController implements Controller {
   // private _letter: string;
   private _settings: AtisLetterSettings;
   private _letter?: string;
+  private _isUpdated = false;
 
   /**
    * Creates a new StationStatusController object.
@@ -50,6 +51,15 @@ export class AtisLetterController implements Controller {
     this.showTitle();
   }
 
+  public get isUpdated() {
+    return this._isUpdated;
+  }
+
+  public set isUpdated(newValue: boolean) {
+    this._isUpdated = newValue;
+
+    this.setState();
+  }
   /**
    * Gets the current ATIS letter.
    */
@@ -60,10 +70,28 @@ export class AtisLetterController implements Controller {
   /**
    * Sets the current AITS letter.
    */
-  set letter(letter: string) {
-    this._letter = letter;
+  set letter(letter: string | undefined) {
+    if (letter !== undefined && this._letter !== letter) {
+      this.isUpdated = true;
+    }
 
+    this._letter = letter;
     this.showTitle();
+  }
+
+  /**
+   * Sets the state of the action based on the value of isUpdated
+   */
+  public setState() {
+    if (this.isUpdated) {
+      this.action.setState(1).catch((error: unknown) => {
+        handleAsyncException("Unable to set ATIS letter action state: ", error);
+      });
+    } else {
+      this.action.setState(0).catch((error: unknown) => {
+        handleAsyncException("Unable to set ATIS letter action state: ", error);
+      });
+    }
   }
 
   /**

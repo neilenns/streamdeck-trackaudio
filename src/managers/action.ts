@@ -24,6 +24,7 @@ import { Controller } from "@interfaces/controller";
 import { StationStateUpdate } from "@interfaces/messages";
 import TrackAudioManager from "@managers/trackAudio";
 import { EventEmitter } from "events";
+import VatsimManager from "./vatsim";
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -106,6 +107,40 @@ export default class ActionManager extends EventEmitter {
     this.emit("atisLetterAdded", settings.callsign);
   }
 
+  /**
+   * Called when an ATIS letter action keydown event is triggered. If the
+   * action is in the isUpdated state then it clears the state. If the
+   * station is not in the isUpdated state then forces a VATSIM data refresh.
+   * @param action The action
+   */
+  public atisLetterKeyDown(action: Action): void {
+    const vatsimManager = VatsimManager.getInstance();
+    const savedAction = this.getAtisLetterControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    if (savedAction.isUpdated) {
+      savedAction.isUpdated = false;
+    } else {
+      // Stopping and starting ensures the next refresh happens on the appropriate
+      // interval, instead of perhaps immediately after a manual refresh.
+      vatsimManager.stop();
+      vatsimManager.start();
+    }
+  }
+
+  /**
+   * Resets the ATIS letter on all ATIS letter actions to undefined.
+   */
+  public resetAtisLetterOnAll() {
+    this.getAtisLetterControllers().forEach((action) => {
+      action.letter = undefined;
+    });
+  }
   /**
    * Updates the settings associated with a station status action.
    * Emits a stationStatusSettingsUpdated event if the settings require
@@ -198,13 +233,8 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
-    const requiresRefresh = savedAction.callsign !== settings.callsign;
-
     savedAction.settings = settings;
-
-    if (requiresRefresh) {
-      this.emit("atisLetterSettingsUpdated", savedAction);
-    }
+    savedAction.letter = undefined;
   }
 
   /**

@@ -77,9 +77,14 @@
       "PropertyInspectorPath": "pi/atisLetter.html",
       "Tooltip": "Shows the current ATIS letter for the specified.",
       "Controllers": ["Keypad"],
+      "DisableAutomaticStates": true,
       "States": [
         {
           "Image": "images/actions/atisLetter/black",
+          "TitleAlignment": "middle"
+        },
+        {
+          "Image": "images/actions/atisLetter/orange",
           "TitleAlignment": "middle"
         }
       ]

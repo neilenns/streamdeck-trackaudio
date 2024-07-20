@@ -10,6 +10,7 @@ export const handleDisconnected = () => {
   console.log("Plugin detected loss of connection to TrackAudio");
   actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
   actionManager.setIsListeningOnAll(false);
+  actionManager.resetAtisLetterOnAll();
 
   vatsimManager.stop();
 };
