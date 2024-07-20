@@ -1,7 +1,7 @@
 import { AtisLetterSettings } from "@actions/atisLetter";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { handleActionError } from "@root/utils/handleElgatoError";
+import { handleAsyncException } from "@root/utils/handleAsyncException";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -73,15 +73,15 @@ export class AtisLetterController implements Controller {
   public showTitle() {
     if (this._letter) {
       this.action.setTitle(this._letter).catch((error: unknown) => {
-        handleActionError("Unable to set action title: ", error);
+        handleAsyncException("Unable to set action title: ", error);
       });
     } else if (this.callsign) {
       this.action.setTitle(this.callsign).catch((error: unknown) => {
-        handleActionError("Unable to set action title: ", error);
+        handleAsyncException("Unable to set action title: ", error);
       });
     } else {
       this.action.setTitle(`ATIS`).catch((error: unknown) => {
-        handleActionError("Unable to set action title: ", error);
+        handleAsyncException("Unable to set action title: ", error);
       });
     }
   }

@@ -24,9 +24,12 @@ import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnec
 import { AtisLetter } from "@actions/atisLetter";
 import { handleAtisLetterAdded } from "@eventHandlers/actionManager/atisLetterAdded";
 import { handleAtisLetterSettingsUpdated } from "@eventHandlers/actionManager/atisLetterSettingsUpdated";
+import VatsimManager from "@managers/vatsim";
+import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
+const vatsimManager = VatsimManager.getInstance();
 
 // streamDeck.logger.setLevel(LogLevel.TRACE);
 
@@ -63,6 +66,8 @@ actionManager.on("trackAudioStatusAdded", handleTrackAudioStatusAdded);
 actionManager.on("trackAudioStatusUpdated", handleTrackAudioStatusAdded);
 actionManager.on("atisLetterAdded", handleAtisLetterAdded);
 actionManager.on("atisLetterSettingsUpdated", handleAtisLetterSettingsUpdated);
+
+vatsimManager.on("vatsimDataReceived", handleVatsimDataReceived);
 
 // Finally, connect to the Stream Deck.
 await streamDeck.connect();
