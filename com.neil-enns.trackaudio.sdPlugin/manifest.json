@@ -78,6 +78,7 @@
       "Tooltip": "Shows the current ATIS letter for the specified.",
       "Controllers": ["Keypad"],
       "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
       "States": [
         {
           "Image": "images/actions/atisLetter/black",

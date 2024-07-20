@@ -50,4 +50,5 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
 
 export interface AtisLetterSettings {
   callsign?: string;
+  title?: string;
 }

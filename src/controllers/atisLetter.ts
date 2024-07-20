@@ -48,18 +48,29 @@ export class AtisLetterController implements Controller {
   set settings(newValue: AtisLetterSettings) {
     this._settings = newValue;
 
+    if (this._settings.title === "") {
+      this._settings.title = undefined;
+    }
+
     this.showTitle();
   }
 
+  /**
+   * Gets the isUpdated state on the action.
+   */
   public get isUpdated() {
     return this._isUpdated;
   }
 
+  /**
+   * Sets the isUpdated state on the action and refreshes the state image to match.
+   */
   public set isUpdated(newValue: boolean) {
     this._isUpdated = newValue;
 
     this.setState();
   }
+
   /**
    * Gets the current ATIS letter.
    */
@@ -89,9 +100,16 @@ export class AtisLetterController implements Controller {
   }
 
   /**
+   * Convenience method to return the action's title from settings.
+   */
+  get title() {
+    return this._settings.title;
+  }
+
+  /**
    * Sets the state of the action based on the value of isUpdated
    */
-  public setState() {
+  private setState() {
     if (this.isUpdated) {
       this.action.setState(1).catch((error: unknown) => {
         handleAsyncException("Unable to set ATIS letter action state: ", error);
@@ -108,16 +126,14 @@ export class AtisLetterController implements Controller {
    * or the station name and the word "ATIS".
    */
   public showTitle() {
-    if (this._letter) {
-      this.action.setTitle(this._letter).catch((error: unknown) => {
-        handleAsyncException("Unable to set action title: ", error);
-      });
-    } else if (this.callsign) {
-      this.action.setTitle(this.callsign).catch((error: unknown) => {
-        handleAsyncException("Unable to set action title: ", error);
-      });
+    if (this.letter) {
+      this.action
+        .setTitle(`${this.title ?? ""}\n${this._letter ?? ""}`)
+        .catch((error: unknown) => {
+          handleAsyncException("Unable to set action title: ", error);
+        });
     } else {
-      this.action.setTitle(`ATIS`).catch((error: unknown) => {
+      this.action.setTitle(this.title ?? "ATIS").catch((error: unknown) => {
         handleAsyncException("Unable to set action title: ", error);
       });
     }
