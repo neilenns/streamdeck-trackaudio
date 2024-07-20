@@ -42,12 +42,18 @@ export default class VatsimManager extends EventEmitter {
    */
   public start(intervalInMs = 300000) {
     this.stop(); // Ensure no previous interval is running
+
+    // Grab data right awawy
+    this.fetchData().catch((error: unknown) => {
+      handleAsyncException("Unable to start VATSIM timer: ", error);
+    });
+
+    // Set up polling
     this.intervalId = setInterval(() => {
       this.fetchData().catch((error: unknown) => {
         handleAsyncException("Unable to start VATSIM timer: ", error);
       });
     }, intervalInMs);
-    console.log("Started fetching data every 5 minutes.");
   }
 
   /**
@@ -57,5 +63,14 @@ export default class VatsimManager extends EventEmitter {
     if (this.intervalId !== null) {
       clearInterval(this.intervalId);
     }
+  }
+
+  /**
+   * Forces a refresh of the data from VATSIM.
+   */
+  public refresh() {
+    this.fetchData().catch((error: unknown) => {
+      handleAsyncException("Unable to start VATSIM timer: ", error);
+    });
   }
 }

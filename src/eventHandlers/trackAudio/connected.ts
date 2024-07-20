@@ -11,5 +11,8 @@ export const handleConnected = () => {
   trackAudio.refreshStationStates();
   trackAudio.refreshVoiceConnectedState();
 
-  vatsimManager.start(5000 * 60);
+  // Only start polling VATSIM if there are ATIS letters.
+  if (actionManager.getAtisLetterControllers().length > 0) {
+    vatsimManager.start();
+  }
 };

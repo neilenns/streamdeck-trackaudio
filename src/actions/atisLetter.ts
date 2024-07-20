@@ -6,6 +6,7 @@ import {
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import ActionManager from "@managers/action";
+import VatsimManager from "@managers/vatsim";
 
 @action({ UUID: "com.neil-enns.trackaudio.atisletter" })
 /**
@@ -35,6 +36,10 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
       ev.action,
       ev.payload.settings
     );
+  }
+
+  onKeyDown(): Promise<void> | void {
+    VatsimManager.getInstance().refresh();
   }
 }
 

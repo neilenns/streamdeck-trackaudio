@@ -528,8 +528,8 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Retrieves the list of all tracked HotlineControllers.
-   * @returns An array of HotlineControllers
+   * Retrieves the list of all tracked AtisLetterControllers.
+   * @returns An array of AtisLetterControllers
    */
   public getAtisLetterControllers(): AtisLetterController[] {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
