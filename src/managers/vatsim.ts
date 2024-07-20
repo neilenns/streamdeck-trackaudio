@@ -69,8 +69,7 @@ export default class VatsimManager extends EventEmitter {
    * Forces a refresh of the data from VATSIM.
    */
   public refresh() {
-    this.fetchData().catch((error: unknown) => {
-      handleAsyncException("Unable to refresh VATSIM data: ", error);
-    });
+    this.stop();
+    this.start();
   }
 }

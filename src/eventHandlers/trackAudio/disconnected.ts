@@ -7,7 +7,6 @@ export const handleDisconnected = () => {
   const trackAudio = TrackAudioManager.getInstance();
   const vatsimManager = VatsimManager.getInstance();
 
-  console.log("Plugin detected loss of connection to TrackAudio");
   actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
   actionManager.setIsListeningOnAll(false);
   actionManager.resetAtisLetterOnAll();

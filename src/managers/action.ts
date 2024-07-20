@@ -126,10 +126,7 @@ export default class ActionManager extends EventEmitter {
     if (savedAction.isUpdated) {
       savedAction.isUpdated = false;
     } else {
-      // Stopping and starting ensures the next refresh happens on the appropriate
-      // interval, instead of perhaps immediately after a manual refresh.
-      vatsimManager.stop();
-      vatsimManager.start();
+      vatsimManager.refresh();
     }
   }
 
@@ -233,8 +230,13 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
+    const requiresRefresh = savedAction.settings.callsign !== settings.callsign;
+
     savedAction.settings = settings;
-    savedAction.letter = undefined;
+
+    if (requiresRefresh) {
+      this.emit("atisLetterUpdated", savedAction);
+    }
   }
 
   /**
