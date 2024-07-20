@@ -69,6 +69,20 @@
           "TitleAlignment": "middle"
         }
       ]
+    },
+    {
+      "Name": "ATIS letter",
+      "UUID": "com.neil-enns.trackaudio.atisletter",
+      "Icon": "images/actions/atisLetter/cloud-white",
+      "PropertyInspectorPath": "pi/atisLetter.html",
+      "Tooltip": "Shows the current ATIS letter for the specified.",
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/atisLetter/black",
+          "TitleAlignment": "middle"
+        }
+      ]
     }
   ],
   "Category": "TrackAudio",

@@ -1,6 +1,11 @@
+import { AtisLetterSettings } from "@actions/atisLetter";
 import { HotlineSettings } from "@actions/hotline";
 import { StationSettings } from "@actions/stationStatus";
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
+import {
+  AtisLetterController,
+  isAtisLetterController,
+} from "@controllers/atisLetter";
 import { HotlineController, isHotlineController } from "@controllers/hotline";
 import {
   isPushToTalkController,
@@ -90,6 +95,16 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
+   * Adds a station status action to the action list. Emits a stationStatusAdded
+   * event after the action is added.
+   * @param action The action
+   * @param settings The settings for the action
+   */
+  public addAtisLetter(action: Action, settings: AtisLetterSettings): void {
+    this.actions.push(new AtisLetterController(action, settings));
+  }
+
+  /**
    * Updates the settings associated with a station status action.
    * Emits a stationStatusSettingsUpdated event if the settings require
    * the action to refresh.
@@ -170,6 +185,18 @@ export default class ActionManager extends EventEmitter {
     if (requiresStationRefresh) {
       this.emit("hotlineSettingsUpdated", savedAction);
     }
+  }
+
+  public updateAtisLetter(action: Action, settings: AtisLetterSettings) {
+    const savedAction = this.getAtisLetterControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.settings = settings;
   }
 
   /**
@@ -490,6 +517,17 @@ export default class ActionManager extends EventEmitter {
     return this.actions.filter((action) =>
       isHotlineController(action)
     ) as HotlineController[];
+  }
+
+  /**
+   * Retrieves the list of all tracked HotlineControllers.
+   * @returns An array of HotlineControllers
+   */
+  public getAtisLetterControllers(): AtisLetterController[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    return this.actions.filter((action) =>
+      isAtisLetterController(action)
+    ) as AtisLetterController[];
   }
 
   /**
