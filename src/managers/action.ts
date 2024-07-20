@@ -1,6 +1,11 @@
+import { AtisLetterSettings } from "@actions/atisLetter";
 import { HotlineSettings } from "@actions/hotline";
 import { StationSettings } from "@actions/stationStatus";
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
+import {
+  AtisLetterController,
+  isAtisLetterController,
+} from "@controllers/atisLetter";
 import { HotlineController, isHotlineController } from "@controllers/hotline";
 import {
   isPushToTalkController,
@@ -19,6 +24,7 @@ import { Controller } from "@interfaces/controller";
 import { StationStateUpdate } from "@interfaces/messages";
 import TrackAudioManager from "@managers/trackAudio";
 import { EventEmitter } from "events";
+import VatsimManager from "./vatsim";
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -89,6 +95,49 @@ export default class ActionManager extends EventEmitter {
     this.emit("stationStatusAdded", settings.callsign);
   }
 
+  /**
+   * Adds a station status action to the action list. Emits a stationStatusAdded
+   * event after the action is added.
+   * @param action The action
+   * @param settings The settings for the action
+   */
+  public addAtisLetter(action: Action, settings: AtisLetterSettings): void {
+    this.actions.push(new AtisLetterController(action, settings));
+
+    this.emit("atisLetterAdded", settings.callsign);
+  }
+
+  /**
+   * Called when an ATIS letter action keydown event is triggered. If the
+   * action is in the isUpdated state then it clears the state. If the
+   * station is not in the isUpdated state then forces a VATSIM data refresh.
+   * @param action The action
+   */
+  public atisLetterKeyDown(action: Action): void {
+    const vatsimManager = VatsimManager.getInstance();
+    const savedAction = this.getAtisLetterControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    if (savedAction.isUpdated) {
+      savedAction.isUpdated = false;
+    } else {
+      vatsimManager.refresh();
+    }
+  }
+
+  /**
+   * Resets the ATIS letter on all ATIS letter actions to undefined.
+   */
+  public resetAtisLetterOnAll() {
+    this.getAtisLetterControllers().forEach((action) => {
+      action.letter = undefined;
+    });
+  }
   /**
    * Updates the settings associated with a station status action.
    * Emits a stationStatusSettingsUpdated event if the settings require
@@ -169,6 +218,24 @@ export default class ActionManager extends EventEmitter {
 
     if (requiresStationRefresh) {
       this.emit("hotlineSettingsUpdated", savedAction);
+    }
+  }
+
+  public updateAtisLetter(action: Action, settings: AtisLetterSettings) {
+    const savedAction = this.getAtisLetterControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    const requiresRefresh = savedAction.settings.callsign !== settings.callsign;
+
+    savedAction.settings = settings;
+
+    if (requiresRefresh) {
+      this.emit("atisLetterUpdated", savedAction);
     }
   }
 
@@ -490,6 +557,17 @@ export default class ActionManager extends EventEmitter {
     return this.actions.filter((action) =>
       isHotlineController(action)
     ) as HotlineController[];
+  }
+
+  /**
+   * Retrieves the list of all tracked AtisLetterControllers.
+   * @returns An array of AtisLetterControllers
+   */
+  public getAtisLetterControllers(): AtisLetterController[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    return this.actions.filter((action) =>
+      isAtisLetterController(action)
+    ) as AtisLetterController[];
   }
 
   /**

@@ -21,11 +21,18 @@ import { handleTxBegin } from "@eventHandlers/trackAudio/txBegin";
 import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
 import { PushToTalk } from "@actions/pushToTalk";
 import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnectedState";
+import { AtisLetter } from "@actions/atisLetter";
+import { handleAtisLetterAdded } from "@eventHandlers/actionManager/atisLetterAdded";
+import VatsimManager from "@managers/vatsim";
+import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
+import { handleAtisLetterUpdated } from "@eventHandlers/actionManager/atisLetterUpdated";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
+const vatsimManager = VatsimManager.getInstance();
 
-// streamDeck.logger.setLevel(LogLevel.TRACE);
+// Flag to prevent handling repeated disconnect events
+let disconnectHandled = false;
 
 // Register for uncaught exceptions
 process.on("uncaughtException", (error) => {
@@ -33,13 +40,22 @@ process.on("uncaughtException", (error) => {
 });
 
 // Register all the event handlers
-streamDeck.actions.registerAction(new StationStatus());
-streamDeck.actions.registerAction(new TrackAudioStatus());
+streamDeck.actions.registerAction(new AtisLetter());
 streamDeck.actions.registerAction(new Hotline());
 streamDeck.actions.registerAction(new PushToTalk());
+streamDeck.actions.registerAction(new StationStatus());
+streamDeck.actions.registerAction(new TrackAudioStatus());
 
-trackAudio.on("connected", handleConnected);
-trackAudio.on("disconnected", handleDisconnected);
+trackAudio.on("connected", () => {
+  disconnectHandled = false;
+  handleConnected();
+});
+trackAudio.on("disconnected", () => {
+  if (!disconnectHandled) {
+    disconnectHandled = true;
+    handleDisconnected();
+  }
+});
 trackAudio.on("rxBegin", handleRxBegin);
 trackAudio.on("rxEnd", handleRxEnd);
 trackAudio.on("stationStates", handleStationStates);
@@ -57,6 +73,10 @@ actionManager.on(
 );
 actionManager.on("trackAudioStatusAdded", handleTrackAudioStatusAdded);
 actionManager.on("trackAudioStatusUpdated", handleTrackAudioStatusAdded);
+actionManager.on("atisLetterAdded", handleAtisLetterAdded);
+actionManager.on("atisLetterUpdated", handleAtisLetterUpdated);
+
+vatsimManager.on("vatsimDataReceived", handleVatsimDataReceived);
 
 // Finally, connect to the Stream Deck.
 await streamDeck.connect();

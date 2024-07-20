@@ -4,10 +4,11 @@ This StreamDeck plugin provides actions to interact with [TrackAudio](https://gi
 
 | Action            | Description                                                                                                                |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Station status    | Shows the current RX, TX, XC, or XCA for a specific station. Pressing the action toggles specified state for that station. |
-| TrackAudio status | Shows the current state of the connection to TrackAudio from StreamDeck.                                                   |
+| ATIS letter       | Shows the current ATIS letter for a specific station.                                                                      |
 | Hotline           | Switches active TX between two stations, typically a primary controlling position and a secondary hotline position.        |
 | Push to talk      | Triggers TX on all TX frequencies, as if pressing the push to talk key configured in TrackAudio.                           |
+| Station status    | Shows the current RX, TX, XC, or XCA for a specific station. Pressing the action toggles specified state for that station. |
+| TrackAudio status | Shows the current state of the connection to TrackAudio from StreamDeck.                                                   |
 
 After installation the plugin actions are available under the TrackAudio category:
 
@@ -66,3 +67,18 @@ the voice connection in TrackAudio is up.
 | Not connected   | The image to display when not connected to TrackAudio. Optional, defaults to white.               |
 | Connected       | The image to display when connected to TrackAudio. Optional, defaults to blue.                    |
 | Voice connected | The image to display when the TrackAudio voice connection is active. Optional, defaults to green. |
+
+## Configuring an ATIS letter action
+
+**TrackAudio must be running for the ATIS letter to update.**
+
+The ATIS letter action shows the current AITS letter for a station, refreshed automatically every five minutes.
+When the ATIS letter updates the action will show an orange background until the action is pressed to reset the
+state. Pressing the action when it is not in the updated state will force a refresh of the data from VATSIM.
+
+### ATIS letter action settings
+
+| Setting  | Description                                                                                                                                   |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Title    | The title to show on the action. If omitted no title is shown. The current ATIS letter will be appended to this title separated by a newline. |
+| Callsign | The callsign to get the current AITS letter for, for example `KSEA_ATIS`. Required.                                                           |
