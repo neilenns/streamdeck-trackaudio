@@ -4,33 +4,21 @@
   "Author": "Neil Enns",
   "Actions": [
     {
-      "Name": "Station status",
-      "UUID": "com.neil-enns.trackaudio.stationstatus",
-      "Icon": "images/plugin/headphones-solid",
-      "Tooltip": "Shows the status of a station.",
-      "DisableAutomaticStates": true,
+      "Name": "ATIS letter",
+      "UUID": "com.neil-enns.trackaudio.atisletter",
+      "Icon": "images/actions/atisLetter/cloud-white",
+      "PropertyInspectorPath": "pi/atisLetter.html",
+      "Tooltip": "Shows the current ATIS letter for the specified.",
       "Controllers": ["Keypad"],
-      "PropertyInspectorPath": "pi/stationStatus.html",
+      "DisableAutomaticStates": true,
       "UserTitleEnabled": false,
       "States": [
         {
-          "Image": "images/actions/stationStatus/black",
+          "Image": "images/actions/atisLetter/black",
           "TitleAlignment": "middle"
-        }
-      ]
-    },
-    {
-      "Name": "TrackAudio status",
-      "UUID": "com.neil-enns.trackaudio.trackaudiostatus",
-      "Icon": "images/plugin/pluginIcon",
-      "Tooltip": "Shows the status of the connection to TrackAudio.",
-      "PropertyInspectorPath": "pi/trackAudioStatus.html",
-      "DisableAutomaticStates": true,
-      "UserTitleEnabled": true,
-      "Controllers": ["Keypad"],
-      "States": [
+        },
         {
-          "Image": "images/actions/trackAudioStatus/notConnected",
+          "Image": "images/actions/atisLetter/orange",
           "TitleAlignment": "middle"
         }
       ]
@@ -71,21 +59,33 @@
       ]
     },
     {
-      "Name": "ATIS letter",
-      "UUID": "com.neil-enns.trackaudio.atisletter",
-      "Icon": "images/actions/atisLetter/cloud-white",
-      "PropertyInspectorPath": "pi/atisLetter.html",
-      "Tooltip": "Shows the current ATIS letter for the specified.",
-      "Controllers": ["Keypad"],
+      "Name": "Station status",
+      "UUID": "com.neil-enns.trackaudio.stationstatus",
+      "Icon": "images/plugin/headphones-solid",
+      "Tooltip": "Shows the status of a station.",
       "DisableAutomaticStates": true,
+      "Controllers": ["Keypad"],
+      "PropertyInspectorPath": "pi/stationStatus.html",
       "UserTitleEnabled": false,
       "States": [
         {
-          "Image": "images/actions/atisLetter/black",
+          "Image": "images/actions/stationStatus/black",
           "TitleAlignment": "middle"
-        },
+        }
+      ]
+    },
+    {
+      "Name": "TrackAudio status",
+      "UUID": "com.neil-enns.trackaudio.trackaudiostatus",
+      "Icon": "images/plugin/pluginIcon",
+      "Tooltip": "Shows the status of the connection to TrackAudio.",
+      "PropertyInspectorPath": "pi/trackAudioStatus.html",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": true,
+      "Controllers": ["Keypad"],
+      "States": [
         {
-          "Image": "images/actions/atisLetter/orange",
+          "Image": "images/actions/trackAudioStatus/notConnected",
           "TitleAlignment": "middle"
         }
       ]
