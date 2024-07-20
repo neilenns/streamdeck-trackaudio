@@ -22,6 +22,8 @@ import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
 import { PushToTalk } from "@actions/pushToTalk";
 import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnectedState";
 import { AtisLetter } from "@actions/atisLetter";
+import { handleAtisLetterAdded } from "@eventHandlers/actionManager/atisLetterAdded";
+import { handleAtisLetterSettingsUpdated } from "@eventHandlers/actionManager/atisLetterSettingsUpdated";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -59,6 +61,8 @@ actionManager.on(
 );
 actionManager.on("trackAudioStatusAdded", handleTrackAudioStatusAdded);
 actionManager.on("trackAudioStatusUpdated", handleTrackAudioStatusAdded);
+actionManager.on("atisLetterAdded", handleAtisLetterAdded);
+actionManager.on("atisLetterSettingsUpdated", handleAtisLetterSettingsUpdated);
 
 // Finally, connect to the Stream Deck.
 await streamDeck.connect();

@@ -102,6 +102,8 @@ export default class ActionManager extends EventEmitter {
    */
   public addAtisLetter(action: Action, settings: AtisLetterSettings): void {
     this.actions.push(new AtisLetterController(action, settings));
+
+    this.emit("atisLetterAdded", settings.callsign);
   }
 
   /**
@@ -196,7 +198,13 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
+    const requiresRefresh = savedAction.callsign !== settings.callsign;
+
     savedAction.settings = settings;
+
+    if (requiresRefresh) {
+      this.emit("atisLetterSettingsUpdated", savedAction);
+    }
   }
 
   /**
