@@ -6,5 +6,5 @@ import { Action } from "@elgato/streamdeck";
 export interface Controller {
   type: string;
   action: Action;
-  reset: () => void;
+  reset(): void;
 }
