@@ -1,6 +1,16 @@
-# TrackAudio buttons for StreamDeck
+# TrackAudio buttons for StreamDeck <!-- omit from toc -->
 
 This StreamDeck plugin provides actions to interact with [TrackAudio](https://github.com/pierr3/TrackAudio).
+
+![Screenshot a StreamDeck profile with buttons for stations, current AITS letter, a hotline, and a push-to-talk button](docs/images/button-example.png)
+
+- [Action descriptions](#action-descriptions)
+- [Configuring a station status action](#configuring-a-station-status-action)
+- [Configuring a hotline action](#configuring-a-hotline-action)
+- [Configuring a TrackAudio status action](#configuring-a-trackaudio-status-action)
+- [Configuring an ATIS letter action](#configuring-an-atis-letter-action)
+
+## Action descriptions
 
 | Action            | Description                                                                                                                |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -26,7 +36,7 @@ station status action like this:
 
 ![Screenshot of a station status button configuration, with callsign set to LMT_GND, RX selected, and three custom images specified for the three states](docs/images/station-status.png)
 
-### Station status settings
+### Station status settings <!-- omit from toc -->
 
 | Setting                     | Description                                                                                                             |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -43,7 +53,7 @@ station status action like this:
 The hotline action provides a quick way to toggle between two stations for voice transmissions. Start by adding
 your primary station in TrackAudio with XCA enabled and the hotline station in TrackAudio with RX enabled.
 
-## Hotline action settings
+### Hotline action settings <!-- omit from toc -->
 
 | Setting          | Description                                                                                                                                                                                                                   |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -60,7 +70,7 @@ your primary station in TrackAudio with XCA enabled and the hotline station in T
 The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio, and whether
 the voice connection in TrackAudio is up.
 
-### TrackAudio status action settings
+### TrackAudio status action settings <!-- omit from toc -->
 
 | Setting         | Description                                                                                       |
 | --------------- | ------------------------------------------------------------------------------------------------- |
@@ -76,7 +86,7 @@ The ATIS letter action shows the current AITS letter for a station, refreshed au
 When the ATIS letter updates the action will show an orange background until the action is pressed to reset the
 state. Pressing the action when it is not in the updated state will force a refresh of the data from VATSIM.
 
-### ATIS letter action settings
+### ATIS letter action settings <!-- omit from toc -->
 
 | Setting  | Description                                                                                                                                   |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
