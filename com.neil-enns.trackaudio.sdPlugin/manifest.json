@@ -14,11 +14,7 @@
       "UserTitleEnabled": false,
       "States": [
         {
-          "Image": "images/actions/atisLetter/black",
-          "TitleAlignment": "middle"
-        },
-        {
-          "Image": "images/actions/atisLetter/orange",
+          "Image": "images/actions/atisLetter/current",
           "TitleAlignment": "middle"
         }
       ]
