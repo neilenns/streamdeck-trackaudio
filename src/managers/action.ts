@@ -25,6 +25,7 @@ import { StationStateUpdate } from "@interfaces/messages";
 import TrackAudioManager from "@managers/trackAudio";
 import { EventEmitter } from "events";
 import VatsimManager from "./vatsim";
+import { handleAsyncException } from "@root/utils/handleAsyncException";
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -126,6 +127,9 @@ export default class ActionManager extends EventEmitter {
     if (savedAction.isUpdated) {
       savedAction.isUpdated = false;
     } else {
+      savedAction.action.showOk().catch((error: unknown) => {
+        handleAsyncException("Unable to show OK on ATIS button:", error);
+      });
       vatsimManager.refresh();
     }
   }
