@@ -316,6 +316,8 @@ export default class ActionManager extends EventEmitter {
       entry.isRxHotline = false;
       entry.isTxHotline = false;
       entry.isTxPrimary = false;
+
+      entry.setActiveCommsImage();
     });
   }
 
