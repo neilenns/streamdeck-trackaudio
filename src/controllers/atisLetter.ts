@@ -127,11 +127,17 @@ export class AtisLetterController implements Controller {
    */
   public showTitle() {
     if (this.letter) {
-      this.action
-        .setTitle(`${this.title ?? ""}\n${this._letter ?? ""}`)
-        .catch((error: unknown) => {
+      if (this.title) {
+        this.action
+          .setTitle(`${this.title}\n${this._letter ?? ""}`)
+          .catch((error: unknown) => {
+            handleAsyncException("Unable to set action title: ", error);
+          });
+      } else {
+        this.action.setTitle(this.letter).catch((error: unknown) => {
           handleAsyncException("Unable to set action title: ", error);
         });
+      }
     } else {
       this.action.setTitle(this.title ?? "ATIS").catch((error: unknown) => {
         handleAsyncException("Unable to set action title: ", error);
