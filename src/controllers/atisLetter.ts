@@ -15,6 +15,7 @@ export class AtisLetterController implements Controller {
   private _settings: AtisLetterSettings;
   private _letter?: string;
   private _isUpdated = false;
+  private _isUnavailable = false;
 
   /**
    * Creates a new StationStatusController object.
@@ -33,6 +34,28 @@ export class AtisLetterController implements Controller {
    */
   public reset() {
     this.letter = undefined;
+    this.isUpdated = false;
+    this.isUnavailable = false;
+  }
+
+  /**
+   * Gets isUnavailable, which is true if no ATIS letter was available in the last VATSIM update.
+   */
+  get isUnavailable() {
+    return this._isUnavailable;
+  }
+
+  /*
+   * Sets isUnavailable and updates the action state, which is true if no ATIS letter was available
+   * in the last VATSIM update.
+   */
+  set isUnavailable(newValue: boolean) {
+    if (this._isUnavailable === newValue) {
+      return;
+    }
+
+    this._isUnavailable = newValue;
+    this.setImage();
   }
 
   /**
@@ -40,6 +63,27 @@ export class AtisLetterController implements Controller {
    */
   get callsign() {
     return this._settings.callsign;
+  }
+
+  /**
+   * Returns the currentIconPath for the ATIS action.
+   */
+  get currentIconPath() {
+    return this._settings.currentIconPath;
+  }
+
+  /**
+   * Returns the updatedIconPath for the ATIS action.
+   */
+  get updatedIconPath() {
+    return this._settings.updatedIconPath;
+  }
+
+  /**
+   * Returns the unavailableIconPath for the ATIS action.
+   */
+  get unavailableIconPath() {
+    return this._settings.unavailableIconPath;
   }
 
   /**
@@ -75,7 +119,7 @@ export class AtisLetterController implements Controller {
   public set isUpdated(newValue: boolean) {
     this._isUpdated = newValue;
 
-    this.setState();
+    this.setImage();
   }
 
   /**
@@ -116,15 +160,41 @@ export class AtisLetterController implements Controller {
   /**
    * Sets the state of the action based on the value of isUpdated
    */
-  private setState() {
-    if (this.isUpdated) {
-      this.action.setState(1).catch((error: unknown) => {
-        handleAsyncException("Unable to set ATIS letter action state: ", error);
-      });
+  private setImage() {
+    if (this.isUnavailable) {
+      this.action
+        .setImage(
+          this.unavailableIconPath ??
+            "images/actions/atisLetter/unavailable.svg"
+        )
+        .catch((error: unknown) => {
+          handleAsyncException(
+            "Unable to set ATIS letter action image: ",
+            error
+          );
+        });
+    } else if (this.isUpdated) {
+      this.action
+        .setImage(
+          this.updatedIconPath ?? "images/actions/atisLetter/updated.svg"
+        )
+        .catch((error: unknown) => {
+          handleAsyncException(
+            "Unable to set ATIS letter action image: ",
+            error
+          );
+        });
     } else {
-      this.action.setState(0).catch((error: unknown) => {
-        handleAsyncException("Unable to set ATIS letter action state: ", error);
-      });
+      this.action
+        .setImage(
+          this.currentIconPath ?? "images/actions/atisLetter/current.svg"
+        )
+        .catch((error: unknown) => {
+          handleAsyncException(
+            "Unable to set ATIS letter action state: ",
+            error
+          );
+        });
     }
   }
 

@@ -51,4 +51,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
 export interface AtisLetterSettings {
   callsign?: string;
   title?: string;
+  currentIconPath?: string;
+  updatedIconPath?: string;
+  unavailableIconPath?: string;
 }
