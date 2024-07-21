@@ -23,6 +23,11 @@ export class TrackAudioStatusController implements Controller {
     this._settings = settings;
   }
 
+  public reset() {
+    this.isConnected = false;
+    this.isVoiceConnected = false;
+  }
+
   /**
    * Gets the settings.
    */

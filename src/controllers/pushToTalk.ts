@@ -20,6 +20,13 @@ export class PushToTalkController implements Controller {
   }
 
   /**
+   * Resets the action to its default, disconnected, state.
+   */
+  public reset() {
+    this.isTransmitting = false;
+  }
+
+  /**
    * True if push-to-talk is actively transmitting.
    */
   get isTransmitting() {
