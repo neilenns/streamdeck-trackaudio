@@ -14,8 +14,8 @@ export const handleVoiceConnectedState = (data: VoiceConnectedState) => {
       vatsimManager.start();
     }
   } else {
+    actionManager.resetAllButTrackAudio();
     actionManager.setTrackAudioVoiceConnectedState(false);
-    actionManager.setIsListeningOnAll(false);
     vatsimManager.stop();
   }
 };

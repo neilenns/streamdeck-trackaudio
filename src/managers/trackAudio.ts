@@ -1,5 +1,3 @@
-import { EventEmitter } from "events";
-import WebSocket from "ws";
 import {
   IncomingMessage,
   OutgoingMessage,
@@ -11,6 +9,8 @@ import {
   isTxEnd,
   isVoiceConnectedState,
 } from "@interfaces/messages";
+import { EventEmitter } from "events";
+import WebSocket from "ws";
 
 /**
  * Manages the websocket connection to TrackAudio.
@@ -22,6 +22,7 @@ export default class TrackAudioManager extends EventEmitter {
   private url = "ws://localhost:49080/ws";
   private reconnectTimer: NodeJS.Timeout | null = null;
 
+  //#region Constructor and instance management
   private constructor() {
     super();
   }
@@ -36,6 +37,7 @@ export default class TrackAudioManager extends EventEmitter {
     }
     return TrackAudioManager.instance;
   }
+  //#endregion
 
   /**
    * Sets the connection URL for TrackAudio.

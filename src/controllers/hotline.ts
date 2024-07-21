@@ -30,6 +30,18 @@ export class HotlineController implements Controller {
   }
 
   /**
+   * Resets the action to its default, disconnected, state.
+   */
+  public reset() {
+    this.isReceiving = false;
+    this.isRxHotline = false;
+    this.isTxHotline = false;
+    this.isTxPrimary = false;
+
+    this.setActiveCommsImage();
+  }
+
+  /**
    * Sets whether the hotline frequency is actively receiving a communication.
    */
   set isReceiving(newValue: boolean) {

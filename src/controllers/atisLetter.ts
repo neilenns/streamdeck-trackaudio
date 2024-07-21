@@ -29,6 +29,13 @@ export class AtisLetterController implements Controller {
   }
 
   /**
+   * Resets the action to its default, disconnected, state.
+   */
+  public reset() {
+    this.letter = undefined;
+  }
+
+  /**
    * Returns the callsign for the ATIS action.
    */
   get callsign() {

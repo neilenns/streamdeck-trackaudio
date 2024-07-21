@@ -8,8 +8,8 @@ import {
 } from "@controllers/atisLetter";
 import { HotlineController, isHotlineController } from "@controllers/hotline";
 import {
-  isPushToTalkController,
   PushToTalkController,
+  isPushToTalkController,
 } from "@controllers/pushToTalk";
 import {
   StationStatusController,
@@ -304,24 +304,6 @@ export default class ActionManager extends EventEmitter {
   }
 
   /**
-   * Sets the isListening state on all tracked actions.
-   * @param state The isListening state to set
-   */
-  public setIsListeningOnAll(isListening: boolean) {
-    this.getStationStatusControllers().forEach((entry) => {
-      entry.isListening = isListening;
-    });
-
-    this.getHotlineControllers().forEach((entry) => {
-      entry.isRxHotline = false;
-      entry.isTxHotline = false;
-      entry.isTxPrimary = false;
-
-      entry.setActiveCommsImage();
-    });
-  }
-
-  /**
    * Updates all actions that match the frequency to show the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
@@ -591,6 +573,28 @@ export default class ActionManager extends EventEmitter {
       entry.action.showAlert().catch((error: unknown) => {
         console.error(error);
       });
+    });
+  }
+
+  /**
+   * Resets all tracked actions except the TrackAudio status action.
+   */
+  public resetAllButTrackAudio() {
+    this.actions
+      .filter((entry) => {
+        return !isTrackAudioStatusController(entry);
+      })
+      .forEach((entry) => {
+        entry.reset();
+      });
+  }
+
+  /**
+   * Resets all tracked actions to their initial state.
+   */
+  public resetAll() {
+    this.actions.forEach((entry) => {
+      entry.reset();
     });
   }
 }
