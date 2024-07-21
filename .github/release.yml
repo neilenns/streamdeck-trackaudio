@@ -12,6 +12,9 @@ changelog:
     - title: Bug fixes 🐛
       labels:
         - bug
+    - title: Documentation 📖
+      labels:
+        - documentation
     - title: Infrastructure updates 💻
       labels:
         - development
