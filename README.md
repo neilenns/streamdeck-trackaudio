@@ -68,7 +68,7 @@ your primary station in TrackAudio with XCA enabled and the hotline station in T
 ## Configuring a TrackAudio status action
 
 The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio, and whether
-the voice connection in TrackAudio is up.
+the voice connection in TrackAudio is up. Pressing the action will force a state refresh.
 
 ### TrackAudio status action settings <!-- omit from toc -->
 
