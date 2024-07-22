@@ -1,6 +1,7 @@
 import {
   action,
   DidReceiveSettingsEvent,
+  KeyDownEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
@@ -34,6 +35,10 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
       ev.action,
       ev.payload.settings
     );
+  }
+
+  onKeyDown(ev: KeyDownEvent<TrackAudioStatusSettings>): Promise<void> | void {
+    ActionManager.getInstance().trackAudioStatusKeyDown(ev.action);
   }
 }
 
