@@ -17,8 +17,8 @@ This StreamDeck plugin provides actions to interact with [TrackAudio](https://gi
 | ATIS letter       | Shows the current ATIS letter for a specific station.                                                                      |
 | Hotline           | Switches active TX between two stations, typically a primary controlling position and a secondary hotline position.        |
 | Push to talk      | Triggers TX on all TX frequencies, as if pressing the push to talk key configured in TrackAudio.                           |
-| Station status    | Shows the current RX, TX, XC, or XCA for a specific station. Pressing the action toggles specified state for that station. |
-| TrackAudio status | Shows the current state of the connection to TrackAudio from StreamDeck.                                                   |
+| Station status    | Shows the current RX, TX, XC, or XCA for a specific station. Pressing the action toggles specified state for that station. Also shows the last received callsign by the station. |
+| TrackAudio status | Shows the current state of the connection to TrackAudio from StreamDeck and whether TrackAudio is voice connected to VATSIM.                                                   |
 
 After installation the plugin actions are available under the TrackAudio category:
 
