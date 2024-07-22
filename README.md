@@ -9,16 +9,17 @@ This StreamDeck plugin provides actions to interact with [TrackAudio](https://gi
 - [Configuring a hotline action](#configuring-a-hotline-action)
 - [Configuring a TrackAudio status action](#configuring-a-trackaudio-status-action)
 - [Configuring an ATIS letter action](#configuring-an-atis-letter-action)
+- [Configuring a push to talk action](#configuring-a-push-to-talk-action)
 
 ## Action descriptions
 
-| Action            | Description                                                                                                                |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| ATIS letter       | Shows the current ATIS letter for a specific station.                                                                      |
-| Hotline           | Switches active TX between two stations, typically a primary controlling position and a secondary hotline position.        |
-| Push to talk      | Triggers TX on all TX frequencies, as if pressing the push to talk key configured in TrackAudio.                           |
+| Action            | Description                                                                                                                                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ATIS letter       | Shows the current ATIS letter for a specific station.                                                                                                                            |
+| Hotline           | Switches active TX between two stations, typically a primary controlling position and a secondary hotline position.                                                              |
+| Push to talk      | Triggers TX on all TX frequencies, as if pressing the push to talk key configured in TrackAudio.                                                                                 |
 | Station status    | Shows the current RX, TX, XC, or XCA for a specific station. Pressing the action toggles specified state for that station. Also shows the last received callsign by the station. |
-| TrackAudio status | Shows the current state of the connection to TrackAudio from StreamDeck and whether TrackAudio is voice connected to VATSIM.                                                   |
+| TrackAudio status | Shows the current state of the connection to TrackAudio from StreamDeck and whether TrackAudio is voice connected to VATSIM.                                                     |
 
 After installation the plugin actions are available under the TrackAudio category:
 
@@ -27,14 +28,17 @@ After installation the plugin actions are available under the TrackAudio categor
 ## Configuring a station status action
 
 The station status action displays the current status of a single station's button in TrackAudio, including
-whether communication is currently active.
+whether communication is currently active. Pressing the action will toggle the equivalent button in TrackAudio,
+conveinent for listening to other frequencies while controlling with the ability to quickly turn off listening
+to those frequencies when things get busy.
 
-![Screenshot of the LMT_GND station position configured in TrackAudio for receive (Rx)](docs/images/trackAudio.png)
+For example, if you are controlling `LMT_TWR` and have TrackAudio set up like this:
 
-For example, to display status of the Rx button for `LMT_GND`, as shown in the image above, configure the
-station status action like this:
+![Screenshot of the LMT_TWR station position configured in TrackAudio for receive (RX), transmit (TX), and cross-couple across (XCA)](docs/images/trackAudio.png)
 
-![Screenshot of a station status button configuration, with callsign set to LMT_GND, RX selected, and three custom images specified for the three states](docs/images/station-status.png)
+configure the station status action like this to show that RX is enabled and the last received callsign:
+
+![Screenshot of a station status button configuration, with callsign set to LMT_TWR, RX selected, and show last receive callsign enabled](docs/images/station-status.png)
 
 ### Station status settings <!-- omit from toc -->
 
@@ -51,8 +55,14 @@ station status action like this:
 
 ## Configuring a hotline action
 
-The hotline action provides a quick way to toggle between two stations for voice transmissions. Start by adding
-your primary station in TrackAudio with XCA enabled and the hotline station in TrackAudio with RX enabled.
+The hotline action provides a quick way to toggle between two stations for voice transmissions. This is typically
+used by center controllers who have a hotline frequency established with neighbouring sectors.
+
+To use the hotline action start by adding the appropriate stations to TrackAudio. Your primary station should
+be added with `XCA` enabled and the hotline station should be added with `RX` enabled. Then configure the
+hotline action with the primary and hotline station callsigns.
+
+Once configured, pressing the action will toggle `TX` active between your primary and hotline frequencies.
 
 ### Hotline action settings <!-- omit from toc -->
 
@@ -83,9 +93,9 @@ the voice connection in TrackAudio is up. Pressing the action will force a state
 
 **TrackAudio must be running for the ATIS letter to update.**
 
-The ATIS letter action shows the current AITS letter for a station, refreshed automatically every five minutes.
+The ATIS letter action shows the current AITS letter for a station, refreshed automatically every minute.
 When the ATIS letter updates the action will show an orange background until the action is pressed to reset the
-state. Pressing the action when it is not in the updated state will force a refresh of the data from VATSIM.
+state. Pressing the action when it is not in the updated state will force a refresh of the ATIS information.
 
 ### ATIS letter action settings <!-- omit from toc -->
 
@@ -96,3 +106,7 @@ state. Pressing the action when it is not in the updated state will force a refr
 | Current     | The image to display when the ATIS letter shown is current. Optional, defaults to black.                                                      |
 | Updated     | The image to display when the ATIS letter updated to a new one. Optional, defaults to orange.                                                 |
 | Unavailable | The image to display when no ATIS letter is available. Optional, defaults to a warning icon.                                                  |
+
+## Configuring a push to talk action
+
+The push to talk action does not require configuration for use. Simply add it to your profile, then press the action to start transmitting.
