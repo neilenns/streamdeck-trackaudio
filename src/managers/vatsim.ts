@@ -36,11 +36,11 @@ export default class VatsimManager extends EventEmitter {
   }
 
   /**
-   * Starts polling VATSIM for new data every 5 minutes.
+   * Starts polling VATSIM for new data.
    *
-   * @param intervalInMs The interval to poll VATSIM, in milliseconds. Default is 5 minutes.
+   * @param intervalInMs The interval to poll VATSIM, in milliseconds. Default is one minute.
    */
-  public start(intervalInMs = 300000) {
+  public start(intervalInMs = 60000) {
     this.stop(); // Ensure no previous interval is running
 
     // Grab data right awawy
