@@ -504,6 +504,11 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
+    // Don't try and toggle a station that doesn't have a frequency (typically this means it doesn't exist)
+    if (foundAction.frequency === 0) {
+      return;
+    }
+
     // Send the message to TrackAudio.
     TrackAudioManager.getInstance().sendMessage({
       type: "kSetStationState",
