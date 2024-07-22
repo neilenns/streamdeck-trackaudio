@@ -225,6 +225,8 @@ export class StationStatusController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
+
+      return;
     }
 
     if (this.isListening) {
