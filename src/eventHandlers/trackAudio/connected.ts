@@ -6,6 +6,5 @@ export const handleConnected = () => {
   const trackAudio = TrackAudioManager.getInstance();
 
   actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
-  trackAudio.refreshStationStates();
-  trackAudio.refreshVoiceConnectedState();
+  trackAudio.refreshVoiceConnectedState(); // This will force an update of station states as well if voice is connected.
 };

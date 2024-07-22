@@ -184,7 +184,7 @@ export default class ActionManager extends EventEmitter {
 
     // Refreshes the title and icons in case that's what changed in settings
     savedAction.showTitle();
-    savedAction.setActiveCommsImage();
+    savedAction.setState();
 
     if (requiresStationRefresh) {
       this.emit("stationStatusSettingsUpdated", savedAction);
@@ -236,7 +236,7 @@ export default class ActionManager extends EventEmitter {
     savedAction.settings = settings;
 
     // Refreshes the icons in case that's what changed in settings
-    savedAction.setActiveCommsImage();
+    savedAction.setState();
 
     if (requiresStationRefresh) {
       this.emit("hotlineSettingsUpdated", savedAction);
@@ -285,7 +285,8 @@ export default class ActionManager extends EventEmitter {
           (data.value.xc && entry.listenTo === "xc") ||
           (data.value.xca && entry.listenTo === "xca");
 
-        entry.setActiveCommsImage();
+        entry.isAvailable = true;
+        entry.setState();
       });
 
     // Do the same for hotline actions
@@ -298,7 +299,38 @@ export default class ActionManager extends EventEmitter {
         entry.isRxHotline = data.value.rx;
       }
 
-      entry.setActiveCommsImage();
+      entry.setState();
+    });
+  }
+
+  /**
+   * Updates the isAvailable property on all tracked controllers based on
+   * whether that station is present in the list of data from TrackAudio.
+   * @param stations The list of station data received from TrackAudio.
+   */
+  public updateStationsIsAvailable(stations: StationStateUpdate[]) {
+    // Build a dictionary of the received state updates.
+    const stateInfo = stations.reduce<Record<string, StationStateUpdate>>(
+      (dict, station) => {
+        if (station.value.callsign) {
+          dict[station.value.callsign] = station;
+        }
+        return dict;
+      },
+      {}
+    );
+
+    // Loop through all tracked controllers and see if they are in the dictionary.
+    this.getStationStatusControllers().forEach((entry) => {
+      if (!entry.callsign) {
+        return;
+      }
+
+      if (entry.callsign in stateInfo) {
+        entry.isAvailable = true;
+      } else {
+        entry.isAvailable = false;
+      }
     });
   }
 
