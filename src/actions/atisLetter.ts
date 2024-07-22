@@ -7,7 +7,6 @@ import {
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import ActionManager from "@managers/action";
-import { handleAsyncException } from "@root/utils/handleAsyncException";
 
 @action({ UUID: "com.neil-enns.trackaudio.atisletter" })
 /**
@@ -19,10 +18,6 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   // to something useful.
   onWillAppear(ev: WillAppearEvent<AtisLetterSettings>): void | Promise<void> {
     ActionManager.getInstance().addAtisLetter(ev.action, ev.payload.settings);
-
-    ev.action.setState(0).catch((error: unknown) => {
-      handleAsyncException("Unable to set ATIS letter action state: ", error);
-    });
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
