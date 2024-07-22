@@ -176,9 +176,11 @@ export default class ActionManager extends EventEmitter {
       return;
     }
 
-    // This avoids unnecessary calls to TrackAudio when the callsign isn't the setting
-    // that updated.
-    const requiresStationRefresh = savedAction.callsign !== settings.callsign;
+    // This avoids unnecessary calls to TrackAudio when the callsign or listenTo settings
+    // didn't change.
+    const requiresStationRefresh =
+      savedAction.callsign !== settings.callsign ||
+      savedAction.listenTo !== settings.listenTo;
 
     savedAction.settings = settings;
 
