@@ -114,7 +114,10 @@ export default class ActionManager extends EventEmitter {
    * @param action The action
    */
   public trackAudioStatusKeyDown(action: Action): void {
-    TrackAudioManager.getInstance().refreshStationStates();
+    const trackAudio = TrackAudioManager.getInstance();
+    trackAudio.refreshStationStates();
+    trackAudio.refreshVoiceConnectedState();
+
     action.showOk().catch((error: unknown) => {
       handleAsyncException(
         "Unable to show OK status on TrackAudio action: ",
