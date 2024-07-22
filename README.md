@@ -1,6 +1,9 @@
 # TrackAudio buttons for StreamDeck <!-- omit from toc -->
 
-This StreamDeck plugin provides actions to interact with [TrackAudio](https://github.com/pierr3/TrackAudio).
+> [!IMPORTANT]
+> This plugin requires [TrackAudio beta 1.3.0-beta.1](https://github.com/pierr3/TrackAudio/releases/tag/1.3.0-beta.1) or later. It will not work with earlier versions of TrackAudio.
+
+This StreamDeck plugin provides actions to interact with TrackAudio. [Download the plugin](https://github.com/neilenns/streamdeck-trackaudio/releases/latest) from the releases page.
 
 ![Screenshot a StreamDeck profile with buttons for stations, current AITS letter, a hotline, and a push-to-talk button](docs/images/button-example.png)
 
