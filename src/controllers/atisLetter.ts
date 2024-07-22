@@ -55,7 +55,7 @@ export class AtisLetterController implements Controller {
     }
 
     this._isUnavailable = newValue;
-    this.setImage();
+    this.setState();
   }
 
   /**
@@ -119,7 +119,7 @@ export class AtisLetterController implements Controller {
   public set isUpdated(newValue: boolean) {
     this._isUpdated = newValue;
 
-    this.setImage();
+    this.setState();
   }
 
   /**
@@ -160,7 +160,7 @@ export class AtisLetterController implements Controller {
   /**
    * Sets the state of the action based on the value of isUpdated
    */
-  private setImage() {
+  private setState() {
     if (this.isUnavailable) {
       this.action
         .setImage(

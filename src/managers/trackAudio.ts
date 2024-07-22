@@ -22,6 +22,8 @@ export default class TrackAudioManager extends EventEmitter {
   private url = "ws://localhost:49080/ws";
   private reconnectTimer: NodeJS.Timeout | null = null;
 
+  private _isVoiceConnected = false;
+
   //#region Constructor and instance management
   private constructor() {
     super();
@@ -56,6 +58,14 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   /**
+   * Provides the current state of the voice connection in TrackAudio.
+   * @returns True if voice is connected.
+   */
+  get isVoiceConnected() {
+    return this._isVoiceConnected;
+  }
+
+  /**
    * Connects to a TrackAudio instance and registers event handlers for various socket events.
    * @param url The URL of the TrackAudio instance to connect to, typically ws://localhost:49080/ws
    */
@@ -81,6 +91,7 @@ export default class TrackAudioManager extends EventEmitter {
     this.socket.on("close", () => {
       console.log("WebSocket connection closed");
 
+      this._isVoiceConnected = false;
       this.emit("disconnected");
       this.reconnect();
     });
@@ -93,6 +104,8 @@ export default class TrackAudioManager extends EventEmitter {
       } else {
         console.error("WebSocket error:", err.message);
       }
+
+      this._isVoiceConnected = false;
       this.reconnect();
     });
 
@@ -124,6 +137,7 @@ export default class TrackAudioManager extends EventEmitter {
     } else if (isTxEnd(data)) {
       this.emit("txEnd", data);
     } else if (isVoiceConnectedState(data)) {
+      this._isVoiceConnected = data.value.connected;
       this.emit("voiceConnectedState", data);
     }
   }
