@@ -23,9 +23,9 @@ import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { StationStateUpdate } from "@interfaces/messages";
 import TrackAudioManager from "@managers/trackAudio";
+import { handleAsyncException } from "@root/utils/handleAsyncException";
 import { EventEmitter } from "events";
 import VatsimManager from "./vatsim";
-import { handleAsyncException } from "@root/utils/handleAsyncException";
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -106,6 +106,21 @@ export default class ActionManager extends EventEmitter {
     this.actions.push(new AtisLetterController(action, settings));
 
     this.emit("atisLetterAdded", settings.callsign);
+  }
+
+  /**
+   * Called when a TrackAudio status action keydown event is triggered.
+   * Forces a refresh of the TrackAudio status.
+   * @param action The action
+   */
+  public trackAudioStatusKeyDown(action: Action): void {
+    TrackAudioManager.getInstance().refreshStationStates();
+    action.showOk().catch((error: unknown) => {
+      handleAsyncException(
+        "Unable to show OK status on TrackAudio action: ",
+        error
+      );
+    });
   }
 
   /**
