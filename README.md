@@ -32,7 +32,7 @@ After installation the plugin actions are available under the TrackAudio categor
 
 The station status action displays the current status of a single station's button in TrackAudio, including
 whether communication is currently active. Pressing the action will toggle the equivalent button in TrackAudio,
-conveinent for listening to other frequencies while controlling with the ability to quickly turn off listening
+convenient for listening to other frequencies while controlling with the ability to quickly turn off listening
 to those frequencies when things get busy.
 
 For example, if you are controlling `LMT_TWR` and have TrackAudio set up like this:
