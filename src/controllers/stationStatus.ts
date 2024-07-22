@@ -21,7 +21,7 @@ export class StationStatusController implements Controller {
   private _isReceiving = false;
   private _isTransmitting = false;
   private _isListening = false;
-
+  private _isAvailable: boolean | undefined = undefined;
   private _lastReceivedcallsign?: string;
 
   /**
@@ -36,7 +36,7 @@ export class StationStatusController implements Controller {
     this.showTitle();
   }
 
-  // Getters and setters
+  //#region Getters and setters
   /**
    * Convenience property to get the showLastReceivedCallsign value of settings.
    */
@@ -101,7 +101,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isReceiving = newValue;
-    this.setActiveCommsImage();
+    this.setState();
   }
 
   /**
@@ -121,7 +121,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isTransmitting = newValue;
-    this.setActiveCommsImage();
+    this.setState();
   }
 
   /**
@@ -141,14 +141,31 @@ export class StationStatusController implements Controller {
     }
 
     this._isListening = newValue;
+    this.setState();
 
     if (!this._isListening) {
       this.lastReceivedCallsign = undefined;
     }
-
-    this.setListeningImage();
   }
 
+  /**
+   * True if the station is available in TrackAudio.
+   */
+  get isAvailable(): boolean | undefined {
+    return this._isAvailable;
+  }
+
+  /**
+   * Sets the isAvailable property and updates the action image accordingly.
+   */
+  set isAvailable(newValue: boolean) {
+    if (this._isAvailable === newValue) {
+      return;
+    }
+
+    this._isAvailable = newValue;
+    this.setState();
+  }
   /**
    * Returns the last received callsign or undefined if no last received callsign is available.
    */
@@ -164,6 +181,7 @@ export class StationStatusController implements Controller {
 
     this.showTitle();
   }
+  //#endregion
 
   /**
    * Resets the action to the initial display state: no last received callsign
@@ -172,18 +190,32 @@ export class StationStatusController implements Controller {
   public reset() {
     this.lastReceivedCallsign = undefined; // This automatically updates the title
 
-    this.isListening = false;
-    this.isReceiving = false;
-    this.isTransmitting = false;
+    this._isListening = false;
+    this._isReceiving = false;
+    this._isTransmitting = false;
+    this._isAvailable = undefined;
 
-    this.setActiveCommsImage();
+    this.setState();
   }
 
   /**
-   * Sets the action image to the correct one for when comms are active,
-   * or resets it to the correct isListening image when coms are off.
+   * Sets the action image to the correct one given the current isReceiving, isTransmitting, isAvailable and
+   * isListening value.
    */
-  public setActiveCommsImage() {
+  public setState() {
+    if (this.isAvailable !== undefined && !this.isAvailable) {
+      this.action
+        .setImage(
+          this._settings.unavailableIconPath ??
+            "images/actions/stationStatus/unavailable.svg"
+        )
+        .catch((error: unknown) => {
+          console.error(error);
+        });
+
+      return;
+    }
+
     if (this.isReceiving || this.isTransmitting) {
       this.action
         .setImage(
@@ -193,15 +225,8 @@ export class StationStatusController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
-    } else {
-      this.setListeningImage();
     }
-  }
 
-  /**
-   * Sets the action image to the correct one given the current isListening value
-   */
-  public setListeningImage() {
     if (this.isListening) {
       this.action
         .setImage(
@@ -211,16 +236,18 @@ export class StationStatusController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
-    } else {
-      this.action
-        .setImage(
-          this._settings.notListeningIconPath ??
-            "images/actions/stationStatus/black.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
+
+      return;
     }
+
+    this.action
+      .setImage(
+        this._settings.notListeningIconPath ??
+          "images/actions/stationStatus/black.svg"
+      )
+      .catch((error: unknown) => {
+        console.error(error);
+      });
   }
 
   /**

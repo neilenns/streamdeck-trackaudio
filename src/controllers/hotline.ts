@@ -38,7 +38,7 @@ export class HotlineController implements Controller {
     this.isTxHotline = false;
     this.isTxPrimary = false;
 
-    this.setActiveCommsImage();
+    this.setState();
   }
 
   /**
@@ -51,7 +51,7 @@ export class HotlineController implements Controller {
     }
 
     this._isReceiving = newValue;
-    this.setActiveCommsImage();
+    this.setState();
   }
 
   /**
@@ -131,7 +131,7 @@ export class HotlineController implements Controller {
     this._settings = newValue;
   }
 
-  public setActiveCommsImage() {
+  public setState() {
     // This state is bad, it means Tx is cross coupled
     // on both hotline and primary.
     if (this.isTxHotline && this.isTxPrimary) {

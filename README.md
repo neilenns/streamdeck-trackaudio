@@ -47,6 +47,7 @@ station status action like this:
 | Not listening               | The image to display when the station is not currently active. Optional, defaults to black.                             |
 | Listening                   | The image to display when the station is active. Optional, defaults to green.                                           |
 | Active comms                | The image to display when a transmission is actively taking place. Optional, defaults to orange.                        |
+| Unavailable                 | The image to display when the station is not added in TrackAudio. Optional, defaults to a warning icon.                 |
 
 ## Configuring a hotline action
 
@@ -88,7 +89,10 @@ state. Pressing the action when it is not in the updated state will force a refr
 
 ### ATIS letter action settings <!-- omit from toc -->
 
-| Setting  | Description                                                                                                                                   |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Title    | The title to show on the action. If omitted no title is shown. The current ATIS letter will be appended to this title separated by a newline. |
-| Callsign | The callsign to get the current AITS letter for, for example `KSEA_ATIS`. Required.                                                           |
+| Setting     | Description                                                                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Title       | The title to show on the action. If omitted no title is shown. The current ATIS letter will be appended to this title separated by a newline. |
+| Callsign    | The callsign to get the current AITS letter for, for example `KSEA_ATIS`. Required.                                                           |
+| Current     | The image to display when the ATIS letter shown is current. Optional, defaults to black.                                                      |
+| Updated     | The image to display when the ATIS letter updated to a new one. Optional, defaults to orange.                                                 |
+| Unavailable | The image to display when no ATIS letter is available. Optional, defaults to a warning icon.                                                  |

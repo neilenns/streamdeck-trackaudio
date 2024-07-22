@@ -52,4 +52,5 @@ export interface StationSettings {
   notListeningIconPath: string | null;
   listeningIconPath: string | null;
   activeCommsIconPath: string | null;
+  unavailableIconPath: string | null;
 }

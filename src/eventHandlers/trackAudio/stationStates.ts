@@ -8,7 +8,11 @@ import ActionManager from "@managers/action";
 export const handleStationStates = (data: StationStates) => {
   const actionManager = ActionManager.getInstance();
 
+  // Update the states for all the received data
   data.value.stations.forEach((station) => {
     actionManager.updateStationState(station);
   });
+
+  // Update the stations that aren't available
+  actionManager.updateStationsIsAvailable(data.value.stations);
 };
