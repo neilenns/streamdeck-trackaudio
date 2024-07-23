@@ -11,7 +11,7 @@ export const handleAtisLetterAdded = (controller: AtisLetterController) => {
 
   controller.showTitle();
 
-  if (trackAudio.isConnected()) {
+  if (trackAudio.isVoiceConnected) {
     vatsimManager.start();
   }
 };

@@ -73,9 +73,10 @@ export default class ActionManager extends EventEmitter {
    * @param action The action to add
    */
   public addTrackAudio(action: Action, settings: TrackAudioStatusSettings) {
-    this.actions.push(new TrackAudioStatusController(action, settings));
+    const controller = new TrackAudioStatusController(action, settings);
 
-    this.emit("trackAudioStatusAdded", this.actions.length);
+    this.actions.push(controller);
+    this.emit("trackAudioStatusAdded", controller);
   }
 
   /**
@@ -85,10 +86,11 @@ export default class ActionManager extends EventEmitter {
    * @param settings The settings for the action
    */
   public addHotline(action: Action, settings: HotlineSettings) {
-    this.actions.push(new HotlineController(action, settings));
+    const controller = new HotlineController(action, settings);
 
     // Force buttons to refresh so the newly added button shows the correct state.
-    this.emit("trackAudioStatusAdded", this.actions.length);
+    this.actions.push(controller);
+    this.emit("hotlineAdded", controller);
   }
 
   /**

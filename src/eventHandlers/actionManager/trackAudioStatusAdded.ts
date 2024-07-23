@@ -1,14 +1,17 @@
 import ActionManager from "@managers/action";
 import TrackAudioManager from "@managers/trackAudio";
 
-export const handleTrackAudioStatusAdded = (count: number) => {
+export const handleTrackAudioStatusAdded = () => {
   const actionManager = ActionManager.getInstance();
   const trackAudio = TrackAudioManager.getInstance();
 
-  if (count === 1) {
+  if (
+    actionManager.getTrackAudioStatusControllers().length === 1 &&
+    !trackAudio.isConnected
+  ) {
     trackAudio.connect();
+  } else {
+    // Refresh the button state so the new button gets the proper state from the start.
+    actionManager.setTrackAudioConnectionState(trackAudio.isConnected);
   }
-
-  // Refresh the button state so the new button gets the proper state from the start.
-  actionManager.setTrackAudioConnectionState(trackAudio.isConnected());
 };
