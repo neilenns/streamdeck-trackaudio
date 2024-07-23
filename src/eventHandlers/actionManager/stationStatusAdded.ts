@@ -1,7 +1,10 @@
+import { StationStatusController } from "@controllers/stationStatus";
 import ActionManager from "@managers/action";
 import TrackAudioManager from "@managers/trackAudio";
 
-export const handleStationStatusAdded = (callsign: string) => {
+export const handleStationStatusAdded = (
+  controller: StationStatusController
+) => {
   const trackAudio = TrackAudioManager.getInstance();
   const actionManager = ActionManager.getInstance();
 
@@ -12,6 +15,6 @@ export const handleStationStatusAdded = (callsign: string) => {
   }
   // Otherwise just request the state for the newly added station status.
   else {
-    trackAudio.refreshStationState(callsign);
+    trackAudio.refreshStationState(controller.callsign);
   }
 };
