@@ -65,4 +65,5 @@ export interface HotlineSettings {
   hotlineActiveImagePath: string | null;
   bothActiveImagePath: string | null;
   neitherActiveImagePath: string | null;
+  unavailableImagePath: string | null;
 }

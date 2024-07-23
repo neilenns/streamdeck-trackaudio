@@ -328,16 +328,7 @@ export default class ActionManager extends EventEmitter {
    * @param stations The list of station data received from TrackAudio.
    */
   public updateStationsIsAvailable(stations: StationStateUpdate[]) {
-    // Build a dictionary of the received state updates.
-    const stateInfo = stations.reduce<Record<string, StationStateUpdate>>(
-      (dict, station) => {
-        if (station.value.callsign) {
-          dict[station.value.callsign] = station;
-        }
-        return dict;
-      },
-      {}
-    );
+    const callsigns = stations.map((entry) => entry.value.callsign);
 
     // Loop through all tracked controllers and see if they are in the dictionary.
     this.getStationStatusControllers().forEach((entry) => {
@@ -345,7 +336,23 @@ export default class ActionManager extends EventEmitter {
         return;
       }
 
-      if (entry.callsign in stateInfo) {
+      if (entry.callsign in callsigns) {
+        entry.isAvailable = true;
+      } else {
+        entry.isAvailable = false;
+      }
+    });
+
+    // Do the same for the hotline actions
+    this.getHotlineControllers().forEach((entry) => {
+      if (!entry.primaryCallsign && !entry.hotlineCallsign) {
+        return;
+      }
+
+      if (
+        entry.primaryCallsign in callsigns &&
+        entry.hotlineCallsign in callsigns
+      ) {
         entry.isAvailable = true;
       } else {
         entry.isAvailable = false;

@@ -214,6 +214,7 @@ export class StationStatusController implements Controller {
   public reset() {
     this.lastReceivedCallsign = undefined; // This automatically updates the title
 
+    this.frequency = 0;
     this._isListening = false;
     this._isReceiving = false;
     this._isTransmitting = false;
