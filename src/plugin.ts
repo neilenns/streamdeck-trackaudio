@@ -26,6 +26,8 @@ import { handleAtisLetterAdded } from "@eventHandlers/actionManager/atisLetterAd
 import VatsimManager from "@managers/vatsim";
 import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
 import { handleAtisLetterUpdated } from "@eventHandlers/actionManager/atisLetterUpdated";
+import { handleStationAdded } from "@eventHandlers/trackAudio/stationAdded";
+import { handleFrequencyRemoved } from "@eventHandlers/trackAudio/frequencyRemoved";
 
 const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
@@ -58,6 +60,8 @@ trackAudio.on("disconnected", () => {
 });
 trackAudio.on("rxBegin", handleRxBegin);
 trackAudio.on("rxEnd", handleRxEnd);
+trackAudio.on("stationAdded", handleStationAdded);
+trackAudio.on("frequencyRemoved", handleFrequencyRemoved);
 trackAudio.on("stationStates", handleStationStates);
 trackAudio.on("stationStateUpdate", handleStationStateUpdate);
 trackAudio.on("txBegin", handleTxBegin);

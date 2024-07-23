@@ -1,8 +1,10 @@
 import {
   IncomingMessage,
   OutgoingMessage,
+  isFrequencyRemoved,
   isRxBegin,
   isRxEnd,
+  isStationAdded,
   isStationStateUpdate,
   isStationStates,
   isTxBegin,
@@ -128,6 +130,10 @@ export default class TrackAudioManager extends EventEmitter {
       this.emit("stationStateUpdate", data);
     } else if (isStationStates(data)) {
       this.emit("stationStates", data);
+    } else if (isStationAdded(data)) {
+      this.emit("stationAdded", data);
+    } else if (isFrequencyRemoved(data)) {
+      this.emit("frequencyRemoved", data);
     } else if (isRxBegin(data)) {
       this.emit("rxBegin", data);
     } else if (isRxEnd(data)) {

@@ -58,14 +58,11 @@ export class HotlineController implements Controller {
    * to true if both primary and hotline frequency are set
    */
   set primaryFrequency(newValue: number) {
-    if (this._primaryFrequency === newValue) {
-      return;
-    }
-
+    // This is always done even if the new value is the same as the existing one
+    // to ensure isAvailable refreshes.
     this._primaryFrequency = newValue;
-    if (this._primaryFrequency && this._hotlineFrequency) {
-      this.isAvailable = true;
-    }
+    this.isAvailable =
+      this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
   }
 
   /**
@@ -80,14 +77,11 @@ export class HotlineController implements Controller {
    * to true if both primary and hotline frequency are set.
    */
   set hotlineFrequency(newValue: number) {
-    if (this._hotlineFrequency === newValue) {
-      return;
-    }
-
+    // This is always done even if the new value is the same as the existing one
+    // to ensure isAvailable refreshes.
     this._hotlineFrequency = newValue;
-    if (this._primaryFrequency && this._hotlineFrequency) {
-      this.isAvailable = true;
-    }
+    this.isAvailable =
+      this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
   }
 
   /**
