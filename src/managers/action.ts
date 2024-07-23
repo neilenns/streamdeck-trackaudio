@@ -379,7 +379,7 @@ export default class ActionManager extends EventEmitter {
   public rxBegin(frequency: number, callsign: string) {
     this.getStationStatusControllers()
       .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
+        (entry) => entry.frequency === frequency && entry.isListeningForReceive
       )
       .forEach((entry) => {
         entry.isReceiving = true;
@@ -402,7 +402,7 @@ export default class ActionManager extends EventEmitter {
   public rxEnd(frequency: number) {
     this.getStationStatusControllers()
       .filter(
-        (entry) => entry.frequency === frequency && entry.listenTo === "rx"
+        (entry) => entry.frequency === frequency && entry.isListeningForReceive
       )
       .forEach((entry) => {
         entry.isReceiving = false;
@@ -423,7 +423,7 @@ export default class ActionManager extends EventEmitter {
    */
   public txBegin() {
     this.getStationStatusControllers()
-      .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
+      .filter((entry) => entry.isListeningForTransmit)
       .forEach((entry) => {
         entry.isTransmitting = true;
       });
@@ -438,7 +438,7 @@ export default class ActionManager extends EventEmitter {
    */
   public txEnd() {
     this.getStationStatusControllers()
-      .filter((entry) => entry.listenTo === "tx" || entry.listenTo === "xc")
+      .filter((entry) => entry.isListeningForTransmit)
       .forEach((entry) => {
         entry.isTransmitting = false;
       });

@@ -68,9 +68,10 @@
       document
         .querySelector('[setting="listenTo"]')
         .addEventListener("valuechange", function (ev) {
+          // Last receive callsign is only supported on rx and xca.
           document.querySelector(
             '[setting="showLastReceivedCallsign"]'
-          ).disabled = ev.target.value !== "rx";
+          ).disabled = !(ev.target.value === "rx" || ev.target.value === "xca");
         });
     </script>
   </body>

@@ -52,6 +52,30 @@ export class StationStatusController implements Controller {
   }
 
   /**
+   * Returns true if listenTo is rx, xc, or xca, the settings that mean
+   * rx is active in TrackAudio.
+   */
+  get isListeningForReceive() {
+    return (
+      this._settings.listenTo === "rx" ||
+      this._settings.listenTo === "xc" ||
+      this._settings.listenTo === "xca"
+    );
+  }
+
+  /**
+   * Returns true if listenTo is tx, xc or xca, the settings that mean
+   * tx is active in TrackAudio.
+   */
+  get isListeningForTransmit() {
+    return (
+      this._settings.listenTo === "tx" ||
+      this._settings.listenTo === "xc" ||
+      this._settings.listenTo === "xca"
+    );
+  }
+
+  /**
    * Convenience property to get the callsign value of settings.
    */
   get callsign() {
@@ -261,7 +285,7 @@ export class StationStatusController implements Controller {
     if (
       this.lastReceivedCallsign &&
       this.showLastReceivedCallsign &&
-      this.listenTo === "rx"
+      this.isListeningForReceive
     ) {
       this.action
         .setTitle(`${this.title}\n${this.lastReceivedCallsign}`)

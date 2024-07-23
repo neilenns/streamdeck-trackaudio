@@ -45,16 +45,16 @@ configure the station status action like this to show that RX is enabled and the
 
 ### Station status settings <!-- omit from toc -->
 
-| Setting                     | Description                                                                                               | Default                                                         |
-| --------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Title                       | The title to show on the action. Optional.                                                                | Station callsign and listen to value                            |
-| Callsign                    | The callsign for the station you want to display status for. Required.                                    |                                                                 |
-| Listen to                   | What status to display on the button, either RX, TX, or XCA. Required.                                    | RX                                                              |
-| Show last received callsign | When checked, the last received callsign will be appended to the action title. Only when listening to RX. | Disabled                                                        |
-| Not listening               | The image to display when the station is not currently active. Optional.                                  | ![Black background](docs/images/stationstatus-notlistening.png) |
-| Listening                   | The image to display when the station is active. Optional.                                                | ![Green background](docs/images/stationstatus-listening.png)    |
-| Active comms                | The image to display when a transmission is actively taking place. Optional.                              | ![Orange background](docs/images/stationstatus-receiving.png)   |
-| Unavailable                 | The image to display when the station is not added in TrackAudio. Optional, defaults to a warning icon.   | ![Warning icon](docs/images/stationstatus-unavailable.png)      |
+| Setting                     | Description                                                                                                                           | Default                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Title                       | The title to show on the action. Optional.                                                                                            | Station callsign and listen to value                            |
+| Callsign                    | The callsign for the station you want to display status for. Required.                                                                |                                                                 |
+| Listen to                   | What status to display on the button, either RX, TX, or XCA. Required.                                                                | RX                                                              |
+| Show last received callsign | When checked, the last received callsign will be appended to the action title. Only supported when listen to is set to `RX` or `XCA`. | Disabled                                                        |
+| Not listening               | The image to display when the station is not currently active. Optional.                                                              | ![Black background](docs/images/stationstatus-notlistening.png) |
+| Listening                   | The image to display when the station is active. Optional.                                                                            | ![Green background](docs/images/stationstatus-listening.png)    |
+| Active comms                | The image to display when a transmission is actively taking place. Optional.                                                          | ![Orange background](docs/images/stationstatus-receiving.png)   |
+| Unavailable                 | The image to display when the station is not added in TrackAudio. Optional, defaults to a warning icon.                               | ![Warning icon](docs/images/stationstatus-unavailable.png)      |
 
 ## Configuring a hotline action
 
