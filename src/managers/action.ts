@@ -26,6 +26,7 @@ import TrackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
 import { EventEmitter } from "events";
 import VatsimManager from "./vatsim";
+import debounce from "debounce";
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -36,6 +37,12 @@ export default class ActionManager extends EventEmitter {
 
   private constructor() {
     super();
+
+    // Debounce the update methods that make websocket calls to avoid spamming
+    // TrackAudio on every keypress.
+    this.updateStation = debounce(this.updateStation.bind(this), 500);
+    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
   }
 
   /**
@@ -168,6 +175,8 @@ export default class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateStation(action: Action, settings: StationSettings) {
+    console.log("Updating station settings");
+
     const savedAction = this.getStationStatusControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -221,6 +230,8 @@ export default class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateHotline(action: Action, settings: HotlineSettings) {
+    console.log("Updating hotline settings");
+
     const savedAction = this.getHotlineControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -246,6 +257,8 @@ export default class ActionManager extends EventEmitter {
   }
 
   public updateAtisLetter(action: Action, settings: AtisLetterSettings) {
+    console.log("Updating ATIS settings");
+
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
