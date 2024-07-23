@@ -9,15 +9,16 @@ import { Controller } from "@interfaces/controller";
 export class HotlineController implements Controller {
   type = "HotlineController";
   action: Action;
-  primaryFrequency = 0;
-  hotlineFrequency = 0;
 
   private _settings: HotlineSettings;
 
+  private _primaryFrequency = 0;
+  private _hotlineFrequency = 0;
   private _isTxPrimary = false;
   private _isTxHotline = false;
   private _isRxHotline = false;
   private _isReceiving = false;
+  private _isAvailable: boolean | undefined = undefined;
 
   /**
    * Creates a new HotlineController object.
@@ -33,11 +34,78 @@ export class HotlineController implements Controller {
    * Resets the action to its default, disconnected, state.
    */
   public reset() {
-    this.isReceiving = false;
-    this.isRxHotline = false;
-    this.isTxHotline = false;
-    this.isTxPrimary = false;
+    this._isReceiving = false;
+    this._isRxHotline = false;
+    this._isTxHotline = false;
+    this._isTxPrimary = false;
 
+    this._primaryFrequency = 0;
+    this._hotlineFrequency = 0;
+    this._isAvailable = undefined;
+
+    this.setState();
+  }
+
+  /**
+   * Returns the frequency for the primary callsign.
+   */
+  get primaryFrequency() {
+    return this._primaryFrequency;
+  }
+
+  /**
+   * Sets the frequency for the primary callsign and updates the isAvailable
+   * to true if both primary and hotline frequency are set
+   */
+  set primaryFrequency(newValue: number) {
+    if (this._primaryFrequency === newValue) {
+      return;
+    }
+
+    this._primaryFrequency = newValue;
+    if (this._primaryFrequency && this._hotlineFrequency) {
+      this.isAvailable = true;
+    }
+  }
+
+  /**
+   * Gets the frequency for the hotline callsign.
+   */
+  get hotlineFrequency() {
+    return this._hotlineFrequency;
+  }
+
+  /**
+   * Sets the frequency for the hotline callsign and updates the isAvailable
+   * to true if both primary and hotline frequency are set.
+   */
+  set hotlineFrequency(newValue: number) {
+    if (this._hotlineFrequency === newValue) {
+      return;
+    }
+
+    this._hotlineFrequency = newValue;
+    if (this._primaryFrequency && this._hotlineFrequency) {
+      this.isAvailable = true;
+    }
+  }
+
+  /**
+   * True if both the primary and hotline frequencies are available in TrackAudio.
+   */
+  get isAvailable(): boolean | undefined {
+    return this._isAvailable;
+  }
+
+  /**
+   * Sets the isAvailable property and updates the action image accordingly.
+   */
+  set isAvailable(newValue: boolean) {
+    if (this._isAvailable === newValue) {
+      return;
+    }
+
+    this._isAvailable = newValue;
     this.setState();
   }
 
@@ -132,6 +200,19 @@ export class HotlineController implements Controller {
   }
 
   public setState() {
+    if (this.isAvailable !== undefined && !this.isAvailable) {
+      this.action
+        .setImage(
+          this._settings.unavailableImagePath ??
+            "images/actions/hotline/unavailable.svg"
+        )
+        .catch((error: unknown) => {
+          console.error(error);
+        });
+
+      return;
+    }
+
     // This state is bad, it means Tx is cross coupled
     // on both hotline and primary.
     if (this.isTxHotline && this.isTxPrimary) {
@@ -143,9 +224,11 @@ export class HotlineController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
+      return;
     }
+
     // Hotline is active tx, takes priority over active rx.
-    else if (this.isTxHotline) {
+    if (this.isTxHotline) {
       this.action
         .setImage(
           this._settings.hotlineActiveImagePath ??
@@ -154,7 +237,11 @@ export class HotlineController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
-    } else if (this.isReceiving) {
+
+      return;
+    }
+
+    if (this.isReceiving) {
       this.action
         .setImage(
           this._settings.receivingImagePath ??
@@ -163,9 +250,11 @@ export class HotlineController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
+      return;
     }
+
     // Primary active rx.
-    else if (this.isRxHotline) {
+    if (this.isRxHotline) {
       this.action
         .setImage(
           this._settings.listeningImagePath ??
@@ -174,19 +263,18 @@ export class HotlineController implements Controller {
         .catch((error: unknown) => {
           console.error(error);
         });
+      return;
     }
 
     // Nothing is active.
-    else {
-      this.action
-        .setImage(
-          this._settings.neitherActiveImagePath ??
-            "images/actions/hotline/notConnected.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-    }
+    this.action
+      .setImage(
+        this._settings.neitherActiveImagePath ??
+          "images/actions/hotline/notConnected.svg"
+      )
+      .catch((error: unknown) => {
+        console.error(error);
+      });
   }
 }
 
