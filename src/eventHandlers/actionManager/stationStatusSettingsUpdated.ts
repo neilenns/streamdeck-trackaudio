@@ -6,7 +6,7 @@ import TrackAudioManager from "@managers/trackAudio";
  * on a specific action.
  */
 export const handleStationStatusSettingsUpdated = (
-  action: StationStatusController
+  controller: StationStatusController
 ) => {
-  TrackAudioManager.getInstance().refreshStationState(action.settings.callsign);
+  TrackAudioManager.getInstance().refreshStationState(controller.callsign);
 };

@@ -5,9 +5,9 @@ import TrackAudioManager from "@managers/trackAudio";
  * Handles refreshing the hotline status from TrackAudio when any of the settings are updated
  * on a specific action.
  */
-export const handleHotlineSettingsUpdated = (action: HotlineController) => {
+export const handleHotlineSettingsUpdated = (controller: HotlineController) => {
   const trackAudio = TrackAudioManager.getInstance();
 
-  trackAudio.refreshStationState(action.primaryCallsign);
-  trackAudio.refreshStationState(action.hotlineCallsign);
+  trackAudio.refreshStationState(controller.primaryCallsign);
+  trackAudio.refreshStationState(controller.hotlineCallsign);
 };

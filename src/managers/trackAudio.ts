@@ -53,7 +53,7 @@ export default class TrackAudioManager extends EventEmitter {
    * Provides the current state of the connection to TrackAudio.
    * @returns True if there is an open connection to TrackAudio, false otherwise.
    */
-  public isConnected(): boolean {
+  get isConnected() {
     return this.socket !== null && this.socket.readyState === WebSocket.OPEN;
   }
 
@@ -169,7 +169,7 @@ export default class TrackAudioManager extends EventEmitter {
   }
 
   public sendMessage(message: OutgoingMessage) {
-    if (!this.isConnected()) {
+    if (!this.isConnected) {
       return;
     }
 
