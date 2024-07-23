@@ -166,10 +166,6 @@ export class StationStatusController implements Controller {
 
     this._isListening = newValue;
     this.setState();
-
-    if (!this._isListening) {
-      this.lastReceivedCallsign = undefined;
-    }
   }
 
   /**
