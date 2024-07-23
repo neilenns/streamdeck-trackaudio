@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > This plugin requires [TrackAudio beta 1.3.0-beta.1](https://github.com/pierr3/TrackAudio/releases/tag/1.3.0-beta.1) or later. It will not work with earlier versions of TrackAudio.
 
-This StreamDeck plugin provides actions to interact with TrackAudio. [Download the plugin](https://github.com/neilenns/streamdeck-trackaudio/releases/latest) from the releases page.
+This StreamDeck plugin provides actions to interact with TrackAudio. [Download the plugin](https://github.com/neilenns/streamdeck-trackaudio/releases/latest) from the releases page. Need inspiration for how to use these actions? Check out the [examples](#examples) section.
 
 ![Screenshot a StreamDeck profile with buttons for stations, current AITS letter, a hotline, and a push-to-talk button](docs/images/button-example.png)
 
@@ -13,6 +13,9 @@ This StreamDeck plugin provides actions to interact with TrackAudio. [Download t
 - [Configuring a TrackAudio status action](#configuring-a-trackaudio-status-action)
 - [Configuring an ATIS letter action](#configuring-an-atis-letter-action)
 - [Configuring a push to talk action](#configuring-a-push-to-talk-action)
+- [Examples](#examples)
+  - [Seattle tower](#seattle-tower)
+  - [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
 
 ## Action descriptions
 
@@ -120,3 +123,47 @@ The push to talk action does not require configuration for use. Simply add it to
 | --------------- | ------------------------------------------- | ---------------------------------------------------------------------- |
 | Initial state   | Shown when idle. Optional.                  | ![Microphone with black background](docs/images/ptt-idle.png)          |
 | Secondary state | Shown when actively transmitting. Optional. | ![Microphone with orange background](docs/images/ptt-transmitting.png) |
+
+## Examples
+
+Here are some examples of different profiles people have created using these actions. Have an example you'd like to
+share? [Open a new issue](https://github.com/neilenns/streamdeck-trackaudio/issues/new/choose) with a screenshot and
+details of how you have the actions configured.
+
+### Seattle tower
+
+Used by a Seattle Tower controller to listen to the controllers working above and below, and to quickly
+turn those stations off when it gets busy.
+
+### Seattle final approach - ATIS letters
+
+Used by a final approach controller to keep an eye on the current ATIS letter for all the satellite fields around KSEA.
+
+![Two rows of four actions. The top row shows GND and AAL809, E TWR and ASA324, S46 and SEA_W_APP, and S16. The bottom row shows Final SEA_F_APP, I for the current ATIS, a blank space, and SEA indicating what airport the buttons are for.](docs/images/examples/sea-twr.png)
+
+The actions are configured as follows, from left to right, top to bottom.
+
+| Action         | Settings                                                      |
+| -------------- | ------------------------------------------------------------- |
+| Station status | **Title**: GND, **Callsign**: SEA_GND, **Listen to**: RX      |
+| Station status | **Title**: E TWR, **Callsign**: SEA_E_TWR, **Listen to**: XCA |
+| Station status | **Title**: S46, **Callsign**: SEA_W_APP, **Listen to**: RX    |
+| Station status | **Title**: S16, **Callsign**: SEA_CTR, **Listen to**: RX      |
+| Station status | **Title**: Final, **Callsign**: SEA_F_APP, **Listen to**: RX  |
+| ATIS letter    | **Title**: _blank_, **Callsign**: KSEA_ATIS                   |
+| Switch profile | **Title**: SEA                                                |
+
+![Two columns of four actions showing the airport and current ATIS letter for SEA, BFI, PAE, RNT, TIW, OLM, TCM, and GRF. Four of the buttons show an orange background indicating an updated ATIS letter](docs/images/examples/sea-app-atis.png)
+
+The actions are configured as follows, from left to right, top to bottom.
+
+| Action      | Settings                                |
+| ----------- | --------------------------------------- |
+| ATIS letter | **Title**: SEA, **Callsign**: KSEA_ATIS |
+| ATIS letter | **Title**: BFI, **Callsign**: KBFI_ATIS |
+| ATIS letter | **Title**: PAE, **Callsign**: KPAE_ATIS |
+| ATIS letter | **Title**: RNT, **Callsign**: KRNT_ATIS |
+| ATIS letter | **Title**: TIW, **Callsign**: KTIW_ATIS |
+| ATIS letter | **Title**: OLM, **Callsign**: KOLM_ATIS |
+| ATIS letter | **Title**: TCM, **Callsign**: KTCM_ATIS |
+| ATIS letter | **Title**: GRF, **Callsign**: KGRF_ATIS |
