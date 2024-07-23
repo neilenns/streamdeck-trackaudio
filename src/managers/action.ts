@@ -98,9 +98,10 @@ export default class ActionManager extends EventEmitter {
    * @param settings The settings for the action
    */
   public addStation(action: Action, settings: StationSettings): void {
-    this.actions.push(new StationStatusController(action, settings));
+    const controller = new StationStatusController(action, settings);
 
-    this.emit("stationStatusAdded", settings.callsign);
+    this.actions.push(controller);
+    this.emit("stationStatusAdded", controller);
   }
 
   /**
@@ -110,9 +111,10 @@ export default class ActionManager extends EventEmitter {
    * @param settings The settings for the action
    */
   public addAtisLetter(action: Action, settings: AtisLetterSettings): void {
-    this.actions.push(new AtisLetterController(action, settings));
+    const controller = new AtisLetterController(action, settings);
 
-    this.emit("atisLetterAdded", settings.callsign);
+    this.actions.push(controller);
+    this.emit("atisLetterAdded", controller);
   }
 
   /**
