@@ -94,7 +94,9 @@ the voice connection in TrackAudio is up. Pressing the action will force a state
 
 ## Configuring an ATIS letter action
 
-**TrackAudio must be running for the ATIS letter to update.**
+> [!IMPORTANT]
+> TrackAudio must be running and you must be connected for teh ATIS letter to update. It can take five minutes or
+> longer for the VATSIM data source to refresh and reflect the latest ATIS letter.
 
 The ATIS letter action shows the current AITS letter for a station, refreshed automatically every minute.
 When the ATIS letter updates the action will show an orange background until the action is pressed to reset the
