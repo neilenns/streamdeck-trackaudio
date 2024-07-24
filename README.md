@@ -14,8 +14,8 @@ This StreamDeck plugin provides actions to interact with TrackAudio. [Download t
 - [Configuring an ATIS letter action](#configuring-an-atis-letter-action)
 - [Configuring a push to talk action](#configuring-a-push-to-talk-action)
 - [Examples](#examples)
-	- [Seattle tower](#seattle-tower)
-	- [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
+  - [Seattle tower](#seattle-tower)
+  - [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
 
 ## Action descriptions
 
@@ -154,7 +154,7 @@ The actions are configured as follows, from left to right, top to bottom.
 | Station status | **Title**: S46, **Callsign**: SEA_W_APP, **Listen to**: RX    |
 | Station status | **Title**: S16, **Callsign**: SEA_CTR, **Listen to**: RX      |
 | Station status | **Title**: Final, **Callsign**: SEA_F_APP, **Listen to**: RX  |
-| ATIS letter    | **Title**: _blank_, **Callsign**: KSEA_ATIS                   |
+| ATIS letter    | **Title**: *blank*, **Callsign**: KSEA_ATIS                   |
 | Switch profile | **Title**: SEA                                                |
 
 ![Two columns of four actions showing the airport and current ATIS letter for SEA, BFI, PAE, RNT, TIW, OLM, TCM, and GRF. Four of the buttons show an orange background indicating an updated ATIS letter](docs/images/examples/sea-app-atis.png)
