@@ -14,8 +14,8 @@ This StreamDeck plugin provides actions to interact with TrackAudio. [Download t
 - [Configuring an ATIS letter action](#configuring-an-atis-letter-action)
 - [Configuring a push to talk action](#configuring-a-push-to-talk-action)
 - [Examples](#examples)
-  - [Seattle tower](#seattle-tower)
-  - [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
+	- [Seattle tower](#seattle-tower)
+	- [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
 
 ## Action descriptions
 
@@ -45,6 +45,9 @@ For example, if you are controlling `LMT_TWR` and have TrackAudio set up like th
 configure the station status action like this to show that RX is enabled and the last received callsign:
 
 ![Screenshot of a station status button configuration, with callsign set to LMT_TWR, RX selected, and show last receive callsign enabled](docs/images/station-status.png)
+
+> [!IMPORTANT]
+> The action lights up when transmissions occur on the *frequency* of the callsign. This means if two stations share the same frequency (e.g. `PDX_GND` and `GEG_GND`) the action will light up when transmissions happen on either of those stations.
 
 ### Station status settings <!-- omit from toc -->
 
