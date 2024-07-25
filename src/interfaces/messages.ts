@@ -35,6 +35,27 @@ export interface StationStateUpdate {
 }
 
 /**
+ * Represents the kStationAdded message from TrackAudio.
+ */
+export interface StationAdded {
+  type: "kStationAdded";
+  value: {
+    callsign: string;
+    frequency: number;
+  };
+}
+
+/**
+ * Represents the kStationRemoved message from TrackAudio.
+ */
+export interface FrequencyRemoved {
+  type: "kFrequencyRemoved";
+  value: {
+    frequency: number;
+  };
+}
+
+/**
  * Represents the kTxBegin message from TrackAudio.
  */
 export interface TxBegin {
@@ -126,7 +147,9 @@ export type IncomingMessage =
   | RxEnd
   | TxBegin
   | TxEnd
-  | VoiceConnectedState;
+  | VoiceConnectedState
+  | StationAdded
+  | FrequencyRemoved;
 
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
@@ -159,6 +182,28 @@ export function isStationStateUpdate(
   message: IncomingMessage
 ): message is StationStateUpdate {
   return message.type === "kStationStateUpdate";
+}
+
+/**
+ * Typeguard for StationAdded.
+ * @param message The message
+ * @returns True if the message is a StationAdded
+ */
+export function isStationAdded(
+  message: IncomingMessage
+): message is StationAdded {
+  return message.type === "kStationAdded";
+}
+
+/**
+ * Typeguard for FrequencyRemoved.
+ * @param message The message
+ * @returns True if the message is a FrequencyRemoved
+ */
+export function isFrequencyRemoved(
+  message: IncomingMessage
+): message is FrequencyRemoved {
+  return message.type === "kFrequencyRemoved";
 }
 
 /**

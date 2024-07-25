@@ -14,15 +14,14 @@ export type ListenTo = "rx" | "tx" | "xc" | "xca";
 export class StationStatusController implements Controller {
   type = "StationStatusController";
   action: Action;
-  frequency = 0;
 
   private _settings: StationSettings;
-
+  private _frequency = 0;
   private _isReceiving = false;
   private _isTransmitting = false;
   private _isListening = false;
   private _isAvailable: boolean | undefined = undefined;
-  private _lastReceivedcallsign?: string;
+  private _lastReceivedCallsign?: string;
 
   /**
    * Creates a new StationStatusController object.
@@ -42,6 +41,23 @@ export class StationStatusController implements Controller {
    */
   get showLastReceivedCallsign() {
     return this._settings.showLastReceivedCallsign;
+  }
+
+  /**
+   * Gets the frequency.
+   */
+  get frequency() {
+    return this._frequency;
+  }
+
+  /**
+   * Sets the frequency. If the frequency is non-zero then isAvailable is also set to true.
+   */
+  set frequency(newValue: number) {
+    // This is always done even if the new value is the same as the existing one
+    // to ensure isAvailable refreshes.
+    this._frequency = newValue;
+    this.isAvailable = this.frequency !== 0;
   }
 
   /**
@@ -186,18 +202,19 @@ export class StationStatusController implements Controller {
     this._isAvailable = newValue;
     this.setState();
   }
+
   /**
    * Returns the last received callsign or undefined if no last received callsign is available.
    */
   get lastReceivedCallsign(): string | undefined {
-    return this._lastReceivedcallsign;
+    return this._lastReceivedCallsign;
   }
 
   /**
    * Sets the last received callsign property and updates the action title accordingly.
    */
   set lastReceivedCallsign(callsign: string | undefined) {
-    this._lastReceivedcallsign = callsign;
+    this._lastReceivedCallsign = callsign;
 
     this.showTitle();
   }
@@ -208,15 +225,16 @@ export class StationStatusController implements Controller {
    * and no active coms image.
    */
   public reset() {
-    this.lastReceivedCallsign = undefined; // This automatically updates the title
+    this._lastReceivedCallsign = undefined;
 
-    this.frequency = 0;
+    this._frequency = 0;
     this._isListening = false;
     this._isReceiving = false;
     this._isTransmitting = false;
     this._isAvailable = undefined;
 
     this.setState();
+    this.showTitle();
   }
 
   /**

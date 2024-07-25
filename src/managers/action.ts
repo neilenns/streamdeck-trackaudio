@@ -126,8 +126,7 @@ export default class ActionManager extends EventEmitter {
    */
   public trackAudioStatusKeyDown(action: Action): void {
     const trackAudio = TrackAudioManager.getInstance();
-    trackAudio.refreshStationStates();
-    trackAudio.refreshVoiceConnectedState();
+    trackAudio.refreshVoiceConnectedState(); // This also causes a refresh of the station states
 
     action.showOk().catch((error: unknown) => {
       handleAsyncException(
@@ -234,8 +233,6 @@ export default class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateHotline(action: Action, settings: HotlineSettings) {
-    console.log("Updating hotline settings");
-
     const savedAction = this.getHotlineControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -288,7 +285,8 @@ export default class ActionManager extends EventEmitter {
    */
   public updateStationState(data: StationStateUpdate) {
     // First set the frequency if one was provided. This usually comes in the first
-    // station state update message from TrackAudio.
+    // station state update message from TrackAudio. Setting the frequency also
+    // updates the isAvailable state since any station with a frequency is available.
     if (data.value.callsign) {
       this.setStationFrequency(data.value.callsign, data.value.frequency);
     }
@@ -304,7 +302,6 @@ export default class ActionManager extends EventEmitter {
           (data.value.xc && entry.listenTo === "xc") ||
           (data.value.xca && entry.listenTo === "xca");
 
-        entry.isAvailable = true;
         entry.setState();
       });
 
@@ -331,31 +328,32 @@ export default class ActionManager extends EventEmitter {
     const callsigns = stations.map((entry) => entry.value.callsign);
 
     // Loop through all tracked controllers and see if they are in the dictionary.
+    // If not set the frequency to 0, which also triggers the station availability to
+    // go unavailable.
     this.getStationStatusControllers().forEach((entry) => {
       if (!entry.callsign) {
         return;
       }
 
-      if (entry.callsign in callsigns) {
-        entry.isAvailable = true;
-      } else {
-        entry.isAvailable = false;
+      if (!callsigns.includes(entry.callsign)) {
+        entry.frequency = 0;
       }
     });
 
-    // Do the same for the hotline actions
+    // Do the same for the hotline actions. If the primary or hotline callsign aren't there,
+    // set the associated frequency to 0, which also triggers the station availability to
+    // go unavailable.
     this.getHotlineControllers().forEach((entry) => {
       if (!entry.primaryCallsign && !entry.hotlineCallsign) {
         return;
       }
 
-      if (
-        entry.primaryCallsign in callsigns &&
-        entry.hotlineCallsign in callsigns
-      ) {
-        entry.isAvailable = true;
-      } else {
-        entry.isAvailable = false;
+      if (!callsigns.includes(entry.primaryCallsign)) {
+        entry.primaryFrequency = 0;
+      }
+
+      if (!callsigns.includes(entry.hotlineCallsign)) {
+        entry.hotlineFrequency = 0;
       }
     });
   }
@@ -379,6 +377,25 @@ export default class ActionManager extends EventEmitter {
       }
       if (entry.hotlineCallsign === callsign) {
         entry.hotlineFrequency = frequency;
+      }
+    });
+  }
+
+  /**
+   * Removes the frequency from all actions that depend on it.
+   * @param frequency The frequency to remove
+   */
+  public removeFrequency(frequency: number) {
+    this.getStationStatusControllers()
+      .filter((entry) => entry.frequency === frequency)
+      .forEach((entry) => (entry.frequency = 0));
+
+    this.getHotlineControllers().forEach((entry) => {
+      if (entry.primaryFrequency === frequency) {
+        entry.primaryFrequency = 0;
+      }
+      if (entry.hotlineFrequency === frequency) {
+        entry.hotlineFrequency = 0;
       }
     });
   }
