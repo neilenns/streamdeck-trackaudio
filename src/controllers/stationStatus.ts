@@ -59,6 +59,7 @@ export class StationStatusController implements Controller {
     this._frequency = newValue;
     this.isAvailable = this.frequency !== 0;
   }
+
   /**
    * Conveinence property to get the listenTo value of settings.
    */
