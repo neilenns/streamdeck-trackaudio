@@ -126,8 +126,7 @@ export default class ActionManager extends EventEmitter {
    */
   public trackAudioStatusKeyDown(action: Action): void {
     const trackAudio = TrackAudioManager.getInstance();
-    trackAudio.refreshStationStates();
-    trackAudio.refreshVoiceConnectedState();
+    trackAudio.refreshVoiceConnectedState(); // This also causes a refresh of the station states
 
     action.showOk().catch((error: unknown) => {
       handleAsyncException(
@@ -336,7 +335,7 @@ export default class ActionManager extends EventEmitter {
         return;
       }
 
-      if (!(entry.callsign in callsigns)) {
+      if (!callsigns.includes(entry.callsign)) {
         entry.frequency = 0;
       }
     });
@@ -349,11 +348,11 @@ export default class ActionManager extends EventEmitter {
         return;
       }
 
-      if (!(entry.primaryCallsign in callsigns)) {
+      if (!callsigns.includes(entry.primaryCallsign)) {
         entry.primaryFrequency = 0;
       }
 
-      if (!(entry.hotlineCallsign in callsigns)) {
+      if (!callsigns.includes(entry.hotlineCallsign)) {
         entry.hotlineFrequency = 0;
       }
     });
