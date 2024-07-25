@@ -32,6 +32,13 @@ export class StationStatusController implements Controller {
     this.action = action;
     this._settings = settings;
 
+    // Issue 171: The listenTo property doesn't get set unless the user actually
+    // changes the radio button. Default is "rx" so force it here to avoid problems
+    // elsewhere.
+    if (!this._settings.listenTo) {
+      this._settings.listenTo = "rx";
+    }
+
     this.showTitle();
   }
 
@@ -73,9 +80,9 @@ export class StationStatusController implements Controller {
    */
   get isListeningForReceive() {
     return (
-      this._settings.listenTo === "rx" ||
-      this._settings.listenTo === "xc" ||
-      this._settings.listenTo === "xca"
+      this.listenTo === "rx" ||
+      this.listenTo === "xc" ||
+      this.listenTo === "xca"
     );
   }
 
@@ -85,9 +92,9 @@ export class StationStatusController implements Controller {
    */
   get isListeningForTransmit() {
     return (
-      this._settings.listenTo === "tx" ||
-      this._settings.listenTo === "xc" ||
-      this._settings.listenTo === "xca"
+      this.listenTo === "tx" ||
+      this.listenTo === "xc" ||
+      this.listenTo === "xca"
     );
   }
 
