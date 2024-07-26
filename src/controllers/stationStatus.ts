@@ -40,6 +40,7 @@ export class StationStatusController implements Controller {
     }
 
     this.showTitle();
+    this.setState();
   }
 
   //#region Getters and setters

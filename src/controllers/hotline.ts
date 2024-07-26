@@ -28,6 +28,8 @@ export class HotlineController implements Controller {
   constructor(action: Action, settings: HotlineSettings) {
     this.action = action;
     this._settings = settings;
+
+    this.setState();
   }
 
   /**
