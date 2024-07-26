@@ -170,6 +170,7 @@ export default class ActionManager extends EventEmitter {
       action.letter = undefined;
     });
   }
+
   /**
    * Updates the settings associated with a station status action.
    * Emits a stationStatusSettingsUpdated event if the settings require

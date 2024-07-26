@@ -11,6 +11,10 @@ const StateColor = {
   UNAVAILABLE: "black",
 };
 
+const defaultTemplatePath = "images/actions/atisLetter/template.svg";
+const defaultUnavailableTemplatePath =
+  "images/actions/atisLetter/unavailable.svg";
+
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
@@ -25,9 +29,9 @@ export class AtisLetterController implements Controller {
   private _isUnavailable = false;
 
   // Pre-compiled action SVGs
-  private _compiledCurrentSvg: ReturnType<typeof compileSvg> = undefined;
-  private _compiledUpdatedSvg: ReturnType<typeof compileSvg> = undefined;
-  private _compiledUnavailableSvg: ReturnType<typeof compileSvg> = undefined;
+  private _compiledCurrentSvg: ReturnType<typeof compileSvg>;
+  private _compiledUnavailableSvg: ReturnType<typeof compileSvg>;
+  private _compiledUpdatedSvg: ReturnType<typeof compileSvg>;
 
   /**
    * Creates a new StationStatusController object.
@@ -38,6 +42,11 @@ export class AtisLetterController implements Controller {
     this.action = action;
     this._settings = settings;
 
+    // Initialize the compiled SVGs to the default templates.
+    this._compiledCurrentSvg = compileSvg(defaultTemplatePath);
+    this._compiledUnavailableSvg = compileSvg(defaultUnavailableTemplatePath);
+    this._compiledUpdatedSvg = compileSvg(defaultTemplatePath);
+
     this.setTitle();
     this.setState();
   }
@@ -46,9 +55,12 @@ export class AtisLetterController implements Controller {
    * Resets the action to its default, disconnected, state.
    */
   public reset() {
-    this.letter = undefined;
-    this.isUpdated = false;
-    this.isUnavailable = false;
+    this._letter = undefined;
+    this._isUpdated = false;
+    this._isUnavailable = false;
+
+    this.setTitle();
+    this.setState();
   }
 
   /**
@@ -127,20 +139,19 @@ export class AtisLetterController implements Controller {
     // Compile the SVGs if they changed
     if (this._settings.currentIconPath !== newValue.currentIconPath) {
       this._compiledCurrentSvg = compileSvg(
-        newValue.currentIconPath ?? "images/actions/atisLetter/template.svg"
+        newValue.currentIconPath ?? defaultTemplatePath
       );
     }
 
     if (this._settings.updatedIconPath !== newValue.updatedIconPath) {
       this._compiledUpdatedSvg = compileSvg(
-        newValue.updatedIconPath ?? "images/actions/atisLetter/template.svg"
+        newValue.updatedIconPath ?? defaultTemplatePath
       );
     }
 
     if (this._settings.unavailableIconPath !== newValue.unavailableIconPath) {
       this._compiledUnavailableSvg = compileSvg(
-        newValue.unavailableIconPath ??
-          "images/actions/atisLetter/unavailable.svg"
+        newValue.unavailableIconPath ?? defaultUnavailableTemplatePath
       );
     }
 

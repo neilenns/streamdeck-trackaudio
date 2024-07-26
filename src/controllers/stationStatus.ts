@@ -15,6 +15,9 @@ const StateColor = {
   ACTIVE_COMMS: "#f60",
 };
 
+const defaultTemplatePath = "images/actions/stationStatus/template.svg";
+const defaultUnavailableTemplatePath =
+  "images/actions/stationStatus/unavailable.svg";
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
@@ -32,18 +35,10 @@ export class StationStatusController implements Controller {
   private _lastReceivedCallsign?: string;
 
   // Pre-compiled action SVGs
-  private _compiledNotListeningSvg = compileSvg(
-    "images/actions/stationStatus/template.svg"
-  );
-  private _compiledListeningSvg = compileSvg(
-    "images/actions/stationStatus/template.svg"
-  );
-  private _compiledActiveCommsSvg = compileSvg(
-    "images/actions/stationStatus/template.svg"
-  );
-  private _compiledUnavailableSvg = compileSvg(
-    "images/actions/stationStatus/unavailable.svg"
-  );
+  private _compiledActiveCommsSvg: ReturnType<typeof compileSvg>;
+  private _compiledListeningSvg: ReturnType<typeof compileSvg>;
+  private _compiledNotListeningSvg: ReturnType<typeof compileSvg>;
+  private _compiledUnavailableSvg: ReturnType<typeof compileSvg>;
 
   /**
    * Creates a new StationStatusController object.
@@ -53,6 +48,11 @@ export class StationStatusController implements Controller {
   constructor(action: Action, settings: StationSettings) {
     this.action = action;
     this._settings = settings;
+
+    this._compiledActiveCommsSvg = compileSvg(defaultTemplatePath);
+    this._compiledListeningSvg = compileSvg(defaultTemplatePath);
+    this._compiledNotListeningSvg = compileSvg(defaultTemplatePath);
+    this._compiledUnavailableSvg = compileSvg(defaultUnavailableTemplatePath);
 
     // Issue 171: The listenTo property doesn't get set unless the user actually
     // changes the radio button. Default is "rx" so force it here to avoid problems
@@ -190,29 +190,25 @@ export class StationStatusController implements Controller {
     // Compile the SVGs if they changed
     if (this._settings.activeCommsIconPath !== newValue.activeCommsIconPath) {
       this._compiledActiveCommsSvg = compileSvg(
-        newValue.activeCommsIconPath ??
-          "images/actions/stationStatus/template.svg"
+        newValue.activeCommsIconPath ?? defaultTemplatePath
       );
     }
 
     if (this._settings.listeningIconPath !== newValue.listeningIconPath) {
       this._compiledListeningSvg = compileSvg(
-        newValue.listeningIconPath ??
-          "images/actions/stationStatus/template.svg"
+        newValue.listeningIconPath ?? defaultTemplatePath
       );
     }
 
     if (this._settings.notListeningIconPath !== newValue.notListeningIconPath) {
       this._compiledNotListeningSvg = compileSvg(
-        newValue.notListeningIconPath ??
-          "images/actions/stationStatus/template.svg"
+        newValue.notListeningIconPath ?? defaultTemplatePath
       );
     }
 
     if (this._settings.unavailableIconPath !== newValue.unavailableIconPath) {
       this._compiledUnavailableSvg = compileSvg(
-        newValue.unavailableIconPath ??
-          "images/actions/stationStatus/unavailable.svg"
+        newValue.unavailableIconPath ?? defaultUnavailableTemplatePath
       );
     }
 
@@ -331,8 +327,8 @@ export class StationStatusController implements Controller {
     this._isTransmitting = false;
     this._isAvailable = undefined;
 
-    this.setState();
     this.setTitle();
+    this.setState();
   }
 
   /**
