@@ -1,7 +1,7 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import generateSvgForSetImage from "@root/utils/svg";
+import { compileSvg, generateSvgForSetImage } from "@root/utils/svg";
 import TitleBuilder from "@root/utils/titleBuilder";
 
 // Valid values for the ListenTo property. This must match
@@ -30,6 +30,20 @@ export class StationStatusController implements Controller {
   private _isListening = false;
   private _isAvailable: boolean | undefined = undefined;
   private _lastReceivedCallsign?: string;
+
+  // Pre-compiled action SVGs
+  private _compiledNotListeningSvg = compileSvg(
+    "images/actions/stationStatus/template.svg"
+  );
+  private _compiledListeningSvg = compileSvg(
+    "images/actions/stationStatus/template.svg"
+  );
+  private _compiledActiveCommsSvg = compileSvg(
+    "images/actions/stationStatus/template.svg"
+  );
+  private _compiledUnavailableSvg = compileSvg(
+    "images/actions/stationStatus/unavailable.svg"
+  );
 
   /**
    * Creates a new StationStatusController object.
@@ -173,6 +187,35 @@ export class StationStatusController implements Controller {
    * Sets the settings.
    */
   set settings(newValue: StationSettings) {
+    // Compile the SVGs if they changed
+    if (this._settings.activeCommsIconPath !== newValue.activeCommsIconPath) {
+      this._compiledActiveCommsSvg = compileSvg(
+        newValue.activeCommsIconPath ??
+          "images/actions/stationStatus/template.svg"
+      );
+    }
+
+    if (this._settings.listeningIconPath !== newValue.listeningIconPath) {
+      this._compiledListeningSvg = compileSvg(
+        newValue.listeningIconPath ??
+          "images/actions/stationStatus/template.svg"
+      );
+    }
+
+    if (this._settings.notListeningIconPath !== newValue.notListeningIconPath) {
+      this._compiledNotListeningSvg = compileSvg(
+        newValue.notListeningIconPath ??
+          "images/actions/stationStatus/template.svg"
+      );
+    }
+
+    if (this._settings.unavailableIconPath !== newValue.unavailableIconPath) {
+      this._compiledUnavailableSvg = compileSvg(
+        newValue.unavailableIconPath ??
+          "images/actions/stationStatus/unavailable.svg"
+      );
+    }
+
     this._settings = newValue;
 
     this.setTitle();
@@ -302,15 +345,17 @@ export class StationStatusController implements Controller {
       callsign: this.callsign,
       frequency: this.frequency,
       formattedFrequency: this.formattedFrequency,
-      listenTo: this.listenTo,
+      listenTo: this.listenTo.toUpperCase(),
       lastReceivedCallsign: this.lastReceivedCallsign,
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
       this.action
         .setImage(
-          this._settings.unavailableIconPath ??
-            "images/actions/stationStatus/unavailable.svg"
+          generateSvgForSetImage(this._compiledUnavailableSvg, {
+            ...replacements,
+            stateColor: StateColor.ACTIVE_COMMS,
+          })
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -322,11 +367,10 @@ export class StationStatusController implements Controller {
     if (this.isReceiving || this.isTransmitting) {
       this.action
         .setImage(
-          generateSvgForSetImage(
-            this._settings.activeCommsIconPath ??
-              "images/actions/stationStatus/template.svg",
-            { ...replacements, stateColor: StateColor.ACTIVE_COMMS }
-          )
+          generateSvgForSetImage(this._compiledActiveCommsSvg, {
+            ...replacements,
+            stateColor: StateColor.ACTIVE_COMMS,
+          })
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -338,11 +382,10 @@ export class StationStatusController implements Controller {
     if (this.isListening) {
       this.action
         .setImage(
-          generateSvgForSetImage(
-            this._settings.listeningIconPath ??
-              "images/actions/stationStatus/template.svg",
-            { ...replacements, stateColor: StateColor.LISTENING }
-          )
+          generateSvgForSetImage(this._compiledListeningSvg, {
+            ...replacements,
+            stateColor: StateColor.LISTENING,
+          })
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -353,11 +396,10 @@ export class StationStatusController implements Controller {
 
     this.action
       .setImage(
-        generateSvgForSetImage(
-          this._settings.notListeningIconPath ??
-            "images/actions/stationStatus/template.svg",
-          { ...replacements, stateColor: StateColor.NOT_LISTENING }
-        )
+        generateSvgForSetImage(this._compiledNotListeningSvg, {
+          ...replacements,
+          stateColor: StateColor.NOT_LISTENING,
+        })
       )
       .catch((error: unknown) => {
         console.error(error);

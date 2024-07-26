@@ -2,7 +2,7 @@ import { AtisLetterSettings } from "@actions/atisLetter";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
-import generateSvgForSetImage from "@root/utils/svg";
+import { generateSvgForSetImage, compileSvg } from "@root/utils/svg";
 import TitleBuilder from "@root/utils/titleBuilder";
 
 const StateColor = {
@@ -19,11 +19,15 @@ export class AtisLetterController implements Controller {
   type = "AtisLetterController";
   action: Action;
 
-  // private _letter: string;
   private _settings: AtisLetterSettings;
   private _letter?: string;
   private _isUpdated = false;
   private _isUnavailable = false;
+
+  // Pre-compiled action SVGs
+  private _compiledCurrentSvg: ReturnType<typeof compileSvg> = undefined;
+  private _compiledUpdatedSvg: ReturnType<typeof compileSvg> = undefined;
+  private _compiledUnavailableSvg: ReturnType<typeof compileSvg> = undefined;
 
   /**
    * Creates a new StationStatusController object.
@@ -120,12 +124,30 @@ export class AtisLetterController implements Controller {
    * Sets the settings.
    */
   set settings(newValue: AtisLetterSettings) {
-    this._settings = newValue;
-
-    if (this._settings.title === "") {
-      this._settings.title = undefined;
+    // Compile the SVGs if they changed
+    if (this._settings.currentIconPath !== newValue.currentIconPath) {
+      this._compiledCurrentSvg = compileSvg(
+        newValue.currentIconPath ?? "images/actions/atisLetter/template.svg"
+      );
     }
 
+    if (this._settings.updatedIconPath !== newValue.updatedIconPath) {
+      this._compiledUpdatedSvg = compileSvg(
+        newValue.updatedIconPath ?? "images/actions/atisLetter/template.svg"
+      );
+    }
+
+    if (this._settings.unavailableIconPath !== newValue.unavailableIconPath) {
+      this._compiledUnavailableSvg = compileSvg(
+        newValue.unavailableIconPath ??
+          "images/actions/atisLetter/unavailable.svg"
+      );
+    }
+
+    // Save the new values
+    this._settings = newValue;
+
+    // Refresh the display
     this.setTitle();
     this.setState();
   }
@@ -195,11 +217,10 @@ export class AtisLetterController implements Controller {
     if (this.isUnavailable) {
       this.action
         .setImage(
-          generateSvgForSetImage(
-            this.unavailableIconPath ??
-              "images/actions/atisLetter/unavailable.svg",
-            { ...replacements, stateColor: StateColor.CURRENT }
-          )
+          generateSvgForSetImage(this._compiledUnavailableSvg, {
+            ...replacements,
+            stateColor: StateColor.CURRENT,
+          })
         )
         .catch((error: unknown) => {
           handleAsyncException(
@@ -210,10 +231,10 @@ export class AtisLetterController implements Controller {
     } else if (this.isUpdated) {
       this.action
         .setImage(
-          generateSvgForSetImage(
-            this.updatedIconPath ?? "images/actions/atisLetter/template.svg",
-            { ...replacements, stateColor: StateColor.UPDATED }
-          )
+          generateSvgForSetImage(this._compiledUpdatedSvg, {
+            ...replacements,
+            stateColor: StateColor.UPDATED,
+          })
         )
         .catch((error: unknown) => {
           handleAsyncException(
@@ -224,10 +245,10 @@ export class AtisLetterController implements Controller {
     } else {
       this.action
         .setImage(
-          generateSvgForSetImage(
-            this.currentIconPath ?? "images/actions/atisLetter/template.svg",
-            { ...replacements, stateColor: StateColor.CURRENT }
-          )
+          generateSvgForSetImage(this._compiledCurrentSvg, {
+            ...replacements,
+            stateColor: StateColor.CURRENT,
+          })
         )
         .catch((error: unknown) => {
           handleAsyncException(
