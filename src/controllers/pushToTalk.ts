@@ -43,13 +43,13 @@ export class PushToTalkController implements Controller {
     }
 
     this._isTransmitting = newValue;
-    this.setActiveCommsImage();
+    this.setState();
   }
 
   /**
    * Sets the action image to the correct one for when comms are active.
    */
-  public setActiveCommsImage() {
+  public setState() {
     this.action
       .setState(this.isTransmitting ? 1 : 0)
       .catch((error: unknown) => {

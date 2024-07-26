@@ -129,6 +129,9 @@ export class StationStatusController implements Controller {
    */
   set settings(newValue: StationSettings) {
     this._settings = newValue;
+
+    this.showTitle();
+    this.setState();
   }
 
   /**

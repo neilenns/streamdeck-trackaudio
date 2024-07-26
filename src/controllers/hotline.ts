@@ -191,6 +191,8 @@ export class HotlineController implements Controller {
    */
   set settings(newValue: HotlineSettings) {
     this._settings = newValue;
+
+    this.setState();
   }
 
   public setState() {
