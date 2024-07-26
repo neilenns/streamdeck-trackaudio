@@ -21,6 +21,8 @@ export class TrackAudioStatusController implements Controller {
   constructor(action: Action, settings: TrackAudioStatusSettings) {
     this.action = action;
     this._settings = settings;
+
+    this.setState();
   }
 
   public reset() {

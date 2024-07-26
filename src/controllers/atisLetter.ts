@@ -27,6 +27,7 @@ export class AtisLetterController implements Controller {
     this._settings = settings;
 
     this.showTitle();
+    this.setState();
   }
 
   /**

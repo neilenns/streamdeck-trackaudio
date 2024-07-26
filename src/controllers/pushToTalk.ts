@@ -17,6 +17,8 @@ export class PushToTalkController implements Controller {
    */
   constructor(action: Action) {
     this.action = action;
+
+    this.setState();
   }
 
   /**
