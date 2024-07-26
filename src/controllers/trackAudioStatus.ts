@@ -40,6 +40,8 @@ export class TrackAudioStatusController implements Controller {
    */
   set settings(newValue: TrackAudioStatusSettings) {
     this._settings = newValue;
+
+    this.setState();
   }
 
   /**
@@ -60,7 +62,7 @@ export class TrackAudioStatusController implements Controller {
 
     this._isVoiceConnected = newValue;
 
-    this.setConnectedImage();
+    this.setState();
   }
 
   /**
@@ -85,13 +87,13 @@ export class TrackAudioStatusController implements Controller {
       this._isVoiceConnected = false;
     }
 
-    this.setConnectedImage();
+    this.setState();
   }
 
   /**
    * Sets the action image based on the isConnected state
    */
-  public setConnectedImage() {
+  public setState() {
     if (this.isVoiceConnected) {
       this.action
         .setImage(

@@ -104,6 +104,7 @@ export class AtisLetterController implements Controller {
     }
 
     this.showTitle();
+    this.setState();
   }
 
   /**
