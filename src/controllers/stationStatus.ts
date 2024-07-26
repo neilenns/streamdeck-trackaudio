@@ -1,12 +1,19 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import generateSvgForSetImage from "@root/utils/svg";
 import TitleBuilder from "@root/utils/titleBuilder";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
 // in the kFrequenciesUpdate message.
 export type ListenTo = "rx" | "tx" | "xc" | "xca";
+
+const StateColor = {
+  NOT_LISTENING: "black",
+  LISTENING: "#060",
+  ACTIVE_COMMS: "#f60",
+};
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -290,6 +297,15 @@ export class StationStatusController implements Controller {
    * isListening value.
    */
   public setState() {
+    const replacements = {
+      title: this.title,
+      callsign: this.callsign,
+      frequency: this.frequency,
+      formattedFrequency: this.formattedFrequency,
+      listenTo: this.listenTo,
+      lastReceivedCallsign: this.lastReceivedCallsign,
+    };
+
     if (this.isAvailable !== undefined && !this.isAvailable) {
       this.action
         .setImage(
@@ -306,8 +322,11 @@ export class StationStatusController implements Controller {
     if (this.isReceiving || this.isTransmitting) {
       this.action
         .setImage(
-          this._settings.activeCommsIconPath ??
-            "images/actions/stationStatus/orange.svg"
+          generateSvgForSetImage(
+            this._settings.activeCommsIconPath ??
+              "images/actions/stationStatus/template.svg",
+            { ...replacements, stateColor: StateColor.ACTIVE_COMMS }
+          )
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -319,8 +338,11 @@ export class StationStatusController implements Controller {
     if (this.isListening) {
       this.action
         .setImage(
-          this._settings.listeningIconPath ??
-            "images/actions/stationStatus/green.svg"
+          generateSvgForSetImage(
+            this._settings.listeningIconPath ??
+              "images/actions/stationStatus/template.svg",
+            { ...replacements, stateColor: StateColor.LISTENING }
+          )
         )
         .catch((error: unknown) => {
           console.error(error);
@@ -331,8 +353,11 @@ export class StationStatusController implements Controller {
 
     this.action
       .setImage(
-        this._settings.notListeningIconPath ??
-          "images/actions/stationStatus/black.svg"
+        generateSvgForSetImage(
+          this._settings.notListeningIconPath ??
+            "images/actions/stationStatus/template.svg",
+          { ...replacements, stateColor: StateColor.NOT_LISTENING }
+        )
       )
       .catch((error: unknown) => {
         console.error(error);
