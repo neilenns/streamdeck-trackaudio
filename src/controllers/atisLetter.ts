@@ -3,6 +3,7 @@ import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
 import generateSvgForSetImage from "@root/utils/svg";
+import TitleBuilder from "@root/utils/titleBuilder";
 
 const StateColor = {
   CURRENT: "black",
@@ -33,7 +34,7 @@ export class AtisLetterController implements Controller {
     this.action = action;
     this._settings = settings;
 
-    this.showTitle();
+    this.setTitle();
     this.setState();
   }
 
@@ -95,6 +96,20 @@ export class AtisLetterController implements Controller {
   }
 
   /**
+   * Returns the showTitle setting, or true if undefined.
+   */
+  get showTitle() {
+    return this._settings.showTitle ?? true;
+  }
+
+  /**
+   * Returns the showLetter setting, or true if undefined.
+   */
+  get showLetter() {
+    return this._settings.showLetter ?? true;
+  }
+
+  /**
    * Gets the settings.
    */
   get settings() {
@@ -111,7 +126,7 @@ export class AtisLetterController implements Controller {
       this._settings.title = undefined;
     }
 
-    this.showTitle();
+    this.setTitle();
     this.setState();
   }
 
@@ -156,7 +171,7 @@ export class AtisLetterController implements Controller {
     }
 
     this._letter = letter;
-    this.showTitle();
+    this.setTitle();
     this.setState(); // For cases where the state is fully responsible for displaying the content
   }
 
@@ -224,25 +239,15 @@ export class AtisLetterController implements Controller {
   }
 
   /**
-   * Shows the title on the action. This will either be the current ATIS letter
-   * or the station name and the word "ATIS".
+   * Sets the title on the action.
    */
-  public showTitle() {
-    let output = "";
+  public setTitle() {
+    const title = new TitleBuilder();
 
-    // If there's a title and we're supposed to show it include it in the output
-    if (this.title && !this._settings.hideTitle) {
-      output += this.title;
-    }
+    title.push(this.title, this.showTitle);
+    title.push(this.letter ?? "ATIS", this.showLetter);
 
-    // If there's a letter and we're supposed to show it include it in the output.
-    // Only add the newline if there was a title.
-    if (!this._settings.hideLetter) {
-      output += this.title && !this._settings.hideTitle ? "\n" : "";
-      output += this.letter ? this.letter : "ATIS";
-    }
-
-    this.action.setTitle(output).catch((error: unknown) => {
+    this.action.setTitle(title.join("\n")).catch((error: unknown) => {
       handleAsyncException("Unable to set action title: ", error);
     });
   }

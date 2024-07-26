@@ -9,7 +9,7 @@ export const handleAtisLetterAdded = (controller: AtisLetterController) => {
   const trackAudio = TrackAudioManager.getInstance();
   const vatsimManager = VatsimManager.getInstance();
 
-  controller.showTitle();
+  controller.setTitle();
 
   if (trackAudio.isVoiceConnected) {
     vatsimManager.start();

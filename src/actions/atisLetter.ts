@@ -49,6 +49,6 @@ export interface AtisLetterSettings {
   currentIconPath?: string;
   updatedIconPath?: string;
   unavailableIconPath?: string;
-  hideTitle: boolean;
-  hideLetter: boolean;
+  showTitle?: boolean;
+  showLetter?: boolean;
 }
