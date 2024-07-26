@@ -2,6 +2,13 @@ import { AtisLetterSettings } from "@actions/atisLetter";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
+import generateSvgForSetImage from "@root/utils/svg";
+
+const StateColor = {
+  CURRENT: "black",
+  UPDATED: "#f60",
+  UNAVAILABLE: "black",
+};
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -150,6 +157,7 @@ export class AtisLetterController implements Controller {
 
     this._letter = letter;
     this.showTitle();
+    this.setState(); // For cases where the state is fully responsible for displaying the content
   }
 
   /**
@@ -163,11 +171,20 @@ export class AtisLetterController implements Controller {
    * Sets the state of the action based on the value of isUpdated
    */
   private setState() {
+    const replacements = {
+      title: this.title,
+      letter: this.letter,
+      callsign: this.callsign,
+    };
+
     if (this.isUnavailable) {
       this.action
         .setImage(
-          this.unavailableIconPath ??
-            "images/actions/atisLetter/unavailable.svg"
+          generateSvgForSetImage(
+            this.unavailableIconPath ??
+              "images/actions/atisLetter/unavailable.svg",
+            { ...replacements, stateColor: StateColor.CURRENT }
+          )
         )
         .catch((error: unknown) => {
           handleAsyncException(
@@ -178,7 +195,10 @@ export class AtisLetterController implements Controller {
     } else if (this.isUpdated) {
       this.action
         .setImage(
-          this.updatedIconPath ?? "images/actions/atisLetter/updated.svg"
+          generateSvgForSetImage(
+            this.updatedIconPath ?? "images/actions/atisLetter/template.svg",
+            { ...replacements, stateColor: StateColor.UPDATED }
+          )
         )
         .catch((error: unknown) => {
           handleAsyncException(
@@ -189,7 +209,10 @@ export class AtisLetterController implements Controller {
     } else {
       this.action
         .setImage(
-          this.currentIconPath ?? "images/actions/atisLetter/current.svg"
+          generateSvgForSetImage(
+            this.currentIconPath ?? "images/actions/atisLetter/template.svg",
+            { ...replacements, stateColor: StateColor.CURRENT }
+          )
         )
         .catch((error: unknown) => {
           handleAsyncException(
@@ -205,23 +228,23 @@ export class AtisLetterController implements Controller {
    * or the station name and the word "ATIS".
    */
   public showTitle() {
-    if (this.letter) {
-      if (this.title) {
-        this.action
-          .setTitle(`${this.title}\n${this._letter ?? ""}`)
-          .catch((error: unknown) => {
-            handleAsyncException("Unable to set action title: ", error);
-          });
-      } else {
-        this.action.setTitle(this.letter).catch((error: unknown) => {
-          handleAsyncException("Unable to set action title: ", error);
-        });
-      }
-    } else {
-      this.action.setTitle(this.title ?? "ATIS").catch((error: unknown) => {
-        handleAsyncException("Unable to set action title: ", error);
-      });
+    let output = "";
+
+    // If there's a title and we're supposed to show it include it in the output
+    if (this.title && !this._settings.hideTitle) {
+      output += this.title;
     }
+
+    // If there's a letter and we're supposed to show it include it in the output.
+    // Only add the newline if there was a title.
+    if (!this._settings.hideLetter) {
+      output += this.title && !this._settings.hideTitle ? "\n" : "";
+      output += this.letter ? this.letter : "ATIS";
+    }
+
+    this.action.setTitle(output).catch((error: unknown) => {
+      handleAsyncException("Unable to set action title: ", error);
+    });
   }
 }
 
