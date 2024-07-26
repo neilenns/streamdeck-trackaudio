@@ -1,6 +1,7 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import TitleBuilder from "@root/utils/titleBuilder";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -39,18 +40,11 @@ export class StationStatusController implements Controller {
       this._settings.listenTo = "rx";
     }
 
-    this.showTitle();
+    this.setTitle();
     this.setState();
   }
 
   //#region Getters and setters
-  /**
-   * Convenience property to get the showLastReceivedCallsign value of settings.
-   */
-  get showLastReceivedCallsign() {
-    return this._settings.showLastReceivedCallsign;
-  }
-
   /**
    * Gets the frequency.
    */
@@ -66,6 +60,19 @@ export class StationStatusController implements Controller {
     // to ensure isAvailable refreshes.
     this._frequency = newValue;
     this.isAvailable = this.frequency !== 0;
+  }
+
+  /**
+   * Returns the frequency formated for display. A value of 121900000
+   * will be returned as "121.900". If the frequency is undefined or 0
+   * then an empty string is returned.
+   */
+  get formattedFrequency() {
+    if (this.frequency) {
+      return (this.frequency / 1000000).toFixed(3);
+    } else {
+      return "";
+    }
   }
 
   /**
@@ -107,15 +114,45 @@ export class StationStatusController implements Controller {
   }
 
   /**
-   * Returns the title specified by the user in the property inspector,
-   * or the default title if no user title was specified.
+   * Returns the title specified by the user in the property inspector.
    */
   get title() {
-    if (this._settings.title !== undefined && this._settings.title !== "") {
-      return this._settings.title;
-    } else {
-      return `${this.callsign ?? "Not set"}\n${this.listenTo.toUpperCase()}`;
-    }
+    return this._settings.title;
+  }
+
+  /**
+   * Returns the showTitle setting, or true if undefined.
+   */
+  get showTitle() {
+    return this._settings.showTitle ?? true;
+  }
+
+  /**
+   * Returns the showCallsign setting, or false if undefined.
+   */
+  get showCallsign() {
+    return this._settings.showCallsign ?? false;
+  }
+
+  /**
+   * Returns the showListenTo setting, or false if undefined
+   */
+  get showListenTo() {
+    return this._settings.showListenTo ?? false;
+  }
+
+  /**
+   * Returns the showFrequency setting, or false if undefined
+   */
+  get showFrequency() {
+    return this._settings.showFrequency ?? false;
+  }
+
+  /**
+   * Returns the showLastReceivedCallsign setting, or true if undefined
+   */
+  get showLastReceivedCallsign() {
+    return this._settings.showLastReceivedCallsign ?? true;
   }
 
   /**
@@ -131,7 +168,7 @@ export class StationStatusController implements Controller {
   set settings(newValue: StationSettings) {
     this._settings = newValue;
 
-    this.showTitle();
+    this.setTitle();
     this.setState();
   }
 
@@ -227,7 +264,7 @@ export class StationStatusController implements Controller {
   set lastReceivedCallsign(callsign: string | undefined) {
     this._lastReceivedCallsign = callsign;
 
-    this.showTitle();
+    this.setTitle();
   }
   //#endregion
 
@@ -245,7 +282,7 @@ export class StationStatusController implements Controller {
     this._isAvailable = undefined;
 
     this.setState();
-    this.showTitle();
+    this.setTitle();
   }
 
   /**
@@ -307,24 +344,19 @@ export class StationStatusController implements Controller {
    * the base title if it exists, showLastReceivedCallsign is enabled in settings,
    * and the action is listening to RX.
    */
-  public showTitle() {
-    if (
-      this.lastReceivedCallsign &&
-      this.showLastReceivedCallsign &&
-      this.isListeningForReceive
-    ) {
-      this.action
-        .setTitle(`${this.title}\n${this.lastReceivedCallsign}`)
-        .catch((error: unknown) => {
-          const err = error as Error;
-          console.error(`Unable to set action title: ${err.message}`);
-        });
-    } else {
-      this.action.setTitle(this.title).catch((error: unknown) => {
-        const err = error as Error;
-        console.error(`Unable to set action title: ${err.message}`);
-      });
-    }
+  public setTitle() {
+    const title = new TitleBuilder();
+
+    title.push(this.title, this.showTitle);
+    title.push(this.callsign, this.showCallsign);
+    title.push(this.formattedFrequency, this.showFrequency);
+    title.push(this.listenTo.toUpperCase(), this.showListenTo);
+    title.push(this.lastReceivedCallsign, this.showLastReceivedCallsign);
+
+    this.action.setTitle(title.join("\n")).catch((error: unknown) => {
+      const err = error as Error;
+      console.error(`Unable to set action title: ${err.message}`);
+    });
   }
 }
 

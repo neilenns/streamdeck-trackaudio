@@ -47,10 +47,14 @@ export class StationStatus extends SingletonAction<StationSettings> {
 export interface StationSettings {
   title?: string;
   callsign?: string;
-  showLastReceivedCallsign: boolean;
   listenTo: ListenTo | null;
   notListeningIconPath: string | null;
   listeningIconPath: string | null;
   activeCommsIconPath: string | null;
   unavailableIconPath: string | null;
+  showTitle?: boolean;
+  showCallsign?: boolean;
+  showFrequency?: boolean;
+  showListenTo?: boolean;
+  showLastReceivedCallsign?: boolean;
 }

@@ -197,7 +197,7 @@ export default class ActionManager extends EventEmitter {
     savedAction.settings = settings;
 
     // Refreshes the title and icons in case that's what changed in settings
-    savedAction.showTitle();
+    savedAction.setTitle();
     savedAction.setState();
 
     if (requiresStationRefresh) {
