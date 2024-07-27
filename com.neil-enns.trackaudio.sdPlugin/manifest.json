@@ -75,7 +75,7 @@
       "Tooltip": "Shows the status of the connection to TrackAudio.",
       "PropertyInspectorPath": "pi/trackAudioStatus.html",
       "DisableAutomaticStates": true,
-      "UserTitleEnabled": true,
+      "UserTitleEnabled": false,
       "Controllers": ["Keypad"],
       "States": [
         {
