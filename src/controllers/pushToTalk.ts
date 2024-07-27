@@ -4,6 +4,7 @@ import { BaseController } from "./baseController";
 import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import { PushToTalkSettings } from "@actions/pushToTalk";
 import TitleBuilder from "@root/utils/titleBuilder";
+import { stringOrUndefined } from "@root/utils/utils";
 
 const StateColor = {
   NOT_TRANSMITTING: "black",
@@ -52,7 +53,7 @@ export class PushToTalkController extends BaseController {
    * Returns the transmittingIconPath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get transmittingIconPath() {
+  get transmittingIconPath(): string {
     return this._transmittingIconPath ?? defaultTemplatePath;
   }
 
@@ -64,9 +65,8 @@ export class PushToTalkController extends BaseController {
       !this._compiledTransmittingSvg ||
       this.transmittingIconPath !== newValue
     ) {
-      this._compiledTransmittingSvg = compileSvg(
-        newValue ?? defaultTemplatePath
-      );
+      this._transmittingIconPath = stringOrUndefined(newValue);
+      this._compiledTransmittingSvg = compileSvg(this.transmittingIconPath);
     }
   }
 
@@ -74,7 +74,7 @@ export class PushToTalkController extends BaseController {
    * Returns the notTransmittingIconPath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get notTransmittingIconPath() {
+  get notTransmittingIconPath(): string {
     return this._notTransmittingIconPath ?? defaultTemplatePath;
   }
 
@@ -86,8 +86,9 @@ export class PushToTalkController extends BaseController {
       !this._compiledNotTransmittingSvg ||
       this.notTransmittingIconPath !== newValue
     ) {
+      this.notTransmittingIconPath = stringOrUndefined(newValue);
       this._compiledNotTransmittingSvg = compileSvg(
-        newValue ?? defaultTemplatePath
+        this.notTransmittingIconPath
       );
     }
   }

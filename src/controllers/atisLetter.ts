@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { BaseController } from "./baseController";
+import { stringOrUndefined } from "@root/utils/utils";
 
 const StateColor = {
   CURRENT: "black",
@@ -93,7 +94,7 @@ export class AtisLetterController extends BaseController {
    * Returns the currentIconPath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get currentIconPath() {
+  get currentIconPath(): string {
     return this._currentIconPath ?? defaultTemplatePath;
   }
 
@@ -102,7 +103,8 @@ export class AtisLetterController extends BaseController {
    */
   set currentIconPath(newValue: string | undefined) {
     if (!this._compiledCurrentSvg || this.currentIconPath !== newValue) {
-      this._compiledCurrentSvg = compileSvg(newValue ?? defaultTemplatePath);
+      this._currentIconPath = stringOrUndefined(newValue);
+      this._compiledCurrentSvg = compileSvg(this.currentIconPath);
     }
   }
 
@@ -110,7 +112,7 @@ export class AtisLetterController extends BaseController {
    * Returns the updatedIconPath or the default template path if the user
    * didn't specify a custom icon.
    */
-  get updatedIconPath() {
+  get updatedIconPath(): string {
     return this._updatedIconPath ?? defaultTemplatePath;
   }
 
@@ -119,7 +121,8 @@ export class AtisLetterController extends BaseController {
    */
   set updatedIconPath(newValue: string | undefined) {
     if (!this._compiledUpdatedSvg || this.updatedIconPath !== newValue) {
-      this._compiledUpdatedSvg = compileSvg(newValue ?? defaultTemplatePath);
+      this._updatedIconPath = stringOrUndefined(newValue);
+      this._compiledUpdatedSvg = compileSvg(this.updatedIconPath);
     }
   }
 
@@ -127,7 +130,7 @@ export class AtisLetterController extends BaseController {
    * Returns the unavailableIconPath or the default unavailable template path
    * if the user didn't specify a custom icon.
    */
-  get unavailableIconPath() {
+  get unavailableIconPath(): string {
     return this._unavailableIconPath ?? defaultUnavailableTemplatePath;
   }
 
@@ -139,9 +142,8 @@ export class AtisLetterController extends BaseController {
       !this._compiledUnavailableSvg ||
       this.unavailableIconPath !== newValue
     ) {
-      this._compiledUnavailableSvg = compileSvg(
-        newValue ?? defaultUnavailableTemplatePath
-      );
+      this._unavailableIconPath = stringOrUndefined(newValue);
+      this._compiledUnavailableSvg = compileSvg(this.unavailableIconPath);
     }
   }
 
@@ -180,7 +182,6 @@ export class AtisLetterController extends BaseController {
     this.refreshTitle();
     this.refreshImage();
   }
-  //#endregion
 
   /**
    * Gets the isUpdated state on the action.
@@ -233,6 +234,7 @@ export class AtisLetterController extends BaseController {
   get title() {
     return this._settings.title;
   }
+  //#endregion
 
   /**
    * Sets the state of the action based on the value of isUpdated

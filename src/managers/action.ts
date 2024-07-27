@@ -180,8 +180,6 @@ export default class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateStation(action: Action, settings: StationSettings) {
-    console.log("Updating station settings");
-
     const savedAction = this.getStationStatusControllers().find(
       (entry) => entry.action.id === action.id
     );

@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import { BaseController } from "./baseController";
 import TitleBuilder from "@root/utils/titleBuilder";
+import { stringOrUndefined } from "@root/utils/utils";
 
 const StateColor = {
   NOT_CONNECTED: "white",
@@ -138,9 +139,13 @@ export class TrackAudioStatusController extends BaseController {
    */
   set settings(newValue: TrackAudioStatusSettings) {
     this._settings = newValue;
-    this.connectedIconPath = newValue.connectedIconPath;
-    this.notConnectedIconPath = newValue.notConnectedIconPath;
-    this.voiceConnectedIconPath = newValue.voiceConnectedIconPath;
+    this.connectedIconPath = stringOrUndefined(newValue.connectedIconPath);
+    this.notConnectedIconPath = stringOrUndefined(
+      newValue.notConnectedIconPath
+    );
+    this.voiceConnectedIconPath = stringOrUndefined(
+      newValue.voiceConnectedIconPath
+    );
 
     this.refreshTitle();
     this.refreshImage();
