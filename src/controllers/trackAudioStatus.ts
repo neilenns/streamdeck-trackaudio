@@ -3,6 +3,7 @@ import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import { BaseController } from "./baseController";
+import TitleBuilder from "@root/utils/titleBuilder";
 
 const StateColor = {
   NOT_CONNECTED: "white",
@@ -40,6 +41,7 @@ export class TrackAudioStatusController extends BaseController {
     super(action);
     this.settings = settings;
 
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -49,6 +51,20 @@ export class TrackAudioStatusController extends BaseController {
   }
 
   //#region Getters and setters
+  /**
+   * Returns the showTitle setting, or false if undefined.
+   */
+  get showTitle() {
+    return this._settings.showTitle ?? false;
+  }
+
+  /**
+   * Convenience method to return the action's title from settings.
+   */
+  get title() {
+    return this._settings.title;
+  }
+
   /**
    * Returns the notConnectedIconPath or the default template path if the
    * user didn't specify a custom icon.
@@ -126,6 +142,7 @@ export class TrackAudioStatusController extends BaseController {
     this.notConnectedIconPath = newValue.notConnectedIconPath;
     this.voiceConnectedIconPath = newValue.voiceConnectedIconPath;
 
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -147,6 +164,7 @@ export class TrackAudioStatusController extends BaseController {
 
     this._isVoiceConnected = newValue;
 
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -175,6 +193,17 @@ export class TrackAudioStatusController extends BaseController {
     this.refreshImage();
   }
   //#endregion
+
+  /**
+   * Sets the title on the action.
+   */
+  public refreshTitle() {
+    const title = new TitleBuilder();
+
+    title.push(this.title, this.showTitle);
+
+    this.setTitle(title.join("\n"));
+  }
 
   /**
    * Sets the action image based on the isConnected state
