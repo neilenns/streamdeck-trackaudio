@@ -1,14 +1,14 @@
 import { HotlineSettings } from "@actions/hotline";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import { BaseController } from "./baseController";
 
 /**
  * A HotlineController action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class HotlineController implements Controller {
+export class HotlineController extends BaseController {
   type = "HotlineController";
-  action: Action;
 
   private _settings: HotlineSettings;
 
@@ -26,10 +26,10 @@ export class HotlineController implements Controller {
    * @param settings: The options for the action
    */
   constructor(action: Action, settings: HotlineSettings) {
-    this.action = action;
+    super(action);
     this._settings = settings;
 
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -45,7 +45,7 @@ export class HotlineController implements Controller {
     this._hotlineFrequency = 0;
     this._isAvailable = undefined;
 
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -102,7 +102,7 @@ export class HotlineController implements Controller {
     }
 
     this._isAvailable = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -115,7 +115,7 @@ export class HotlineController implements Controller {
     }
 
     this._isReceiving = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -194,10 +194,10 @@ export class HotlineController implements Controller {
   set settings(newValue: HotlineSettings) {
     this._settings = newValue;
 
-    this.setState();
+    this.refreshImage();
   }
 
-  public setState() {
+  public refreshImage() {
     if (this.isAvailable !== undefined && !this.isAvailable) {
       this.action
         .setImage(

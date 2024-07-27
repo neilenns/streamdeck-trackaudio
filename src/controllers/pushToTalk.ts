@@ -1,13 +1,13 @@
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import { BaseController } from "./baseController";
 
 /**
  * A PushToTalkController action, for use with ActionManager. Tracks the
  * state and StreamDeck action for an individual action in a profile.
  */
-export class PushToTalkController implements Controller {
+export class PushToTalkController extends BaseController {
   type = "PushToTalkController";
-  action: Action;
 
   private _isTransmitting = false;
 
@@ -16,9 +16,9 @@ export class PushToTalkController implements Controller {
    * @param action The callsign for the action
    */
   constructor(action: Action) {
-    this.action = action;
+    super(action);
 
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -45,13 +45,13 @@ export class PushToTalkController implements Controller {
     }
 
     this._isTransmitting = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
    * Sets the action image to the correct one for when comms are active.
    */
-  public setState() {
+  public refreshImage() {
     this.action
       .setState(this.isTransmitting ? 1 : 0)
       .catch((error: unknown) => {

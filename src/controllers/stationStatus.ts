@@ -1,8 +1,9 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { compileSvg, generateSvgForSetImage } from "@root/utils/svg";
+import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import TitleBuilder from "@root/utils/titleBuilder";
+import { BaseController } from "./baseController";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -22,9 +23,8 @@ const defaultUnavailableTemplatePath =
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class StationStatusController implements Controller {
+export class StationStatusController extends BaseController {
   type = "StationStatusController";
-  action: Action;
 
   private _settings: StationSettings;
   private _frequency = 0;
@@ -35,10 +35,10 @@ export class StationStatusController implements Controller {
   private _lastReceivedCallsign?: string;
 
   // Pre-compiled action SVGs
-  private _compiledActiveCommsSvg: ReturnType<typeof compileSvg>;
-  private _compiledListeningSvg: ReturnType<typeof compileSvg>;
-  private _compiledNotListeningSvg: ReturnType<typeof compileSvg>;
-  private _compiledUnavailableSvg: ReturnType<typeof compileSvg>;
+  private _compiledActiveCommsSvg: CompiledSvgTemplate;
+  private _compiledListeningSvg: CompiledSvgTemplate;
+  private _compiledNotListeningSvg: CompiledSvgTemplate;
+  private _compiledUnavailableSvg: CompiledSvgTemplate;
 
   /**
    * Creates a new StationStatusController object.
@@ -46,6 +46,7 @@ export class StationStatusController implements Controller {
    * @param settings: The options for the action
    */
   constructor(action: Action, settings: StationSettings) {
+    super(action);
     this.action = action;
     this._settings = settings;
 
@@ -61,8 +62,8 @@ export class StationStatusController implements Controller {
       this._settings.listenTo = "rx";
     }
 
-    this.setTitle();
-    this.setState();
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   //#region Getters and setters
@@ -214,8 +215,8 @@ export class StationStatusController implements Controller {
 
     this._settings = newValue;
 
-    this.setTitle();
-    this.setState();
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
@@ -235,7 +236,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isReceiving = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -255,7 +256,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isTransmitting = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -275,7 +276,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isListening = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -294,7 +295,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isAvailable = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -310,7 +311,7 @@ export class StationStatusController implements Controller {
   set lastReceivedCallsign(callsign: string | undefined) {
     this._lastReceivedCallsign = callsign;
 
-    this.setTitle();
+    this.refreshTitle();
   }
   //#endregion
 
@@ -327,15 +328,15 @@ export class StationStatusController implements Controller {
     this._isTransmitting = false;
     this._isAvailable = undefined;
 
-    this.setTitle();
-    this.setState();
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
    * Sets the action image to the correct one given the current isReceiving, isTransmitting, isAvailable and
    * isListening value.
    */
-  public setState() {
+  public refreshImage() {
     const replacements = {
       title: this.title,
       callsign: this.callsign,
@@ -346,60 +347,33 @@ export class StationStatusController implements Controller {
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.action
-        .setImage(
-          generateSvgForSetImage(this._compiledUnavailableSvg, {
-            ...replacements,
-            stateColor: StateColor.ACTIVE_COMMS,
-          })
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-
+      this.setImage(this._compiledUnavailableSvg, {
+        ...replacements,
+        stateColor: StateColor.ACTIVE_COMMS,
+      });
       return;
     }
 
     if (this.isReceiving || this.isTransmitting) {
-      this.action
-        .setImage(
-          generateSvgForSetImage(this._compiledActiveCommsSvg, {
-            ...replacements,
-            stateColor: StateColor.ACTIVE_COMMS,
-          })
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-
+      this.setImage(this._compiledActiveCommsSvg, {
+        ...replacements,
+        stateColor: StateColor.ACTIVE_COMMS,
+      });
       return;
     }
 
     if (this.isListening) {
-      this.action
-        .setImage(
-          generateSvgForSetImage(this._compiledListeningSvg, {
-            ...replacements,
-            stateColor: StateColor.LISTENING,
-          })
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-
+      this.setImage(this._compiledListeningSvg, {
+        ...replacements,
+        stateColor: StateColor.LISTENING,
+      });
       return;
     }
 
-    this.action
-      .setImage(
-        generateSvgForSetImage(this._compiledNotListeningSvg, {
-          ...replacements,
-          stateColor: StateColor.NOT_LISTENING,
-        })
-      )
-      .catch((error: unknown) => {
-        console.error(error);
-      });
+    this.setImage(this._compiledNotListeningSvg, {
+      ...replacements,
+      stateColor: StateColor.NOT_LISTENING,
+    });
   }
 
   /**
@@ -407,7 +381,7 @@ export class StationStatusController implements Controller {
    * the base title if it exists, showLastReceivedCallsign is enabled in settings,
    * and the action is listening to RX.
    */
-  public setTitle() {
+  public refreshTitle() {
     const title = new TitleBuilder();
 
     title.push(this.title, this.showTitle);
@@ -416,10 +390,7 @@ export class StationStatusController implements Controller {
     title.push(this.listenTo.toUpperCase(), this.showListenTo);
     title.push(this.lastReceivedCallsign, this.showLastReceivedCallsign);
 
-    this.action.setTitle(title.join("\n")).catch((error: unknown) => {
-      const err = error as Error;
-      console.error(`Unable to set action title: ${err.message}`);
-    });
+    this.setTitle(title.join("\n"));
   }
 }
 

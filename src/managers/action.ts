@@ -24,9 +24,9 @@ import { Controller } from "@interfaces/controller";
 import { StationStateUpdate } from "@interfaces/messages";
 import TrackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
+import debounce from "debounce";
 import { EventEmitter } from "events";
 import VatsimManager from "./vatsim";
-import debounce from "debounce";
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -198,8 +198,8 @@ export default class ActionManager extends EventEmitter {
     savedAction.settings = settings;
 
     // Refreshes the title and icons in case that's what changed in settings
-    savedAction.setTitle();
-    savedAction.setState();
+    savedAction.refreshTitle();
+    savedAction.refreshImage();
 
     if (requiresStationRefresh) {
       this.emit("stationStatusSettingsUpdated", savedAction);
@@ -251,7 +251,7 @@ export default class ActionManager extends EventEmitter {
     savedAction.settings = settings;
 
     // Refreshes the icons in case that's what changed in settings
-    savedAction.setState();
+    savedAction.refreshImage();
 
     if (requiresStationRefresh) {
       this.emit("hotlineSettingsUpdated", savedAction);
@@ -303,7 +303,7 @@ export default class ActionManager extends EventEmitter {
           (data.value.xc && entry.listenTo === "xc") ||
           (data.value.xca && entry.listenTo === "xca");
 
-        entry.setState();
+        entry.refreshImage();
       });
 
     // Do the same for hotline actions
@@ -316,7 +316,7 @@ export default class ActionManager extends EventEmitter {
         entry.isRxHotline = data.value.rx;
       }
 
-      entry.setState();
+      entry.refreshImage();
     });
   }
 

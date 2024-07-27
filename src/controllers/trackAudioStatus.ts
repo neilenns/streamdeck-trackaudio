@@ -1,14 +1,14 @@
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import { BaseController } from "./baseController";
 
 /**
  * A TrackAudioStatusController action, for use with ActionManager. Tracks the
  * state and StreamDeck action for an individual action in a profile.
  */
-export class TrackAudioStatusController implements Controller {
+export class TrackAudioStatusController extends BaseController {
   type = "TrackAudioStatusController";
-  action: Action;
 
   private _isConnected = false;
   private _isVoiceConnected = false;
@@ -19,10 +19,10 @@ export class TrackAudioStatusController implements Controller {
    * @param action The StreamDeck action object
    */
   constructor(action: Action, settings: TrackAudioStatusSettings) {
-    this.action = action;
+    super(action);
     this._settings = settings;
 
-    this.setState();
+    this.refreshImage();
   }
 
   public reset() {
@@ -43,7 +43,7 @@ export class TrackAudioStatusController implements Controller {
   set settings(newValue: TrackAudioStatusSettings) {
     this._settings = newValue;
 
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -64,7 +64,7 @@ export class TrackAudioStatusController implements Controller {
 
     this._isVoiceConnected = newValue;
 
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -89,13 +89,13 @@ export class TrackAudioStatusController implements Controller {
       this._isVoiceConnected = false;
     }
 
-    this.setState();
+    this.refreshImage();
   }
 
   /**
    * Sets the action image based on the isConnected state
    */
-  public setState() {
+  public refreshImage() {
     if (this.isVoiceConnected) {
       this.action
         .setImage(

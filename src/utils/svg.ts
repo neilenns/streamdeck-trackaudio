@@ -1,6 +1,9 @@
 import * as fs from "fs";
 import Handlebars from "handlebars";
 
+export type CompiledSvgTemplate = ReturnType<typeof compileSvg>;
+export type Replacements = Record<string, unknown>;
+
 /**
  * Takes a compiled SVG template, replaces the appropriate placeholders, and
  * returns the resulting SVG
@@ -9,8 +12,8 @@ import Handlebars from "handlebars";
  * @returns The SVG with the replacements applied
  */
 export function generateSvgForSetImage(
-  template: ReturnType<typeof compileSvg>,
-  replacements: Record<string, unknown>
+  template: CompiledSvgTemplate,
+  replacements: Replacements
 ): string {
   if (!template) {
     return "";
