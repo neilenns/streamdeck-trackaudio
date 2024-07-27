@@ -26,13 +26,18 @@ const defaultUnavailableTemplatePath =
 export class StationStatusController extends BaseController {
   type = "StationStatusController";
 
-  private _settings: StationSettings;
+  private _settings!: StationSettings;
   private _frequency = 0;
   private _isReceiving = false;
   private _isTransmitting = false;
   private _isListening = false;
   private _isAvailable: boolean | undefined = undefined;
   private _lastReceivedCallsign?: string;
+
+  private _notListeningIconPath?: string;
+  private _listeningIconPath?: string;
+  private _activeCommsIconPath?: string;
+  private _unavailableIconPath?: string;
 
   // Pre-compiled action SVGs
   private _compiledActiveCommsSvg: CompiledSvgTemplate;
@@ -48,7 +53,7 @@ export class StationStatusController extends BaseController {
   constructor(action: Action, settings: StationSettings) {
     super(action);
     this.action = action;
-    this._settings = settings;
+    this.settings = settings;
 
     this.compileSvgs(settings);
 
@@ -64,6 +69,89 @@ export class StationStatusController extends BaseController {
   }
 
   //#region Getters and setters
+  /**
+   * Returns the notListeningIconPath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get notListeningIconPath() {
+    return this._notListeningIconPath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the notListeningIconPath and re-compiles the SVG template if necessary.
+   */
+  set notListeningIconPath(newValue: string | undefined) {
+    if (
+      !this._compiledNotListeningSvg ||
+      this.notListeningIconPath !== newValue
+    ) {
+      this._compiledNotListeningSvg = compileSvg(
+        newValue ?? defaultTemplatePath
+      );
+    }
+  }
+
+  /**
+   * Returns the listeningIconPath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get listeningIconPath() {
+    return this._listeningIconPath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the listeningIconPath and re-compiles the SVG template if necessary.
+   */
+  set listeningIconPath(newValue: string | undefined) {
+    if (!this._compiledListeningSvg || this.listeningIconPath !== newValue) {
+      this._compiledListeningSvg = compileSvg(newValue ?? defaultTemplatePath);
+    }
+  }
+
+  /**
+   * Returns the activeCommsIconPath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get activeCommsIconPath() {
+    return this._activeCommsIconPath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the activeCommsIconPath and re-compiles the SVG template if necessary.
+   */
+  set activeCommsIconPath(newValue: string | undefined) {
+    if (
+      !this._compiledActiveCommsSvg ||
+      this.activeCommsIconPath !== newValue
+    ) {
+      this._compiledActiveCommsSvg = compileSvg(
+        newValue ?? defaultTemplatePath
+      );
+    }
+  }
+
+  /**
+   * Returns the unavailableIconPath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get unavailableIconPath() {
+    return this._unavailableIconPath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the unavailableIconPath and re-compiles the SVG template if necessary.
+   */
+  set unavailableIconPath(newValue: string | undefined) {
+    if (
+      !this._compiledUnavailableSvg ||
+      this.unavailableIconPath !== newValue
+    ) {
+      this._compiledUnavailableSvg = compileSvg(
+        newValue ?? defaultUnavailableTemplatePath
+      );
+    }
+  }
+
   /**
    * Gets the frequency.
    */
@@ -185,11 +273,12 @@ export class StationStatusController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: StationSettings) {
-    // Compile new SVGs before updating the settings so
-    // they can be compared against the previous path.
-    this.compileSvgs(newValue);
-
     this._settings = newValue;
+
+    this.activeCommsIconPath = newValue.activeCommsIconPath;
+    this.listeningIconPath = newValue.listeningIconPath;
+    this.notListeningIconPath = newValue.notListeningIconPath;
+    this.unavailableIconPath = newValue.unavailableIconPath;
 
     this.refreshTitle();
     this.refreshImage();
@@ -367,7 +456,7 @@ export class StationStatusController extends BaseController {
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.setImage(this._compiledUnavailableSvg, {
+      this.setImage(this.unavailableIconPath, this._compiledUnavailableSvg, {
         ...replacements,
         stateColor: StateColor.ACTIVE_COMMS,
       });
@@ -375,7 +464,7 @@ export class StationStatusController extends BaseController {
     }
 
     if (this.isReceiving || this.isTransmitting) {
-      this.setImage(this._compiledActiveCommsSvg, {
+      this.setImage(this.activeCommsIconPath, this._compiledActiveCommsSvg, {
         ...replacements,
         stateColor: StateColor.ACTIVE_COMMS,
       });
@@ -383,14 +472,14 @@ export class StationStatusController extends BaseController {
     }
 
     if (this.isListening) {
-      this.setImage(this._compiledListeningSvg, {
+      this.setImage(this.listeningIconPath, this._compiledListeningSvg, {
         ...replacements,
         stateColor: StateColor.LISTENING,
       });
       return;
     }
 
-    this.setImage(this._compiledNotListeningSvg, {
+    this.setImage(this.notListeningIconPath, this._compiledNotListeningSvg, {
       ...replacements,
       stateColor: StateColor.NOT_LISTENING,
     });

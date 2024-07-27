@@ -43,6 +43,7 @@
       "Tooltip": "Triggers transmit via push-to-talk.",
       "DisableAutomaticStates": true,
       "UserTitleEnabled": false,
+      "PropertyInspectorPath": "pi/pushToTalk.html",
       "Controllers": ["Keypad"],
       "States": [
         {

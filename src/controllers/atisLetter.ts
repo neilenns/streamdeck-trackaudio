@@ -22,10 +22,14 @@ const defaultUnavailableTemplatePath =
 export class AtisLetterController extends BaseController {
   type = "AtisLetterController";
 
-  private _settings: AtisLetterSettings;
+  private _settings!: AtisLetterSettings;
   private _letter?: string;
   private _isUpdated = false;
   private _isUnavailable = false;
+
+  private _currentIconPath?: string;
+  private _unavailableIconPath?: string;
+  private _updatedIconPath?: string;
 
   // Pre-compiled action SVGs
   private _compiledCurrentSvg: CompiledSvgTemplate;
@@ -39,9 +43,7 @@ export class AtisLetterController extends BaseController {
    */
   constructor(action: Action, settings: AtisLetterSettings) {
     super(action);
-    this._settings = settings;
-
-    this.compileSvgs(settings);
+    this.settings = settings;
 
     this.refreshTitle();
     this.refreshImage();
@@ -59,6 +61,7 @@ export class AtisLetterController extends BaseController {
     this.refreshImage();
   }
 
+  //#region Getters and setters
   /**
    * Gets isUnavailable, which is true if no ATIS letter was available in the last VATSIM update.
    */
@@ -87,24 +90,59 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Returns the currentIconPath for the ATIS action.
+   * Returns the currentIconPath or the default template path if the
+   * user didn't specify a custom icon.
    */
   get currentIconPath() {
-    return this._settings.currentIconPath;
+    return this._currentIconPath ?? defaultTemplatePath;
   }
 
   /**
-   * Returns the updatedIconPath for the ATIS action.
+   * Sets the currentIconPath and re-compiles the SVG template if necessary.
+   */
+  set currentIconPath(newValue: string | undefined) {
+    if (!this._compiledCurrentSvg || this.currentIconPath !== newValue) {
+      this._compiledCurrentSvg = compileSvg(newValue ?? defaultTemplatePath);
+    }
+  }
+
+  /**
+   * Returns the updatedIconPath or the default template path if the user
+   * didn't specify a custom icon.
    */
   get updatedIconPath() {
-    return this._settings.updatedIconPath;
+    return this._updatedIconPath ?? defaultTemplatePath;
   }
 
   /**
-   * Returns the unavailableIconPath for the ATIS action.
+   * Sets the updatedIconPath and re-compiles the SVG template if necessary.
+   */
+  set updatedIconPath(newValue: string | undefined) {
+    if (!this._compiledUpdatedSvg || this.updatedIconPath !== newValue) {
+      this._compiledUpdatedSvg = compileSvg(newValue ?? defaultTemplatePath);
+    }
+  }
+
+  /**
+   * Returns the unavailableIconPath or the default unavailable template path
+   * if the user didn't specify a custom icon.
    */
   get unavailableIconPath() {
-    return this._settings.unavailableIconPath;
+    return this._unavailableIconPath ?? defaultUnavailableTemplatePath;
+  }
+
+  /**
+   * Sets the unavailableIconPath and re-compiles the SVG template if necessary.
+   */
+  set unavailableIconPath(newValue: string | undefined) {
+    if (
+      !this._compiledUnavailableSvg ||
+      this.unavailableIconPath !== newValue
+    ) {
+      this._compiledUnavailableSvg = compileSvg(
+        newValue ?? defaultUnavailableTemplatePath
+      );
+    }
   }
 
   /**
@@ -129,18 +167,20 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Sets the settings.
+   * Sets the settings. Also updates the private icon paths and
+   * compiled SVGs.
    */
   set settings(newValue: AtisLetterSettings) {
-    // Compile new SVGs before updating the settings so
-    // they can be compared against the previous path.
-    this.compileSvgs(newValue);
-
     this._settings = newValue;
+
+    this.currentIconPath = newValue.currentIconPath;
+    this.unavailableIconPath = newValue.unavailableIconPath;
+    this.updatedIconPath = newValue.updatedIconPath;
 
     this.refreshTitle();
     this.refreshImage();
   }
+  //#endregion
 
   /**
    * Gets the isUpdated state on the action.
@@ -195,40 +235,6 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Compiles the SVG templates if they aren't set or
-   * the path to the template changed.
-   * @param newValue The incoming new settings.
-   */
-  private compileSvgs(newValue: AtisLetterSettings) {
-    if (
-      !this._compiledCurrentSvg ||
-      this._settings.currentIconPath !== newValue.currentIconPath
-    ) {
-      this._compiledCurrentSvg = compileSvg(
-        newValue.currentIconPath ?? defaultTemplatePath
-      );
-    }
-
-    if (
-      !this._compiledUpdatedSvg ||
-      this._settings.updatedIconPath !== newValue.updatedIconPath
-    ) {
-      this._compiledUpdatedSvg = compileSvg(
-        newValue.updatedIconPath ?? defaultTemplatePath
-      );
-    }
-
-    if (
-      !this._compiledUnavailableSvg ||
-      this._settings.unavailableIconPath !== newValue.unavailableIconPath
-    ) {
-      this._compiledUnavailableSvg = compileSvg(
-        newValue.unavailableIconPath ?? defaultUnavailableTemplatePath
-      );
-    }
-  }
-
-  /**
    * Sets the state of the action based on the value of isUpdated
    */
   private refreshImage() {
@@ -239,7 +245,7 @@ export class AtisLetterController extends BaseController {
     };
 
     if (this.isUnavailable) {
-      this.setImage(this._compiledUnavailableSvg, {
+      this.setImage(this.unavailableIconPath, this._compiledUnavailableSvg, {
         ...replacements,
         stateColor: StateColor.CURRENT,
       });
@@ -247,14 +253,14 @@ export class AtisLetterController extends BaseController {
     }
 
     if (this.isUpdated) {
-      this.setImage(this._compiledUpdatedSvg, {
+      this.setImage(this.updatedIconPath, this._compiledUpdatedSvg, {
         ...replacements,
         stateColor: StateColor.UPDATED,
       });
       return;
     }
 
-    this.setImage(this._compiledCurrentSvg, {
+    this.setImage(this.currentIconPath, this._compiledCurrentSvg, {
       ...replacements,
       stateColor: StateColor.CURRENT,
     });

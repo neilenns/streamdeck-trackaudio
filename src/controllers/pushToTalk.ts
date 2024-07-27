@@ -10,7 +10,7 @@ const StateColor = {
   TRANSMITTING: "#f60",
 };
 
-const defaultTemplatePath = "images/actions/pushToTalk/template";
+const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 
 /**
  * A PushToTalkController action, for use with ActionManager. Tracks the
@@ -19,8 +19,11 @@ const defaultTemplatePath = "images/actions/pushToTalk/template";
 export class PushToTalkController extends BaseController {
   type = "PushToTalkController";
 
-  private _settings: PushToTalkSettings;
+  private _settings!: PushToTalkSettings;
   private _isTransmitting = false;
+
+  private _notTransmittingIconPath?: string;
+  private _transmittingIconPath?: string;
 
   private _compiledNotTransmittingSvg: CompiledSvgTemplate;
   private _compiledTransmittingSvg: CompiledSvgTemplate;
@@ -31,9 +34,7 @@ export class PushToTalkController extends BaseController {
    */
   constructor(action: Action, settings: PushToTalkSettings) {
     super(action);
-    this._settings = settings;
-
-    this.compileSvgs(settings);
+    this.settings = settings;
 
     this.refreshTitle();
     this.refreshImage();
@@ -44,6 +45,51 @@ export class PushToTalkController extends BaseController {
    */
   public reset() {
     this.isTransmitting = false;
+  }
+
+  //#region Getters and setters
+  /**
+   * Returns the transmittingIconPath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get transmittingIconPath() {
+    return this._transmittingIconPath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the transmittingIconPath and re-compiles the SVG template if necessary.
+   */
+  set transmittingIconPath(newValue: string | undefined) {
+    if (
+      !this._compiledTransmittingSvg ||
+      this.transmittingIconPath !== newValue
+    ) {
+      this._compiledTransmittingSvg = compileSvg(
+        newValue ?? defaultTemplatePath
+      );
+    }
+  }
+
+  /**
+   * Returns the notTransmittingIconPath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get notTransmittingIconPath() {
+    return this._notTransmittingIconPath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the notTransmittingIconPath and re-compiles the SVG template if necessary.
+   */
+  set notTransmittingIconPath(newValue: string | undefined) {
+    if (
+      !this._compiledNotTransmittingSvg ||
+      this.notTransmittingIconPath !== newValue
+    ) {
+      this._compiledNotTransmittingSvg = compileSvg(
+        newValue ?? defaultTemplatePath
+      );
+    }
   }
 
   /**
@@ -91,40 +137,15 @@ export class PushToTalkController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: PushToTalkSettings) {
-    // Compile new SVGs before updating the settings so
-    // they can be compared against the previous path.
-    this.compileSvgs(newValue);
-
     this._settings = newValue;
 
+    this.notTransmittingIconPath = newValue.notTransmittingIconPath;
+    this.transmittingIconPath = newValue.transmittingIconPath;
+
+    this.refreshTitle();
     this.refreshImage();
   }
-
-  /**
-   * Compiles the SVG templates if they aren't set or
-   * the path to the template changed.
-   * @param newValue The incoming new settings.
-   */
-  compileSvgs(newValue: PushToTalkSettings) {
-    if (
-      !this._compiledNotTransmittingSvg ||
-      this._settings.notTransmittingIconPath !==
-        newValue.notTransmittingIconPath
-    ) {
-      this._compiledNotTransmittingSvg = compileSvg(
-        newValue.notTransmittingIconPath ?? defaultTemplatePath
-      );
-    }
-
-    if (
-      !this._compiledTransmittingSvg ||
-      this._settings.transmittingIconPath !== newValue.transmittingIconPath
-    ) {
-      this._compiledTransmittingSvg = compileSvg(
-        newValue.transmittingIconPath ?? defaultTemplatePath
-      );
-    }
-  }
+  //#endregion
 
   /**
    * Sets the title on the action.
@@ -142,15 +163,19 @@ export class PushToTalkController extends BaseController {
    */
   public refreshImage() {
     if (this.isTransmitting) {
-      this.setImage(this._compiledTransmittingSvg, {
+      this.setImage(this.transmittingIconPath, this._compiledTransmittingSvg, {
         stateColor: StateColor.TRANSMITTING,
       });
       return;
     }
 
-    this.setImage(this._compiledNotTransmittingSvg, {
-      stateColor: StateColor.NOT_TRANSMITTING,
-    });
+    this.setImage(
+      this.notTransmittingIconPath,
+      this._compiledNotTransmittingSvg,
+      {
+        stateColor: StateColor.NOT_TRANSMITTING,
+      }
+    );
   }
 }
 

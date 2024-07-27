@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import Handlebars from "handlebars";
+import path from "path";
 
 export type CompiledSvgTemplate = ReturnType<typeof compileSvg>;
 export type Replacements = Record<string, unknown>;
@@ -28,7 +29,19 @@ export function generateSvgForSetImage(
 }
 
 /**
- * Compiles an SVG to a Handlebars template
+ * Checks to see if the specified path ends in ".svg"
+ * @param svgPath The path to the SVG
+ * @returns True if the path ends in "".svg"
+ */
+export function isSvg(svgPath: string | undefined) {
+  return (
+    svgPath !== undefined && path.extname(svgPath).toLowerCase() === ".svg"
+  );
+}
+
+/**
+ * Compiles an SVG to a Handlebars template. If the template isn't an
+ * SVG returns undefined.
  * @param templatePath The path to the SVG
  * @returns The compiled SVG
  */
@@ -42,5 +55,5 @@ export function compileSvg(templatePath: string) {
     return undefined;
   }
 
-  return Handlebars.compile(svgContent);
+  return isSvg(templatePath) ? Handlebars.compile(svgContent) : undefined;
 }
