@@ -409,7 +409,6 @@ export class StationStatusController extends BaseController {
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      console.log(this.unavailableIconPath);
       this.setImage(this.unavailableIconPath, this._compiledUnavailableSvg, {
         ...replacements,
         stateColor: StateColor.ACTIVE_COMMS,
