@@ -1,7 +1,16 @@
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import { BaseController } from "./baseController";
+
+const StateColor = {
+  NOT_CONNECTED: "black",
+  CONNECTED: "#5fcdfa",
+  VOICE_CONNECTED: "#060",
+};
+
+const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
 /**
  * A TrackAudioStatusController action, for use with ActionManager. Tracks the
@@ -14,6 +23,11 @@ export class TrackAudioStatusController extends BaseController {
   private _isVoiceConnected = false;
   private _settings: TrackAudioStatusSettings;
 
+  // Pre-compiled action SVGs
+  private _compiledNotConnectedSvg: CompiledSvgTemplate;
+  private _compiledConnectedSvg: CompiledSvgTemplate;
+  private _compiledVoiceConnectedSvg: CompiledSvgTemplate;
+
   /**
    * Creates a new TrackAudioStatusController.
    * @param action The StreamDeck action object
@@ -21,6 +35,11 @@ export class TrackAudioStatusController extends BaseController {
   constructor(action: Action, settings: TrackAudioStatusSettings) {
     super(action);
     this._settings = settings;
+
+    // Initialize the compiled SVGs to the default templates.
+    this._compiledNotConnectedSvg = compileSvg(defaultTemplatePath);
+    this._compiledConnectedSvg = compileSvg(defaultTemplatePath);
+    this._compiledVoiceConnectedSvg = compileSvg(defaultTemplatePath);
 
     this.refreshImage();
   }
@@ -41,6 +60,8 @@ export class TrackAudioStatusController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: TrackAudioStatusSettings) {
+    // Recompile the SVGs if they changed
+
     this._settings = newValue;
 
     this.refreshImage();
@@ -97,33 +118,22 @@ export class TrackAudioStatusController extends BaseController {
    */
   public refreshImage() {
     if (this.isVoiceConnected) {
-      this.action
-        .setImage(
-          this._settings.voiceConnectedIconPath ??
-            "images/actions/trackAudioStatus/voiceConnected.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-    } else if (this.isConnected) {
-      this.action
-        .setImage(
-          this._settings.connectedIconPath ??
-            "images/actions/trackAudioStatus/connected.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-    } else {
-      this.action
-        .setImage(
-          this._settings.connectedIconPath ??
-            "images/actions/trackAudioStatus/notConnected.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
+      this.setImage(this._compiledVoiceConnectedSvg, {
+        stateColor: StateColor.VOICE_CONNECTED,
+      });
+      return;
     }
+
+    if (this.isConnected) {
+      this.setImage(this._compiledConnectedSvg, {
+        stateColor: StateColor.CONNECTED,
+      });
+      return;
+    }
+
+    this.setImage(this._compiledNotConnectedSvg, {
+      stateColor: StateColor.NOT_CONNECTED,
+    });
   }
 }
 

@@ -50,10 +50,7 @@ export class StationStatusController extends BaseController {
     this.action = action;
     this._settings = settings;
 
-    this._compiledActiveCommsSvg = compileSvg(defaultTemplatePath);
-    this._compiledListeningSvg = compileSvg(defaultTemplatePath);
-    this._compiledNotListeningSvg = compileSvg(defaultTemplatePath);
-    this._compiledUnavailableSvg = compileSvg(defaultUnavailableTemplatePath);
+    this.compileSvgs(settings);
 
     // Issue 171: The listenTo property doesn't get set unless the user actually
     // changes the radio button. Default is "rx" so force it here to avoid problems
@@ -188,30 +185,9 @@ export class StationStatusController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: StationSettings) {
-    // Compile the SVGs if they changed
-    if (this._settings.activeCommsIconPath !== newValue.activeCommsIconPath) {
-      this._compiledActiveCommsSvg = compileSvg(
-        newValue.activeCommsIconPath ?? defaultTemplatePath
-      );
-    }
-
-    if (this._settings.listeningIconPath !== newValue.listeningIconPath) {
-      this._compiledListeningSvg = compileSvg(
-        newValue.listeningIconPath ?? defaultTemplatePath
-      );
-    }
-
-    if (this._settings.notListeningIconPath !== newValue.notListeningIconPath) {
-      this._compiledNotListeningSvg = compileSvg(
-        newValue.notListeningIconPath ?? defaultTemplatePath
-      );
-    }
-
-    if (this._settings.unavailableIconPath !== newValue.unavailableIconPath) {
-      this._compiledUnavailableSvg = compileSvg(
-        newValue.unavailableIconPath ?? defaultUnavailableTemplatePath
-      );
-    }
+    // Compile new SVGs before updating the settings so
+    // they can be compared against the previous path.
+    this.compileSvgs(newValue);
 
     this._settings = newValue;
 
@@ -314,6 +290,50 @@ export class StationStatusController extends BaseController {
     this.refreshTitle();
   }
   //#endregion
+
+  /**
+   * Compiles the SVG templates if they aren't set or
+   * the path to the template changed.
+   * @param newValue The incoming new settings.
+   */
+  private compileSvgs(newValue: StationSettings) {
+    // Compile the SVGs if they changed
+    if (
+      !this._compiledActiveCommsSvg ||
+      this._settings.activeCommsIconPath !== newValue.activeCommsIconPath
+    ) {
+      this._compiledActiveCommsSvg = compileSvg(
+        newValue.activeCommsIconPath ?? defaultTemplatePath
+      );
+    }
+
+    if (
+      !this._compiledListeningSvg ||
+      this._settings.listeningIconPath !== newValue.listeningIconPath
+    ) {
+      this._compiledListeningSvg = compileSvg(
+        newValue.listeningIconPath ?? defaultTemplatePath
+      );
+    }
+
+    if (
+      !this._compiledNotListeningSvg ||
+      this._settings.notListeningIconPath !== newValue.notListeningIconPath
+    ) {
+      this._compiledNotListeningSvg = compileSvg(
+        newValue.notListeningIconPath ?? defaultTemplatePath
+      );
+    }
+
+    if (
+      !this._compiledUnavailableSvg ||
+      this._settings.unavailableIconPath !== newValue.unavailableIconPath
+    ) {
+      this._compiledUnavailableSvg = compileSvg(
+        newValue.unavailableIconPath ?? defaultUnavailableTemplatePath
+      );
+    }
+  }
 
   /**
    * Resets the action to the initial display state: no last received callsign

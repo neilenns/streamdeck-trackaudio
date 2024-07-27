@@ -41,10 +41,7 @@ export class AtisLetterController extends BaseController {
     super(action);
     this._settings = settings;
 
-    // Initialize the compiled SVGs to the default templates.
-    this._compiledCurrentSvg = compileSvg(defaultTemplatePath);
-    this._compiledUnavailableSvg = compileSvg(defaultUnavailableTemplatePath);
-    this._compiledUpdatedSvg = compileSvg(defaultTemplatePath);
+    this.compileSvgs(settings);
 
     this.refreshTitle();
     this.refreshImage();
@@ -135,29 +132,12 @@ export class AtisLetterController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: AtisLetterSettings) {
-    // Compile the SVGs if they changed
-    if (this._settings.currentIconPath !== newValue.currentIconPath) {
-      this._compiledCurrentSvg = compileSvg(
-        newValue.currentIconPath ?? defaultTemplatePath
-      );
-    }
+    // Compile new SVGs before updating the settings so
+    // they can be compared against the previous path.
+    this.compileSvgs(newValue);
 
-    if (this._settings.updatedIconPath !== newValue.updatedIconPath) {
-      this._compiledUpdatedSvg = compileSvg(
-        newValue.updatedIconPath ?? defaultTemplatePath
-      );
-    }
-
-    if (this._settings.unavailableIconPath !== newValue.unavailableIconPath) {
-      this._compiledUnavailableSvg = compileSvg(
-        newValue.unavailableIconPath ?? defaultUnavailableTemplatePath
-      );
-    }
-
-    // Save the new values
     this._settings = newValue;
 
-    // Refresh the display
     this.refreshTitle();
     this.refreshImage();
   }
@@ -215,6 +195,40 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
+   * Compiles the SVG templates if they aren't set or
+   * the path to the template changed.
+   * @param newValue The incoming new settings.
+   */
+  private compileSvgs(newValue: AtisLetterSettings) {
+    if (
+      !this._compiledCurrentSvg ||
+      this._settings.currentIconPath !== newValue.currentIconPath
+    ) {
+      this._compiledCurrentSvg = compileSvg(
+        newValue.currentIconPath ?? defaultTemplatePath
+      );
+    }
+
+    if (
+      !this._compiledUpdatedSvg ||
+      this._settings.updatedIconPath !== newValue.updatedIconPath
+    ) {
+      this._compiledUpdatedSvg = compileSvg(
+        newValue.updatedIconPath ?? defaultTemplatePath
+      );
+    }
+
+    if (
+      !this._compiledUnavailableSvg ||
+      this._settings.unavailableIconPath !== newValue.unavailableIconPath
+    ) {
+      this._compiledUnavailableSvg = compileSvg(
+        newValue.unavailableIconPath ?? defaultUnavailableTemplatePath
+      );
+    }
+  }
+
+  /**
    * Sets the state of the action based on the value of isUpdated
    */
   private refreshImage() {
@@ -225,7 +239,7 @@ export class AtisLetterController extends BaseController {
     };
 
     if (this.isUnavailable) {
-      this.refreshImage(this._compiledUnavailableSvg, {
+      this.setImage(this._compiledUnavailableSvg, {
         ...replacements,
         stateColor: StateColor.CURRENT,
       });
@@ -233,14 +247,14 @@ export class AtisLetterController extends BaseController {
     }
 
     if (this.isUpdated) {
-      this.refreshImage(this._compiledUpdatedSvg, {
+      this.setImage(this._compiledUpdatedSvg, {
         ...replacements,
         stateColor: StateColor.UPDATED,
       });
       return;
     }
 
-    this.refreshImage(this._compiledCurrentSvg, {
+    this.setImage(this._compiledCurrentSvg, {
       ...replacements,
       stateColor: StateColor.CURRENT,
     });
