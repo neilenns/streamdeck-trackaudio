@@ -36,10 +36,7 @@ export class TrackAudioStatusController extends BaseController {
     super(action);
     this._settings = settings;
 
-    // Initialize the compiled SVGs to the default templates.
-    this._compiledNotConnectedSvg = compileSvg(defaultTemplatePath);
-    this._compiledConnectedSvg = compileSvg(defaultTemplatePath);
-    this._compiledVoiceConnectedSvg = compileSvg(defaultTemplatePath);
+    this.compileSvgs(settings);
 
     this.refreshImage();
   }
@@ -60,7 +57,9 @@ export class TrackAudioStatusController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: TrackAudioStatusSettings) {
-    // Recompile the SVGs if they changed
+    // Compile new SVGs before updating the settings so
+    // they can be compared against the previous path.
+    this.compileSvgs(newValue);
 
     this._settings = newValue;
 
@@ -111,6 +110,35 @@ export class TrackAudioStatusController extends BaseController {
     }
 
     this.refreshImage();
+  }
+
+  compileSvgs(newValue: TrackAudioStatusSettings) {
+    if (
+      !this._compiledConnectedSvg ||
+      this._settings.connectedIconPath !== newValue.connectedIconPath
+    ) {
+      this._compiledConnectedSvg = compileSvg(
+        newValue.connectedIconPath ?? defaultTemplatePath
+      );
+    }
+
+    if (
+      !this._compiledNotConnectedSvg ||
+      this._settings.notConnectedIconPath !== newValue.notConnectedIconPath
+    ) {
+      this._compiledNotConnectedSvg = compileSvg(
+        newValue.notConnectedIconPath ?? defaultTemplatePath
+      );
+    }
+
+    if (
+      !this._compiledVoiceConnectedSvg ||
+      this._settings.voiceConnectedIconPath !== newValue.voiceConnectedIconPath
+    ) {
+      this._compiledVoiceConnectedSvg = compileSvg(
+        newValue.voiceConnectedIconPath ?? defaultTemplatePath
+      );
+    }
   }
 
   /**
