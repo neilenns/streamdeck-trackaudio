@@ -86,7 +86,7 @@ export class PushToTalkController extends BaseController {
       !this._compiledNotTransmittingSvg ||
       this.notTransmittingIconPath !== newValue
     ) {
-      this.notTransmittingIconPath = stringOrUndefined(newValue);
+      this._notTransmittingIconPath = stringOrUndefined(newValue);
       this._compiledNotTransmittingSvg = compileSvg(
         this.notTransmittingIconPath
       );

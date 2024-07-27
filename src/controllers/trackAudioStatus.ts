@@ -70,7 +70,7 @@ export class TrackAudioStatusController extends BaseController {
    * Returns the notConnectedIconPath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get notConnectedIconPath() {
+  get notConnectedIconPath(): string {
     return this._notConnectedIconPath ?? defaultTemplatePath;
   }
 
@@ -82,9 +82,8 @@ export class TrackAudioStatusController extends BaseController {
       !this._compiledNotConnectedSvg ||
       this.notConnectedIconPath !== newValue
     ) {
-      this._compiledNotConnectedSvg = compileSvg(
-        newValue ?? defaultTemplatePath
-      );
+      this._notConnectedIconPath = stringOrUndefined(newValue);
+      this._compiledNotConnectedSvg = compileSvg(this.notConnectedIconPath);
     }
   }
 
@@ -92,7 +91,7 @@ export class TrackAudioStatusController extends BaseController {
    * Returns the connectedIconPath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get connectedIconPath() {
+  get connectedIconPath(): string {
     return this._connectedIconPath ?? defaultTemplatePath;
   }
 
@@ -101,7 +100,8 @@ export class TrackAudioStatusController extends BaseController {
    */
   set connectedIconPath(newValue: string | undefined) {
     if (!this._compiledConnectedSvg || this.connectedIconPath !== newValue) {
-      this._compiledConnectedSvg = compileSvg(newValue ?? defaultTemplatePath);
+      this._connectedIconPath = stringOrUndefined(newValue);
+      this._compiledConnectedSvg = compileSvg(this.connectedIconPath);
     }
   }
 
@@ -109,7 +109,7 @@ export class TrackAudioStatusController extends BaseController {
    * Returns the voiceConnectedIconPath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get voiceConnectedIconPath() {
+  get voiceConnectedIconPath(): string {
     return this._voiceConnectedIconPath ?? defaultTemplatePath;
   }
 
@@ -121,9 +121,8 @@ export class TrackAudioStatusController extends BaseController {
       !this._compiledVoiceConnectedSvg ||
       this.voiceConnectedIconPath !== newValue
     ) {
-      this._compiledVoiceConnectedSvg = compileSvg(
-        newValue ?? defaultTemplatePath
-      );
+      this._voiceConnectedIconPath = stringOrUndefined(newValue);
+      this._compiledVoiceConnectedSvg = compileSvg(this.voiceConnectedIconPath);
     }
   }
 
