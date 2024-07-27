@@ -1,124 +1,111 @@
 {
-	"Name": "TrackAudio",
-	"Version": "0.1.0.0",
-	"Author": "Neil Enns",
-	"Actions": [
-		{
-			"Name": "ATIS letter",
-			"UUID": "com.neil-enns.trackaudio.atisletter",
-			"Icon": "images/actions/atisLetter/cloud-white",
-			"PropertyInspectorPath": "pi/atisLetter.html",
-			"Tooltip": "Shows the current ATIS letter for the specified.",
-			"Controllers": [
-				"Keypad"
-			],
-			"DisableAutomaticStates": true,
-			"UserTitleEnabled": false,
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "Hotline",
-			"UUID": "com.neil-enns.trackaudio.hotline",
-			"Icon": "images/plugin/phone-solid",
-			"Tooltip": "Toggles Tx for a hotline frequency.",
-			"PropertyInspectorPath": "pi/hotline.html",
-			"DisableAutomaticStates": true,
-			"UserTitleEnabled": true,
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "bottom",
-					"Title": "HOTLINE"
-				}
-			]
-		},
-		{
-			"Name": "Push to talk",
-			"UUID": "com.neil-enns.trackaudio.pushtotalk",
-			"Icon": "images/plugin/microphone-solid",
-			"Tooltip": "Triggers transmit via push-to-talk.",
-			"DisableAutomaticStates": true,
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "images/actions/pushToTalk/black",
-					"TitleAlignment": "middle"
-				},
-				{
-					"Image": "images/actions/pushToTalk/orange",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "Station status",
-			"UUID": "com.neil-enns.trackaudio.stationstatus",
-			"Icon": "images/plugin/headphones-solid",
-			"Tooltip": "Shows the status of a station.",
-			"DisableAutomaticStates": true,
-			"Controllers": [
-				"Keypad"
-			],
-			"PropertyInspectorPath": "pi/stationStatus.html",
-			"UserTitleEnabled": false,
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "TrackAudio status",
-			"UUID": "com.neil-enns.trackaudio.trackaudiostatus",
-			"Icon": "images/plugin/pluginIcon",
-			"Tooltip": "Shows the status of the connection to TrackAudio.",
-			"PropertyInspectorPath": "pi/trackAudioStatus.html",
-			"DisableAutomaticStates": true,
-			"UserTitleEnabled": true,
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		}
-	],
-	"Category": "TrackAudio",
-	"CategoryIcon": "images/plugin/categoryIcon",
-	"CodePath": "bin/plugin.js",
-	"Description": "Provides buttons for controlling TrackAudio",
-	"Icon": "images/plugin/pluginIcon",
-	"SDKVersion": 2,
-	"Software": {
-		"MinimumVersion": "6.5"
-	},
-	"OS": [
-		{
-			"Platform": "mac",
-			"MinimumVersion": "10.15"
-		},
-		{
-			"Platform": "windows",
-			"MinimumVersion": "10"
-		}
-	],
-	"Nodejs": {
-		"Version": "20",
-		"Debug": "--inspect=127.0.0.1:54545"
-	},
-	"UUID": "com.neil-enns.trackaudio"
+  "Name": "TrackAudio",
+  "Version": "0.1.0.0",
+  "Author": "Neil Enns",
+  "Actions": [
+    {
+      "Name": "ATIS letter",
+      "UUID": "com.neil-enns.trackaudio.atisletter",
+      "Icon": "images/actions/atisLetter/cloud-white",
+      "PropertyInspectorPath": "pi/atisLetter.html",
+      "Tooltip": "Shows the current ATIS letter for the specified.",
+      "Controllers": ["Keypad"],
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "Hotline",
+      "UUID": "com.neil-enns.trackaudio.hotline",
+      "Icon": "images/plugin/phone-solid",
+      "Tooltip": "Toggles Tx for a hotline frequency.",
+      "PropertyInspectorPath": "pi/hotline.html",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": true,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "bottom",
+          "Title": "HOTLINE"
+        }
+      ]
+    },
+    {
+      "Name": "Push to talk",
+      "UUID": "com.neil-enns.trackaudio.pushtotalk",
+      "Icon": "images/plugin/microphone-solid",
+      "Tooltip": "Triggers transmit via push-to-talk.",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "Station status",
+      "UUID": "com.neil-enns.trackaudio.stationstatus",
+      "Icon": "images/plugin/headphones-solid",
+      "Tooltip": "Shows the status of a station.",
+      "DisableAutomaticStates": true,
+      "Controllers": ["Keypad"],
+      "PropertyInspectorPath": "pi/stationStatus.html",
+      "UserTitleEnabled": false,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "TrackAudio status",
+      "UUID": "com.neil-enns.trackaudio.trackaudiostatus",
+      "Icon": "images/plugin/pluginIcon",
+      "Tooltip": "Shows the status of the connection to TrackAudio.",
+      "PropertyInspectorPath": "pi/trackAudioStatus.html",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": true,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    }
+  ],
+  "Category": "TrackAudio",
+  "CategoryIcon": "images/plugin/categoryIcon",
+  "CodePath": "bin/plugin.js",
+  "Description": "Provides buttons for controlling TrackAudio",
+  "Icon": "images/plugin/pluginIcon",
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "6.5"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.15"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Nodejs": {
+    "Version": "20",
+    "Debug": "--inspect=127.0.0.1:54545"
+  },
+  "UUID": "com.neil-enns.trackaudio"
 }

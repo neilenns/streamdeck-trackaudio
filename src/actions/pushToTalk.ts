@@ -1,5 +1,6 @@
 import {
   action,
+  DidReceiveSettingsEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
@@ -16,7 +17,7 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<PushToTalkSettings>): void | Promise<void> {
-    ActionManager.getInstance().addPushToTalk(ev.action);
+    ActionManager.getInstance().addPushToTalk(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
@@ -33,7 +34,23 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   onKeyUp(): void | Promise<void> {
     ActionManager.getInstance().pttReleased();
   }
+
+  // When settings are received the ActionManager is called to update the existing
+  // settings on the saved action.
+  onDidReceiveSettings(
+    ev: DidReceiveSettingsEvent<PushToTalkSettings>
+  ): void | Promise<void> {
+    ActionManager.getInstance().updatePushToTalk(
+      ev.action,
+      ev.payload.settings
+    );
+  }
 }
 
 // Currently no settings are needed for this action
-export type PushToTalkSettings = Record<string, never>;
+export interface PushToTalkSettings {
+  title?: string;
+  notTransmittingIconPath?: string;
+  transmittingIconPath?: string;
+  showTitle?: boolean;
+}

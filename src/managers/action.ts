@@ -27,6 +27,7 @@ import { handleAsyncException } from "@root/utils/handleAsyncException";
 import debounce from "debounce";
 import { EventEmitter } from "events";
 import VatsimManager from "./vatsim";
+import { PushToTalkSettings } from "@actions/pushToTalk";
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -61,8 +62,8 @@ export default class ActionManager extends EventEmitter {
    * after the action is added.
    * @param action The action
    */
-  public addPushToTalk(action: Action): void {
-    this.actions.push(new PushToTalkController(action));
+  public addPushToTalk(action: Action, settings: PushToTalkSettings): void {
+    this.actions.push(new PushToTalkController(action, settings));
 
     this.emit("pushToTalkAdded");
   }
@@ -258,9 +259,14 @@ export default class ActionManager extends EventEmitter {
     }
   }
 
+  /**
+   * Updates the settings associated with an ATIS letter status action.
+   * Emits a atisLetterUpdated event if the settings require
+   * the action to refresh.
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
   public updateAtisLetter(action: Action, settings: AtisLetterSettings) {
-    console.log("Updating ATIS settings");
-
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -276,6 +282,24 @@ export default class ActionManager extends EventEmitter {
     if (requiresRefresh) {
       this.emit("atisLetterUpdated", savedAction);
     }
+  }
+
+  /**
+   * Updates the settings associated with a push to talk action.
+   * the action to refresh.
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
+  public updatePushToTalk(action: Action, settings: PushToTalkSettings) {
+    const savedAction = this.getPushToTalkControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.settings = settings;
   }
 
   /**

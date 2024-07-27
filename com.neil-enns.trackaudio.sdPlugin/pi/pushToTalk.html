@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
+  </head>
+  <body>
+    <sdpi-item label="Title">
+      <sdpi-textarea
+        setting="title"
+        placeholder="Optional title"
+        rows="1"
+      ></sdpi-textarea>
+    </sdpi-item>
+
+    <sdpi-item label="Not transmitting">
+      <sdpi-file
+        setting="notTransmittingIconPath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item label="Transmitting">
+      <sdpi-file
+        setting="transmittingIconPath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item>
+      <details class="sdpi-item-value">
+        <summary>Advanced options</summary>
+        <sdpi-checkbox setting="showTitle" label="Show title"></sdpi-checkbox>
+      </details>
+    </sdpi-item>
+  </body>
+</html>
