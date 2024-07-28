@@ -50,7 +50,7 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
 // Currently no settings are needed for this action
 export interface PushToTalkSettings {
   title?: string;
-  notTransmittingIconPath?: string;
-  transmittingIconPath?: string;
+  notTransmittingImagePath?: string;
+  transmittingImagePath?: string;
   showTitle?: boolean;
 }

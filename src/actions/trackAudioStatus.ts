@@ -45,8 +45,8 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
 // Currently no settings are needed for this action
 export interface TrackAudioStatusSettings {
   title?: string;
-  notConnectedIconPath?: string;
-  connectedIconPath?: string;
-  voiceConnectedIconPath?: string;
+  notConnectedImagePath?: string;
+  connectedImagePath?: string;
+  voiceConnectedImagePath?: string;
   showTitle?: boolean;
 }

@@ -35,12 +35,12 @@ export class HotlineController extends BaseController {
   private _isReceiving = false;
   private _isAvailable: boolean | undefined = undefined;
 
-  private _bothActiveIconPath?: string;
-  private _unavailableIconPath?: string;
-  private _hotlineActiveIconPath?: string;
-  private _listeningIconPath?: string;
-  private _neitherActiveIconPath?: string;
-  private _receivingIconPath?: string;
+  private _bothActiveImagePath?: string;
+  private _unavailableImagePath?: string;
+  private _hotlineActiveImagePath?: string;
+  private _listeningImagePath?: string;
+  private _neitherActiveImagePath?: string;
+  private _receivingImagePath?: string;
 
   // Pre-compiled action SVGs
   private _compiledBothActiveSvg: CompiledSvgTemplate;
@@ -90,119 +90,119 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * Returns the bothActiveIconPath or the default template path if the
+   * Returns the bothActiveImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get bothActiveIconPath(): string {
-    return this._bothActiveIconPath ?? defaultTemplatePath;
+  get bothActiveImagePath(): string {
+    return this._bothActiveImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the bothActiveIconPath and re-compiles the SVG template if necessary.
+   * Sets the bothActiveImagePath and re-compiles the SVG template if necessary.
    */
-  set bothActiveIconPath(newValue: string | undefined) {
-    if (!this._compiledBothActiveSvg || this.bothActiveIconPath !== newValue) {
-      this._bothActiveIconPath = stringOrUndefined(newValue);
-      this._compiledBothActiveSvg = compileSvg(this.bothActiveIconPath);
+  set bothActiveImagePath(newValue: string | undefined) {
+    if (!this._compiledBothActiveSvg || this.bothActiveImagePath !== newValue) {
+      this._bothActiveImagePath = stringOrUndefined(newValue);
+      this._compiledBothActiveSvg = compileSvg(this.bothActiveImagePath);
     }
   }
 
   /**
-   * Returns the unavailableIconPath or the default template path if the
+   * Returns the unavailableImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get unavailableIconPath(): string {
-    return this._unavailableIconPath ?? defaultUnavailableTemplatePath;
+  get unavailableImagePath(): string {
+    return this._unavailableImagePath ?? defaultUnavailableTemplatePath;
   }
 
   /**
-   * Sets the unavailableIconPath and re-compiles the SVG template if necessary.
+   * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
    */
-  set unavailableIconPath(newValue: string | undefined) {
+  set unavailableImagePath(newValue: string | undefined) {
     if (
       !this._compiledUnavailableSvg ||
-      this.unavailableIconPath !== newValue
+      this.unavailableImagePath !== newValue
     ) {
-      this._unavailableIconPath = stringOrUndefined(newValue);
-      this._compiledUnavailableSvg = compileSvg(this.unavailableIconPath);
+      this._unavailableImagePath = stringOrUndefined(newValue);
+      this._compiledUnavailableSvg = compileSvg(this.unavailableImagePath);
     }
   }
 
   /**
-   * Returns the hotlineActiveIconPath or the default template path if the
+   * Returns the hotlineActiveImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get hotlineActiveIconPath(): string {
-    return this._hotlineActiveIconPath ?? defaultTemplatePath;
+  get hotlineActiveImagePath(): string {
+    return this._hotlineActiveImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the hotlineActiveIconPath and re-compiles the SVG template if necessary.
+   * Sets the hotlineActiveImagePath and re-compiles the SVG template if necessary.
    */
-  set hotlineActiveIconPath(newValue: string | undefined) {
+  set hotlineActiveImagePath(newValue: string | undefined) {
     if (
       !this._compiledHotlineActiveSvg ||
-      this.hotlineActiveIconPath !== newValue
+      this.hotlineActiveImagePath !== newValue
     ) {
-      this._hotlineActiveIconPath = stringOrUndefined(newValue);
-      this._compiledHotlineActiveSvg = compileSvg(this.hotlineActiveIconPath);
+      this._hotlineActiveImagePath = stringOrUndefined(newValue);
+      this._compiledHotlineActiveSvg = compileSvg(this.hotlineActiveImagePath);
     }
   }
 
   /**
-   * Returns the listeningIconPath or the default template path if the
+   * Returns the listeningImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get listeningIconPath(): string {
-    return this._listeningIconPath ?? defaultTemplatePath;
+  get listeningImagePath(): string {
+    return this._listeningImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the listeningIconPath and re-compiles the SVG template if necessary.
+   * Sets the listeningImagePath and re-compiles the SVG template if necessary.
    */
-  set listeningIconPath(newValue: string | undefined) {
-    if (!this._compiledListeningSvg || this.listeningIconPath !== newValue) {
-      this._listeningIconPath = stringOrUndefined(newValue);
-      this._compiledListeningSvg = compileSvg(this.listeningIconPath);
+  set listeningImagePath(newValue: string | undefined) {
+    if (!this._compiledListeningSvg || this.listeningImagePath !== newValue) {
+      this._listeningImagePath = stringOrUndefined(newValue);
+      this._compiledListeningSvg = compileSvg(this.listeningImagePath);
     }
   }
 
   /**
-   * Returns the neitherActiveIconPath or the default template path if the
+   * Returns the neitherActiveImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get neitherActiveIconPath(): string {
-    return this._neitherActiveIconPath ?? defaultTemplatePath;
+  get neitherActiveImagePath(): string {
+    return this._neitherActiveImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the neitherActiveIconPath and re-compiles the SVG template if necessary.
+   * Sets the neitherActiveImagePath and re-compiles the SVG template if necessary.
    */
-  set neitherActiveIconPath(newValue: string | undefined) {
+  set neitherActiveImagePath(newValue: string | undefined) {
     if (
       !this._compiledNeitherActiveSvg ||
-      this.neitherActiveIconPath !== newValue
+      this.neitherActiveImagePath !== newValue
     ) {
-      this._neitherActiveIconPath = stringOrUndefined(newValue);
-      this._compiledNeitherActiveSvg = compileSvg(this.neitherActiveIconPath);
+      this._neitherActiveImagePath = stringOrUndefined(newValue);
+      this._compiledNeitherActiveSvg = compileSvg(this.neitherActiveImagePath);
     }
   }
 
   /**
-   * Returns the receivingIconPath or the default template path if the
+   * Returns the receivingImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get receivingIconPath(): string {
-    return this._receivingIconPath ?? defaultTemplatePath;
+  get receivingImagePath(): string {
+    return this._receivingImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the receivingIconPath and re-compiles the SVG template if necessary.
+   * Sets the receivingImagePath and re-compiles the SVG template if necessary.
    */
-  set receivingIconPath(newValue: string | undefined) {
-    if (!this._compiledReceivingSvg || this.receivingIconPath !== newValue) {
-      this._receivingIconPath = stringOrUndefined(newValue);
-      this._compiledReceivingSvg = compileSvg(this.receivingIconPath);
+  set receivingImagePath(newValue: string | undefined) {
+    if (!this._compiledReceivingSvg || this.receivingImagePath !== newValue) {
+      this._receivingImagePath = stringOrUndefined(newValue);
+      this._compiledReceivingSvg = compileSvg(this.receivingImagePath);
     }
   }
   /**
@@ -372,12 +372,12 @@ export class HotlineController extends BaseController {
   set settings(newValue: HotlineSettings) {
     this._settings = newValue;
 
-    this.bothActiveIconPath = newValue.bothActiveIconPath;
-    this.hotlineActiveIconPath = newValue.hotlineActiveIconPath;
-    this.listeningIconPath = newValue.listeningIconPath;
-    this.neitherActiveIconPath = newValue.neitherActiveIconPath;
-    this.receivingIconPath = newValue.receivingIconPath;
-    this.unavailableIconPath = newValue.unavailableIconPath;
+    this.bothActiveImagePath = newValue.bothActiveImagePath;
+    this.hotlineActiveImagePath = newValue.hotlineActiveImagePath;
+    this.listeningImagePath = newValue.listeningImagePath;
+    this.neitherActiveImagePath = newValue.neitherActiveImagePath;
+    this.receivingImagePath = newValue.receivingImagePath;
+    this.unavailableImagePath = newValue.unavailableImagePath;
 
     this.refreshTitle();
     this.refreshImage();
@@ -408,7 +408,7 @@ export class HotlineController extends BaseController {
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.setImage(this.unavailableIconPath, this._compiledUnavailableSvg, {
+      this.setImage(this.unavailableImagePath, this._compiledUnavailableSvg, {
         ...replacements,
         stateColor: StateColor.UNAVAILABLE,
       });
@@ -418,7 +418,7 @@ export class HotlineController extends BaseController {
     // This state is bad, it means Tx is cross coupled
     // on both hotline and primary.
     if (this.isTxHotline && this.isTxPrimary) {
-      this.setImage(this.bothActiveIconPath, this._compiledBothActiveSvg, {
+      this.setImage(this.bothActiveImagePath, this._compiledBothActiveSvg, {
         ...replacements,
         stateColor: StateColor.BOTH_ACTIVE,
       });
@@ -428,7 +428,7 @@ export class HotlineController extends BaseController {
     // Hotline is active tx, takes priority over active rx.
     if (this.isTxHotline) {
       this.setImage(
-        this.hotlineActiveIconPath,
+        this.hotlineActiveImagePath,
         this._compiledHotlineActiveSvg,
         {
           ...replacements,
@@ -439,7 +439,7 @@ export class HotlineController extends BaseController {
     }
 
     if (this.isReceiving) {
-      this.setImage(this.receivingIconPath, this._compiledReceivingSvg, {
+      this.setImage(this.receivingImagePath, this._compiledReceivingSvg, {
         ...replacements,
         stateColor: StateColor.RECEIVING,
       });
@@ -448,7 +448,7 @@ export class HotlineController extends BaseController {
 
     // Primary active rx.
     if (this.isRxHotline) {
-      this.setImage(this.listeningIconPath, this._compiledReceivingSvg, {
+      this.setImage(this.listeningImagePath, this._compiledReceivingSvg, {
         ...replacements,
         stateColor: StateColor.LISTENING,
       });
@@ -456,7 +456,7 @@ export class HotlineController extends BaseController {
     }
 
     // Nothing is active.
-    this.setImage(this.neitherActiveIconPath, this._compiledNeitherActiveSvg, {
+    this.setImage(this.neitherActiveImagePath, this._compiledNeitherActiveSvg, {
       ...replacements,
       stateColor: StateColor.NEITHER_ACTIVE,
     });

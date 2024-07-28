@@ -48,10 +48,10 @@ export interface StationSettings {
   title?: string;
   callsign?: string;
   listenTo: ListenTo | null;
-  notListeningIconPath?: string;
-  listeningIconPath?: string;
-  activeCommsIconPath?: string;
-  unavailableIconPath?: string;
+  notListeningImagePath?: string;
+  listeningImagePath?: string;
+  activeCommsImagePath?: string;
+  unavailableImagePath?: string;
   showTitle?: boolean;
   showCallsign?: boolean;
   showFrequency?: boolean;

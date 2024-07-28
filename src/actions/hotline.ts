@@ -53,12 +53,12 @@ export interface HotlineSettings {
   primaryCallsign: string;
   hotlineCallsign: string;
   title?: string;
-  receivingIconPath?: string;
-  listeningIconPath?: string;
-  hotlineActiveIconPath?: string;
-  bothActiveIconPath?: string;
-  neitherActiveIconPath?: string;
-  unavailableIconPath?: string;
+  receivingImagePath?: string;
+  listeningImagePath?: string;
+  hotlineActiveImagePath?: string;
+  bothActiveImagePath?: string;
+  neitherActiveImagePath?: string;
+  unavailableImagePath?: string;
   showTitle?: boolean;
   showHotlineCallsign?: boolean;
   showPrimaryCallsign?: boolean;

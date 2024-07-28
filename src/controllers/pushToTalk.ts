@@ -23,8 +23,8 @@ export class PushToTalkController extends BaseController {
   private _settings!: PushToTalkSettings;
   private _isTransmitting = false;
 
-  private _notTransmittingIconPath?: string;
-  private _transmittingIconPath?: string;
+  private _notTransmittingImagePath?: string;
+  private _transmittingImagePath?: string;
 
   private _compiledNotTransmittingSvg: CompiledSvgTemplate;
   private _compiledTransmittingSvg: CompiledSvgTemplate;
@@ -50,45 +50,45 @@ export class PushToTalkController extends BaseController {
 
   //#region Getters and setters
   /**
-   * Returns the transmittingIconPath or the default template path if the
+   * Returns the transmittingImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get transmittingIconPath(): string {
-    return this._transmittingIconPath ?? defaultTemplatePath;
+  get transmittingImagePath(): string {
+    return this._transmittingImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the transmittingIconPath and re-compiles the SVG template if necessary.
+   * Sets the transmittingImagePath and re-compiles the SVG template if necessary.
    */
-  set transmittingIconPath(newValue: string | undefined) {
+  set transmittingImagePath(newValue: string | undefined) {
     if (
       !this._compiledTransmittingSvg ||
-      this.transmittingIconPath !== newValue
+      this.transmittingImagePath !== newValue
     ) {
-      this._transmittingIconPath = stringOrUndefined(newValue);
-      this._compiledTransmittingSvg = compileSvg(this.transmittingIconPath);
+      this._transmittingImagePath = stringOrUndefined(newValue);
+      this._compiledTransmittingSvg = compileSvg(this.transmittingImagePath);
     }
   }
 
   /**
-   * Returns the notTransmittingIconPath or the default template path if the
+   * Returns the notTransmittingImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get notTransmittingIconPath(): string {
-    return this._notTransmittingIconPath ?? defaultTemplatePath;
+  get notTransmittingImagePath(): string {
+    return this._notTransmittingImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notTransmittingIconPath and re-compiles the SVG template if necessary.
+   * Sets the notTransmittingImagePath and re-compiles the SVG template if necessary.
    */
-  set notTransmittingIconPath(newValue: string | undefined) {
+  set notTransmittingImagePath(newValue: string | undefined) {
     if (
       !this._compiledNotTransmittingSvg ||
-      this.notTransmittingIconPath !== newValue
+      this.notTransmittingImagePath !== newValue
     ) {
-      this._notTransmittingIconPath = stringOrUndefined(newValue);
+      this._notTransmittingImagePath = stringOrUndefined(newValue);
       this._compiledNotTransmittingSvg = compileSvg(
-        this.notTransmittingIconPath
+        this.notTransmittingImagePath
       );
     }
   }
@@ -140,8 +140,8 @@ export class PushToTalkController extends BaseController {
   set settings(newValue: PushToTalkSettings) {
     this._settings = newValue;
 
-    this.notTransmittingIconPath = newValue.notTransmittingIconPath;
-    this.transmittingIconPath = newValue.transmittingIconPath;
+    this.notTransmittingImagePath = newValue.notTransmittingImagePath;
+    this.transmittingImagePath = newValue.transmittingImagePath;
 
     this.refreshTitle();
     this.refreshImage();
@@ -164,14 +164,14 @@ export class PushToTalkController extends BaseController {
    */
   public refreshImage() {
     if (this.isTransmitting) {
-      this.setImage(this.transmittingIconPath, this._compiledTransmittingSvg, {
+      this.setImage(this.transmittingImagePath, this._compiledTransmittingSvg, {
         stateColor: StateColor.TRANSMITTING,
       });
       return;
     }
 
     this.setImage(
-      this.notTransmittingIconPath,
+      this.notTransmittingImagePath,
       this._compiledNotTransmittingSvg,
       {
         stateColor: StateColor.NOT_TRANSMITTING,

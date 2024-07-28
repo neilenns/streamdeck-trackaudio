@@ -25,9 +25,9 @@ export class TrackAudioStatusController extends BaseController {
   private _isVoiceConnected = false;
   private _settings!: TrackAudioStatusSettings;
 
-  private _notConnectedIconPath?: string;
-  private _connectedIconPath?: string;
-  private _voiceConnectedIconPath?: string;
+  private _notConnectedImagePath?: string;
+  private _connectedImagePath?: string;
+  private _voiceConnectedImagePath?: string;
 
   // Pre-compiled action SVGs
   private _compiledNotConnectedSvg: CompiledSvgTemplate;
@@ -67,62 +67,64 @@ export class TrackAudioStatusController extends BaseController {
   }
 
   /**
-   * Returns the notConnectedIconPath or the default template path if the
+   * Returns the notConnectedImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get notConnectedIconPath(): string {
-    return this._notConnectedIconPath ?? defaultTemplatePath;
+  get notConnectedImagePath(): string {
+    return this._notConnectedImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notConnectedIconPath and re-compiles the SVG template if necessary.
+   * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
    */
-  set notConnectedIconPath(newValue: string | undefined) {
+  set notConnectedImagePath(newValue: string | undefined) {
     if (
       !this._compiledNotConnectedSvg ||
-      this.notConnectedIconPath !== newValue
+      this.notConnectedImagePath !== newValue
     ) {
-      this._notConnectedIconPath = stringOrUndefined(newValue);
-      this._compiledNotConnectedSvg = compileSvg(this.notConnectedIconPath);
+      this._notConnectedImagePath = stringOrUndefined(newValue);
+      this._compiledNotConnectedSvg = compileSvg(this.notConnectedImagePath);
     }
   }
 
   /**
-   * Returns the connectedIconPath or the default template path if the
+   * Returns the connectedImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get connectedIconPath(): string {
-    return this._connectedIconPath ?? defaultTemplatePath;
+  get connectedImagePath(): string {
+    return this._connectedImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notConnectedIconPath and re-compiles the SVG template if necessary.
+   * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
    */
-  set connectedIconPath(newValue: string | undefined) {
-    if (!this._compiledConnectedSvg || this.connectedIconPath !== newValue) {
-      this._connectedIconPath = stringOrUndefined(newValue);
-      this._compiledConnectedSvg = compileSvg(this.connectedIconPath);
+  set connectedImagePath(newValue: string | undefined) {
+    if (!this._compiledConnectedSvg || this.connectedImagePath !== newValue) {
+      this._connectedImagePath = stringOrUndefined(newValue);
+      this._compiledConnectedSvg = compileSvg(this.connectedImagePath);
     }
   }
 
   /**
-   * Returns the voiceConnectedIconPath or the default template path if the
+   * Returns the voiceConnectedImagePath or the default template path if the
    * user didn't specify a custom icon.
    */
-  get voiceConnectedIconPath(): string {
-    return this._voiceConnectedIconPath ?? defaultTemplatePath;
+  get voiceConnectedImagePath(): string {
+    return this._voiceConnectedImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notConnectedIconPath and re-compiles the SVG template if necessary.
+   * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
    */
-  set voiceConnectedIconPath(newValue: string | undefined) {
+  set voiceConnectedImagePath(newValue: string | undefined) {
     if (
       !this._compiledVoiceConnectedSvg ||
-      this.voiceConnectedIconPath !== newValue
+      this.voiceConnectedImagePath !== newValue
     ) {
-      this._voiceConnectedIconPath = stringOrUndefined(newValue);
-      this._compiledVoiceConnectedSvg = compileSvg(this.voiceConnectedIconPath);
+      this._voiceConnectedImagePath = stringOrUndefined(newValue);
+      this._compiledVoiceConnectedSvg = compileSvg(
+        this.voiceConnectedImagePath
+      );
     }
   }
 
@@ -138,12 +140,12 @@ export class TrackAudioStatusController extends BaseController {
    */
   set settings(newValue: TrackAudioStatusSettings) {
     this._settings = newValue;
-    this.connectedIconPath = stringOrUndefined(newValue.connectedIconPath);
-    this.notConnectedIconPath = stringOrUndefined(
-      newValue.notConnectedIconPath
+    this.connectedImagePath = stringOrUndefined(newValue.connectedImagePath);
+    this.notConnectedImagePath = stringOrUndefined(
+      newValue.notConnectedImagePath
     );
-    this.voiceConnectedIconPath = stringOrUndefined(
-      newValue.voiceConnectedIconPath
+    this.voiceConnectedImagePath = stringOrUndefined(
+      newValue.voiceConnectedImagePath
     );
 
     this.refreshTitle();
@@ -215,7 +217,7 @@ export class TrackAudioStatusController extends BaseController {
   public refreshImage() {
     if (this.isVoiceConnected) {
       this.setImage(
-        this.voiceConnectedIconPath,
+        this.voiceConnectedImagePath,
         this._compiledVoiceConnectedSvg,
         {
           stateColor: StateColor.VOICE_CONNECTED,
@@ -225,13 +227,13 @@ export class TrackAudioStatusController extends BaseController {
     }
 
     if (this.isConnected) {
-      this.setImage(this.connectedIconPath, this._compiledConnectedSvg, {
+      this.setImage(this.connectedImagePath, this._compiledConnectedSvg, {
         stateColor: StateColor.CONNECTED,
       });
       return;
     }
 
-    this.setImage(this.notConnectedIconPath, this._compiledNotConnectedSvg, {
+    this.setImage(this.notConnectedImagePath, this._compiledNotConnectedSvg, {
       stateColor: StateColor.NOT_CONNECTED,
     });
   }
