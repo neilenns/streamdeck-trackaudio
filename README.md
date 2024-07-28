@@ -15,8 +15,8 @@ This StreamDeck plugin provides actions to interact with TrackAudio. [Download t
 - [Configuring a push to talk action](#configuring-a-push-to-talk-action)
 - [SVG templates](#svg-templates)
 - [Examples](#examples)
-  - [Seattle tower](#seattle-tower)
-  - [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
+	- [Seattle tower](#seattle-tower)
+	- [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
 
 ## Action descriptions
 
@@ -58,15 +58,15 @@ configure the station status action like this to show that RX is enabled and the
 | Callsign                    | The callsign for the station you want to display status for. Required.                                                                |                                                                 |
 | Listen to                   | What status to display on the button, either RX, TX, or XCA. Required.                                                                | RX                                                              |
 | Show last received callsign | When checked, the last received callsign will be appended to the action title. Only supported when listen to is set to `RX` or `XCA`. | Disabled                                                        |
-| Not listening               | The image to display when the station is not currently active. Optional.                                                              | ![Black background](docs/images/stationstatus-notlistening.png) |
-| Listening                   | The image to display when the station is active. Optional.                                                                            | ![Green background](docs/images/stationstatus-listening.png)    |
 | Active comms                | The image to display when a transmission is actively taking place. Optional.                                                          | ![Orange background](docs/images/stationstatus-receiving.png)   |
+| Listening                   | The image to display when the station is active. Optional.                                                                            | ![Green background](docs/images/stationstatus-listening.png)    |
+| Not listening               | The image to display when the station is not currently active. Optional.                                                              | ![Black background](docs/images/stationstatus-notlistening.png) |
 | Unavailable                 | The image to display when the station is not added in TrackAudio. Optional, defaults to a warning icon.                               | ![Warning icon](docs/images/stationstatus-unavailable.png)      |
-| Show title                  | Show the title on the action.                                                                                                         | true                                                            |
 | Show callsign               | Show the callsign on the action.                                                                                                      | false                                                           |
 | Show frequency              | Show the callsign's frequency on the action.                                                                                          | false                                                           |
-| Show listen to              | Show the listen to value on the action.                                                                                               | false                                                           |
 | Show last received callsign | Show the last received callsign on the action.                                                                                        | true                                                            |
+| Show listen to              | Show the listen to value on the action.                                                                                               | false                                                           |
+| Show title                  | Show the title on the action.                                                                                                         | true                                                            |
 
 ## Configuring a hotline action
 
@@ -85,15 +85,15 @@ Once configured, pressing the action will toggle `TX` active between your primar
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
 | Primary callsign      | The callsign you are actively controlling, for example `SEA_CTR`. Required.                                                                                                                                  |                                                                     |
 | Hotline callsign      | The callsign for the hotline, for example `ZOA-ZSE`. Required.                                                                                                                                               |                                                                     |
-| Listening             | The image to display when listening to the hotline frequency. Optional.                                                                                                                                      | ![Handset with blue background](docs/images/hotline-listening.png)  |
-| Receiving             | The image to display when receiving a transmission on the hotline frequency. Optional.                                                                                                                       | ![Handset with green background](docs/images/hotline-receiving.png) |
-| Hotline active        | The image to display when transmitting on the hotline frequency. Optional.                                                                                                                                   | ![Handset with orange background](docs/images/hotline-active.png)   |
 | Both active           | The image to display when both the primary and hotline and frequencies are the active frequency. This should never happen, as it means your voice transmissions will get sent to both frequencies. Optional. | ![Handset with red background](docs/images/hotline-both.png)        |
+| Hotline active        | The image to display when transmitting on the hotline frequency. Optional.                                                                                                                                   | ![Handset with orange background](docs/images/hotline-active.png)   |
+| Listening             | The image to display when listening to the hotline frequency. Optional.                                                                                                                                      | ![Handset with blue background](docs/images/hotline-listening.png)  |
 | Neither active        | The iamge to display when neither the primary nor the hotline frequencies have TX enabled. Optional.                                                                                                         | ![Handset with black background](docs/images/hotline-neither.png)   |
+| Receiving             | The image to display when receiving a transmission on the hotline frequency. Optional.                                                                                                                       | ![Handset with green background](docs/images/hotline-receiving.png) |
 | Unavailable           | The image to display when the primary and hotline stations are not added in TrackAudio. Optional.                                                                                                            | ![Warning icon](docs/images/hotline-unavailable.png)                |
-| Show title            | Show the title on the action.                                                                                                                                                                                | true                                                                |
+| Show hotline callsign | Show the hotline callsign on the action.                                                                                                                                                                     | false                                                               |
 | Show primary callsign | Show the primary callsign on the action.                                                                                                                                                                     | false                                                               |
-| Show hotline callsign | Show the hotline callsign on thea ction.                                                                                                                                                                     | false                                                               |
+| Show title            | Show the title on the action.                                                                                                                                                                                | true                                                                |
 
 ## Configuring a TrackAudio status action
 
@@ -104,8 +104,8 @@ the voice connection in TrackAudio is up. Pressing the action will force a state
 
 | Setting         | Description                                                                    | Default                                                                           |
 | --------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| Not connected   | The image to display when not connected to TrackAudio. Optional.               | ![White headset with microphone](docs/images/trackaudiostatus-notconnected.png)   |
 | Connected       | The image to display when connected to TrackAudio. Optional.                   | ![Blue headset with microphone](docs/images/trackaudiostatus-connected.png)       |
+| Not connected   | The image to display when not connected to TrackAudio. Optional.               | ![White headset with microphone](docs/images/trackaudiostatus-notconnected.png)   |
 | Voice connected | The image to display when the TrackAudio voice connection is active. Optional. | ![Green headset with microphone](docs/images/trackaudiostatus-voiceconnected.png) |
 | Show title      | Show the title on the action.                                                  | false                                                                             |
 
@@ -126,20 +126,21 @@ state. Pressing the action when it is not in the updated state will force a refr
 | Title       | The title to show on the action. The current ATIS letter will be appended to this title separated by a newline. Optional. | Blank                                              |
 | Callsign    | The callsign to get the current AITS letter for, for example `KSEA_ATIS`. Required.                                       |                                                    |
 | Current     | The image to display when the ATIS letter shown is current. Optional.                                                     | ![Black background](docs/images/atis-current.png)  |
-| Updated     | The image to display when the ATIS letter updated to a new one. Optional.                                                 | ![Orange background](docs/images/atis-updated.png) |
 | Unavailable | The image to display when no ATIS letter is available. Optional.                                                          | ![Warning icon](docs/images/atis-unavailable.png)  |
-| Show title  | Show the title on the action.                                                                                             | true                                               |
+| Updated     | The image to display when the ATIS letter updated to a new one. Optional.                                                 | ![Orange background](docs/images/atis-updated.png) |
 | Show letter | Show the letter on thea ction.                                                                                            | true                                               |
+| Show title  | Show the title on the action.                                                                                             | true                                               |
 
 ## Configuring a push to talk action
 
 The push to talk action does not require configuration for use. Simply add it to your profile, then press the action to start transmitting.
 
-| Setting         | Description                                 | Default                                                                |
-| --------------- | ------------------------------------------- | ---------------------------------------------------------------------- |
-| Initial state   | Shown when idle. Optional.                  | ![Microphone with black background](docs/images/ptt-idle.png)          |
-| Secondary state | Shown when actively transmitting. Optional. | ![Microphone with orange background](docs/images/ptt-transmitting.png) |
-| Show title      | Show the title on the action.               | false                                                                  |
+| Setting          | Description                                 | Default                                                                |
+| ---------------- | ------------------------------------------- | ---------------------------------------------------------------------- |
+| Title            | The title to show on the action. Optional.  |                                                                        |
+| Not transmitting | Shown when idle. Optional.                  | ![Microphone with black background](docs/images/ptt-idle.png)          |
+| Transmitting     | Shown when actively transmitting. Optional. | ![Microphone with orange background](docs/images/ptt-transmitting.png) |
+| Show title       | Show the title on the action.               | false                                                                  |
 
 ## SVG templates
 

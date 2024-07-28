@@ -29,9 +29,9 @@
       </sdpi-radio>
     </sdpi-item>
 
-    <sdpi-item label="Not listening">
+    <sdpi-item label="Active comms">
       <sdpi-file
-        setting="notListeningImagePath"
+        setting="activeCommsImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
@@ -43,9 +43,9 @@
       ></sdpi-file>
     </sdpi-item>
 
-    <sdpi-item label="Active comms">
+    <sdpi-item label="Not listening">
       <sdpi-file
-        setting="activeCommsImagePath"
+        setting="notListeningImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
@@ -61,12 +61,6 @@
       <details class="sdpi-item-value">
         <summary>Advanced options</summary>
         <sdpi-checkbox
-          setting="showTitle"
-          label="Show title"
-          default="true"
-        ></sdpi-checkbox>
-
-        <sdpi-checkbox
           setting="showCallsign"
           label="Show callsign"
         ></sdpi-checkbox>
@@ -77,13 +71,19 @@
         ></sdpi-checkbox>
 
         <sdpi-checkbox
+          setting="showLastReceivedCallsign"
+          label="Show last received callsign"
+          default="true"
+        ></sdpi-checkbox>
+
+        <sdpi-checkbox
           setting="showListenTo"
           label="Show listen to"
         ></sdpi-checkbox>
 
         <sdpi-checkbox
-          setting="showLastReceivedCallsign"
-          label="Show last received callsign"
+          setting="showTitle"
+          label="Show title"
           default="true"
         ></sdpi-checkbox>
       </details>
