@@ -2,7 +2,6 @@ import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import svgManager from "@managers/svg";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
-import { generateSvgForSetImage } from "@root/utils/svg";
 
 /**
  * Base implementation for a Controller that includes methods for
@@ -50,14 +49,10 @@ export abstract class BaseController implements Controller {
    * @param imagePath The path to the image
    * @param replacements The replacements to use
    */
-  setImage(imagePath: string | undefined, replacements: object) {
-    // Check to see if a compiled template exists
-    const template = svgManager.getTemplate(imagePath);
+  setImage(imagePath: string, replacements: object) {
+    const generatedSvg = svgManager.renderSvg(imagePath, replacements);
 
-    // Check and see if the image is an SVG. If so use the template, if not
-    // just pass the path and let StreamDeck do the rendering.
-    if (template) {
-      const generatedSvg = generateSvgForSetImage(template, replacements);
+    if (generatedSvg) {
       this.action.setImage(generatedSvg).catch((error: unknown) => {
         handleAsyncException("Unable to set state image: ", error);
       });

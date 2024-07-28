@@ -1,7 +1,7 @@
 import { Hotline } from "@actions/hotline";
 import { StationStatus } from "@actions/stationStatus";
 import streamDeck from "@elgato/streamdeck";
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
 
 // Event handlers
@@ -23,14 +23,11 @@ import { PushToTalk } from "@actions/pushToTalk";
 import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnectedState";
 import { AtisLetter } from "@actions/atisLetter";
 import { handleAtisLetterAdded } from "@eventHandlers/actionManager/atisLetterAdded";
-import VatsimManager from "@managers/vatsim";
+import vatsimManager from "@managers/vatsim";
 import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
 import { handleAtisLetterUpdated } from "@eventHandlers/actionManager/atisLetterUpdated";
 import { handleStationAdded } from "@eventHandlers/trackAudio/stationAdded";
 import { handleFrequencyRemoved } from "@eventHandlers/trackAudio/frequencyRemoved";
-
-const actionManager = ActionManager.getInstance();
-const vatsimManager = VatsimManager.getInstance();
 
 // Flag to prevent handling repeated disconnect events
 let disconnectHandled = false;

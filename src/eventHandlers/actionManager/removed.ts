@@ -1,5 +1,5 @@
-import ActionManager from "@managers/action";
-import VatsimManager from "@managers/vatsim";
+import actionManager from "@managers/action";
+import vatsimManager from "@managers/vatsim";
 import svgManager from "@managers/svg";
 import trackAudioManager from "@managers/trackAudio";
 
@@ -10,7 +10,7 @@ export const handleRemoved = (count: number) => {
   }
 
   // If there are no more ATIS letter actions then stop polling VATSIM.
-  if (ActionManager.getInstance().getAtisLetterControllers().length === 0) {
-    VatsimManager.getInstance().stop();
+  if (actionManager.getAtisLetterControllers().length === 0) {
+    vatsimManager.stop();
   }
 };
