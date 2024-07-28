@@ -127,6 +127,11 @@ export class StationStatusController extends BaseController {
     // to ensure isAvailable refreshes.
     this._frequency = newValue;
     this.isAvailable = this.frequency !== 0;
+
+    // The frequency doesn't come from settings like the other displayed properties and could cause a
+    // change in the display of the action.
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**

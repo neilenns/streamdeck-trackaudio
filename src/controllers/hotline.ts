@@ -184,6 +184,9 @@ export class HotlineController extends BaseController {
     this._primaryFrequency = newValue;
     this.isAvailable =
       this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
+
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
@@ -203,6 +206,9 @@ export class HotlineController extends BaseController {
     this._hotlineFrequency = newValue;
     this.isAvailable =
       this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
+
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
