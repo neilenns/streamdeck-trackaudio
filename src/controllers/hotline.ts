@@ -82,10 +82,11 @@ export class HotlineController extends BaseController {
 
   //#region Getters/setters
   /**
-   * Convenience method to return the action's title from settings.
+   * Convenience method to return the action's title from settings or "HOTLINE"
+   * if it is undefined.
    */
   get title() {
-    return this._settings.title;
+    return this._settings.title ?? "HOTLINE";
   }
 
   /**
@@ -345,6 +346,20 @@ export class HotlineController extends BaseController {
   }
 
   /**
+   * Returns the showHotlineCallsign setting, or false if undefined.
+   */
+  get showHotlineCallsign() {
+    return this._settings.showHotlineCallsign ?? false;
+  }
+
+  /**
+   * Returns the showPrimaryCallsign setting, or false if undefined.
+   */
+  get showPrimaryCallsign() {
+    return this._settings.showPrimaryCallsign ?? false;
+  }
+
+  /**
    * Gets the settings.
    */
   get settings() {
@@ -376,7 +391,11 @@ export class HotlineController extends BaseController {
     const title = new TitleBuilder();
 
     title.push(this.title, this.showTitle);
-    this.setTitle(title.join("\n"));
+    title.push(this.primaryCallsign, this.showPrimaryCallsign);
+    title.push(this.hotlineCallsign, this.showHotlineCallsign);
+
+    const finalTitle = title.join("\n");
+    this.setTitle(finalTitle);
   }
 
   /**

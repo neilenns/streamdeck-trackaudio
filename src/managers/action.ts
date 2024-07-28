@@ -39,11 +39,12 @@ export default class ActionManager extends EventEmitter {
   private constructor() {
     super();
 
-    // Debounce the update methods that make websocket calls to avoid spamming
-    // TrackAudio on every keypress.
-    this.updateStation = debounce(this.updateStation.bind(this), 500);
-    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    // Debounce the update methods to avoid rapid pinging of TrackAudio or
+    // title redraws while typing
     this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
+    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    this.updateStation = debounce(this.updateStation.bind(this), 500);
   }
 
   /**

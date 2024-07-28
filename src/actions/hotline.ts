@@ -41,14 +41,6 @@ export class Hotline extends SingletonAction<HotlineSettings> {
     ev: DidReceiveSettingsEvent<HotlineSettings>
   ): void | Promise<void> {
     ActionManager.getInstance().updateHotline(ev.action, ev.payload.settings);
-
-    // Set the default title to the provided callsign. StreamDeck will use this if the user
-    // didn't specify a custom title.
-    ev.action
-      .setTitle(ev.payload.settings.hotlineCallsign)
-      .catch((error: unknown) => {
-        console.error(error);
-      });
   }
 
   // When the key is pressed send the request to toggle the hotline.
@@ -68,4 +60,6 @@ export interface HotlineSettings {
   neitherActiveIconPath?: string;
   unavailableIconPath?: string;
   showTitle?: boolean;
+  showHotlineCallsign?: boolean;
+  showPrimaryCallsign?: boolean;
 }

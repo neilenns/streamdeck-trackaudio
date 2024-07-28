@@ -31,8 +31,7 @@
       "States": [
         {
           "Image": "images/actions/default",
-          "TitleAlignment": "bottom",
-          "Title": "HOTLINE"
+          "TitleAlignment": "bottom"
         }
       ]
     },
