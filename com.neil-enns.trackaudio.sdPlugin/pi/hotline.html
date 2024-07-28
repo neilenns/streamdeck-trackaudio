@@ -5,6 +5,14 @@
     <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
   </head>
   <body>
+    <sdpi-item label="Title">
+      <sdpi-textarea
+        setting="title"
+        placeholder="Optional title"
+        rows="1"
+      ></sdpi-textarea>
+    </sdpi-item>
+
     <sdpi-item label="Primary callsign">
       <sdpi-textfield
         setting="primaryCallsign"
@@ -23,35 +31,35 @@
 
     <sdpi-item label="Listening">
       <sdpi-file
-        setting="listeningImagePath"
+        setting="listeningIconPath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
     <sdpi-item label="Receiving">
       <sdpi-file
-        setting="receivingImagePath"
+        setting="receivingIconPath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
     <sdpi-item label="Hotline active">
       <sdpi-file
-        setting="hotlineActiveImagePath"
+        setting="hotlineActiveIconPath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
     <sdpi-item label="Both active">
       <sdpi-file
-        setting="bothActiveImagePath"
+        setting="bothActiveIconPath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
     <sdpi-item label="Neither active">
       <sdpi-file
-        setting="neitherActiveImagePath"
+        setting="neitherActiveIconPath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
@@ -61,6 +69,17 @@
         setting="unavailableIconPath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item>
+      <details class="sdpi-item-value">
+        <summary>Advanced options</summary>
+        <sdpi-checkbox
+          setting="showTitle"
+          label="Show title"
+          default="true"
+        ></sdpi-checkbox>
+      </details>
     </sdpi-item>
   </body>
 </html>

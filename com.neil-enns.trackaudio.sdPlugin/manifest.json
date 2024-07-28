@@ -26,7 +26,7 @@
       "Tooltip": "Toggles Tx for a hotline frequency.",
       "PropertyInspectorPath": "pi/hotline.html",
       "DisableAutomaticStates": true,
-      "UserTitleEnabled": true,
+      "UserTitleEnabled": false,
       "Controllers": ["Keypad"],
       "States": [
         {

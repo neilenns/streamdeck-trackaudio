@@ -237,7 +237,7 @@ export class AtisLetterController extends BaseController {
   //#endregion
 
   /**
-   * Sets the state of the action based on the value of isUpdated
+   * Sets the image based on the state of the action.
    */
   private refreshImage() {
     const replacements = {
