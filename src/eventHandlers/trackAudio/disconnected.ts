@@ -1,10 +1,7 @@
-import ActionManager from "@managers/action";
-import VatsimManager from "@managers/vatsim";
+import actionManager from "@managers/action";
+import vatsimManager from "@managers/vatsim";
 
 export const handleDisconnected = () => {
-  const actionManager = ActionManager.getInstance();
-  const vatsimManager = VatsimManager.getInstance();
-
   actionManager.resetAll();
   vatsimManager.stop();
 };

@@ -1,21 +1,33 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import TitleBuilder from "@root/utils/titleBuilder";
+import { BaseController } from "./baseController";
+import { stringOrUndefined } from "@root/utils/utils";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
 // in the kFrequenciesUpdate message.
 export type ListenTo = "rx" | "tx" | "xc" | "xca";
 
+const StateColor = {
+  ACTIVE_COMMS: "#f60",
+  LISTENING: "#060",
+  NOT_LISTENING: "black",
+  UNAVAILABLE: "black",
+};
+
+const defaultTemplatePath = "images/actions/stationStatus/template.svg";
+const defaultUnavailableTemplatePath =
+  "images/actions/stationStatus/unavailable.svg";
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class StationStatusController implements Controller {
+export class StationStatusController extends BaseController {
   type = "StationStatusController";
-  action: Action;
 
-  private _settings: StationSettings;
+  private _settings!: StationSettings;
   private _frequency = 0;
   private _isReceiving = false;
   private _isTransmitting = false;
@@ -23,32 +35,81 @@ export class StationStatusController implements Controller {
   private _isAvailable: boolean | undefined = undefined;
   private _lastReceivedCallsign?: string;
 
+  private _notListeningImagePath?: string;
+  private _listeningImagePath?: string;
+  private _activeCommsImagePath?: string;
+  private _unavailableImagePath?: string;
+
   /**
    * Creates a new StationStatusController object.
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
   constructor(action: Action, settings: StationSettings) {
+    super(action);
     this.action = action;
-    this._settings = settings;
-
-    // Issue 171: The listenTo property doesn't get set unless the user actually
-    // changes the radio button. Default is "rx" so force it here to avoid problems
-    // elsewhere.
-    if (!this._settings.listenTo) {
-      this._settings.listenTo = "rx";
-    }
-
-    this.showTitle();
-    this.setState();
+    this.settings = settings;
   }
 
   //#region Getters and setters
   /**
-   * Convenience property to get the showLastReceivedCallsign value of settings.
+   * Returns the notListeningImagePath or the default template path if the
+   * user didn't specify a custom icon.
    */
-  get showLastReceivedCallsign() {
-    return this._settings.showLastReceivedCallsign;
+  get notListeningImagePath(): string {
+    return this._notListeningImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the notListeningImagePath and re-compiles the SVG template if necessary.
+   */
+  set notListeningImagePath(newValue: string | undefined) {
+    this._notListeningImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the listeningImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get listeningImagePath(): string {
+    return this._listeningImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the listeningImagePath and re-compiles the SVG template if necessary.
+   */
+  set listeningImagePath(newValue: string | undefined) {
+    this._listeningImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the activeCommsImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get activeCommsImagePath(): string {
+    return this._activeCommsImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the activeCommsImagePath and re-compiles the SVG template if necessary.
+   */
+  set activeCommsImagePath(newValue: string | undefined) {
+    this._activeCommsImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the unavailableImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get unavailableImagePath(): string {
+    return this._unavailableImagePath ?? defaultUnavailableTemplatePath;
+  }
+
+  /**
+   * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
+   */
+  set unavailableImagePath(newValue: string | undefined) {
+    this._unavailableImagePath = stringOrUndefined(newValue);
   }
 
   /**
@@ -66,6 +127,24 @@ export class StationStatusController implements Controller {
     // to ensure isAvailable refreshes.
     this._frequency = newValue;
     this.isAvailable = this.frequency !== 0;
+
+    // The frequency doesn't come from settings like the other displayed properties and could cause a
+    // change in the display of the action.
+    this.refreshTitle();
+    this.refreshImage();
+  }
+
+  /**
+   * Returns the frequency formated for display. A value of 121900000
+   * will be returned as "121.900". If the frequency is undefined or 0
+   * then an empty string is returned.
+   */
+  get formattedFrequency() {
+    if (this.frequency) {
+      return (this.frequency / 1000000).toFixed(3);
+    } else {
+      return "";
+    }
   }
 
   /**
@@ -107,15 +186,45 @@ export class StationStatusController implements Controller {
   }
 
   /**
-   * Returns the title specified by the user in the property inspector,
-   * or the default title if no user title was specified.
+   * Returns the title specified by the user in the property inspector.
    */
   get title() {
-    if (this._settings.title !== undefined && this._settings.title !== "") {
-      return this._settings.title;
-    } else {
-      return `${this.callsign ?? "Not set"}\n${this.listenTo.toUpperCase()}`;
-    }
+    return this._settings.title;
+  }
+
+  /**
+   * Returns the showTitle setting, or true if undefined.
+   */
+  get showTitle() {
+    return this._settings.showTitle ?? true;
+  }
+
+  /**
+   * Returns the showCallsign setting, or false if undefined.
+   */
+  get showCallsign() {
+    return this._settings.showCallsign ?? false;
+  }
+
+  /**
+   * Returns the showListenTo setting, or false if undefined
+   */
+  get showListenTo() {
+    return this._settings.showListenTo ?? false;
+  }
+
+  /**
+   * Returns the showFrequency setting, or false if undefined
+   */
+  get showFrequency() {
+    return this._settings.showFrequency ?? false;
+  }
+
+  /**
+   * Returns the showLastReceivedCallsign setting, or true if undefined
+   */
+  get showLastReceivedCallsign() {
+    return this._settings.showLastReceivedCallsign ?? true;
   }
 
   /**
@@ -131,8 +240,13 @@ export class StationStatusController implements Controller {
   set settings(newValue: StationSettings) {
     this._settings = newValue;
 
-    this.showTitle();
-    this.setState();
+    this.activeCommsImagePath = newValue.activeCommsImagePath;
+    this.listeningImagePath = newValue.listeningImagePath;
+    this.notListeningImagePath = newValue.notListeningImagePath;
+    this.unavailableImagePath = newValue.unavailableImagePath;
+
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
@@ -152,7 +266,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isReceiving = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -172,7 +286,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isTransmitting = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -192,7 +306,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isListening = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -211,7 +325,7 @@ export class StationStatusController implements Controller {
     }
 
     this._isAvailable = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -227,7 +341,7 @@ export class StationStatusController implements Controller {
   set lastReceivedCallsign(callsign: string | undefined) {
     this._lastReceivedCallsign = callsign;
 
-    this.showTitle();
+    this.refreshTitle();
   }
   //#endregion
 
@@ -244,62 +358,8 @@ export class StationStatusController implements Controller {
     this._isTransmitting = false;
     this._isAvailable = undefined;
 
-    this.setState();
-    this.showTitle();
-  }
-
-  /**
-   * Sets the action image to the correct one given the current isReceiving, isTransmitting, isAvailable and
-   * isListening value.
-   */
-  public setState() {
-    if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.action
-        .setImage(
-          this._settings.unavailableIconPath ??
-            "images/actions/stationStatus/unavailable.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-
-      return;
-    }
-
-    if (this.isReceiving || this.isTransmitting) {
-      this.action
-        .setImage(
-          this._settings.activeCommsIconPath ??
-            "images/actions/stationStatus/orange.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-
-      return;
-    }
-
-    if (this.isListening) {
-      this.action
-        .setImage(
-          this._settings.listeningIconPath ??
-            "images/actions/stationStatus/green.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-
-      return;
-    }
-
-    this.action
-      .setImage(
-        this._settings.notListeningIconPath ??
-          "images/actions/stationStatus/black.svg"
-      )
-      .catch((error: unknown) => {
-        console.error(error);
-      });
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
@@ -307,24 +367,64 @@ export class StationStatusController implements Controller {
    * the base title if it exists, showLastReceivedCallsign is enabled in settings,
    * and the action is listening to RX.
    */
-  public showTitle() {
-    if (
-      this.lastReceivedCallsign &&
-      this.showLastReceivedCallsign &&
-      this.isListeningForReceive
-    ) {
-      this.action
-        .setTitle(`${this.title}\n${this.lastReceivedCallsign}`)
-        .catch((error: unknown) => {
-          const err = error as Error;
-          console.error(`Unable to set action title: ${err.message}`);
-        });
-    } else {
-      this.action.setTitle(this.title).catch((error: unknown) => {
-        const err = error as Error;
-        console.error(`Unable to set action title: ${err.message}`);
+  public refreshTitle() {
+    const title = new TitleBuilder();
+
+    title.push(this.title, this.showTitle);
+    title.push(this.callsign, this.showCallsign);
+    title.push(this.formattedFrequency, this.showFrequency);
+    title.push(this.listenTo.toUpperCase(), this.showListenTo);
+    title.push(this.lastReceivedCallsign, this.showLastReceivedCallsign);
+
+    this.setTitle(title.join("\n"));
+  }
+
+  /**
+   * Sets the action image to the correct one given the current isReceiving, isTransmitting, isAvailable and
+   * isListening value.
+   */
+  public refreshImage() {
+    const replacements = {
+      callsign: this.callsign,
+      frequency: this.frequency,
+      formattedFrequency: this.formattedFrequency,
+      lastReceivedCallsign: this.lastReceivedCallsign,
+      listenTo: this.listenTo.toUpperCase(),
+      title: this.title,
+    };
+
+    if (this.isAvailable !== undefined && !this.isAvailable) {
+      this.setImage(this.unavailableImagePath, {
+        ...replacements,
+        stateColor: StateColor.UNAVAILABLE,
+        state: "unavailable",
       });
+      return;
     }
+
+    if (this.isReceiving || this.isTransmitting) {
+      this.setImage(this.activeCommsImagePath, {
+        ...replacements,
+        stateColor: StateColor.ACTIVE_COMMS,
+        state: "activeComms",
+      });
+      return;
+    }
+
+    if (this.isListening) {
+      this.setImage(this.listeningImagePath, {
+        ...replacements,
+        stateColor: StateColor.LISTENING,
+        state: "listening",
+      });
+      return;
+    }
+
+    this.setImage(this.notListeningImagePath, {
+      ...replacements,
+      stateColor: StateColor.NOT_LISTENING,
+      state: "notListening",
+    });
   }
 }
 

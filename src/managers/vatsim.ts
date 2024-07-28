@@ -3,7 +3,10 @@ import { handleAsyncException } from "@root/utils/handleAsyncException";
 import axios from "axios";
 import EventEmitter from "events";
 
-export default class VatsimManager extends EventEmitter {
+/**
+ * Singleton class that manages communication with VATSIM.
+ */
+class VatsimManager extends EventEmitter {
   private static instance: VatsimManager | null;
   private intervalId: NodeJS.Timeout | null = null;
 
@@ -73,3 +76,6 @@ export default class VatsimManager extends EventEmitter {
     this.start();
   }
 }
+
+const vatsimManagerInstance = VatsimManager.getInstance();
+export default vatsimManagerInstance;

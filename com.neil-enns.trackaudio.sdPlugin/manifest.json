@@ -14,7 +14,7 @@
       "UserTitleEnabled": false,
       "States": [
         {
-          "Image": "images/actions/atisLetter/current",
+          "Image": "images/actions/default",
           "TitleAlignment": "middle"
         }
       ]
@@ -26,13 +26,12 @@
       "Tooltip": "Toggles Tx for a hotline frequency.",
       "PropertyInspectorPath": "pi/hotline.html",
       "DisableAutomaticStates": true,
-      "UserTitleEnabled": true,
+      "UserTitleEnabled": false,
       "Controllers": ["Keypad"],
       "States": [
         {
-          "Image": "images/actions/hotline/notConnected",
-          "TitleAlignment": "bottom",
-          "Title": "HOTLINE"
+          "Image": "images/actions/default",
+          "TitleAlignment": "bottom"
         }
       ]
     },
@@ -42,14 +41,12 @@
       "Icon": "images/plugin/microphone-solid",
       "Tooltip": "Triggers transmit via push-to-talk.",
       "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "PropertyInspectorPath": "pi/pushToTalk.html",
       "Controllers": ["Keypad"],
       "States": [
         {
-          "Image": "images/actions/pushToTalk/black",
-          "TitleAlignment": "middle"
-        },
-        {
-          "Image": "images/actions/pushToTalk/orange",
+          "Image": "images/actions/default",
           "TitleAlignment": "middle"
         }
       ]
@@ -65,7 +62,7 @@
       "UserTitleEnabled": false,
       "States": [
         {
-          "Image": "images/actions/stationStatus/black",
+          "Image": "images/actions/default",
           "TitleAlignment": "middle"
         }
       ]
@@ -77,11 +74,11 @@
       "Tooltip": "Shows the status of the connection to TrackAudio.",
       "PropertyInspectorPath": "pi/trackAudioStatus.html",
       "DisableAutomaticStates": true,
-      "UserTitleEnabled": true,
+      "UserTitleEnabled": false,
       "Controllers": ["Keypad"],
       "States": [
         {
-          "Image": "images/actions/trackAudioStatus/notConnected",
+          "Image": "images/actions/default",
           "TitleAlignment": "middle"
         }
       ]

@@ -6,7 +6,7 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 
 @action({ UUID: "com.neil-enns.trackaudio.hotline" })
 /**
@@ -17,7 +17,7 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<HotlineSettings>): void | Promise<void> {
-    ActionManager.getInstance().addHotline(ev.action, ev.payload.settings);
+    actionManager.addHotline(ev.action, ev.payload.settings);
 
     // Set the default title to the provided callsign. StreamDeck will use this if the user
     // didn't specify a custom title.
@@ -32,7 +32,7 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   onWillDisappear(
     ev: WillDisappearEvent<HotlineSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().remove(ev.action);
+    actionManager.remove(ev.action);
   }
 
   // When settings are received the ActionManager is called to update the existing
@@ -40,30 +40,26 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<HotlineSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().updateHotline(ev.action, ev.payload.settings);
-
-    // Set the default title to the provided callsign. StreamDeck will use this if the user
-    // didn't specify a custom title.
-    ev.action
-      .setTitle(ev.payload.settings.hotlineCallsign)
-      .catch((error: unknown) => {
-        console.error(error);
-      });
+    actionManager.updateHotline(ev.action, ev.payload.settings);
   }
 
   // When the key is pressed send the request to toggle the hotline.
   onKeyDown(ev: KeyDownEvent<HotlineSettings>): void | Promise<void> {
-    ActionManager.getInstance().toggleHotline(ev.action.id);
+    actionManager.toggleHotline(ev.action.id);
   }
 }
 
 export interface HotlineSettings {
   primaryCallsign: string;
   hotlineCallsign: string;
-  receivingImagePath: string | null;
-  listeningImagePath: string | null;
-  hotlineActiveImagePath: string | null;
-  bothActiveImagePath: string | null;
-  neitherActiveImagePath: string | null;
-  unavailableImagePath: string | null;
+  title?: string;
+  receivingImagePath?: string;
+  listeningImagePath?: string;
+  hotlineActiveImagePath?: string;
+  bothActiveImagePath?: string;
+  neitherActiveImagePath?: string;
+  unavailableImagePath?: string;
+  showTitle?: boolean;
+  showHotlineCallsign?: boolean;
+  showPrimaryCallsign?: boolean;
 }

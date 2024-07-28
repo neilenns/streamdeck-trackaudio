@@ -1,5 +1,5 @@
 import { StationStatusController } from "@controllers/stationStatus";
-import TrackAudioManager from "@managers/trackAudio";
+import trackAudioManager from "@managers/trackAudio";
 
 /**
  * Handles refreshing the station status from TrackAudio when any of the settings are updated
@@ -8,5 +8,5 @@ import TrackAudioManager from "@managers/trackAudio";
 export const handleStationStatusSettingsUpdated = (
   controller: StationStatusController
 ) => {
-  TrackAudioManager.getInstance().refreshStationState(controller.callsign);
+  trackAudioManager.refreshStationState(controller.callsign);
 };

@@ -5,6 +5,14 @@
     <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
   </head>
   <body>
+    <sdpi-item label="Title">
+      <sdpi-textarea
+        setting="title"
+        placeholder="Optional title"
+        rows="1"
+      ></sdpi-textarea>
+    </sdpi-item>
+
     <sdpi-item label="Primary callsign">
       <sdpi-textfield
         setting="primaryCallsign"
@@ -21,16 +29,9 @@
       ></sdpi-textfield>
     </sdpi-item>
 
-    <sdpi-item label="Listening">
+    <sdpi-item label="Both active">
       <sdpi-file
-        setting="listeningImagePath"
-        accept="image/png, image/jpeg, image/svg+xml"
-      ></sdpi-file>
-    </sdpi-item>
-
-    <sdpi-item label="Receiving">
-      <sdpi-file
-        setting="receivingImagePath"
+        setting="bothActiveImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
@@ -42,9 +43,9 @@
       ></sdpi-file>
     </sdpi-item>
 
-    <sdpi-item label="Both active">
+    <sdpi-item label="Listening">
       <sdpi-file
-        setting="bothActiveImagePath"
+        setting="listeningImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
@@ -56,11 +57,37 @@
       ></sdpi-file>
     </sdpi-item>
 
-    <sdpi-item label="Unavailable">
+    <sdpi-item label="Receiving">
       <sdpi-file
-        setting="unavailableIconPath"
+        setting="receivingImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item label="Unavailable">
+      <sdpi-file
+        setting="unavailableImagePath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item>
+      <details class="sdpi-item-value">
+        <summary>Advanced options</summary>
+        <sdpi-checkbox
+          setting="showHotlineCallsign"
+          label="Show hotline callsign"
+        ></sdpi-checkbox>
+        <sdpi-checkbox
+          setting="showPrimaryCallsign"
+          label="Show primary callsign"
+        ></sdpi-checkbox>
+        <sdpi-checkbox
+          setting="showTitle"
+          label="Show title"
+          default="true"
+        ></sdpi-checkbox>
+      </details>
     </sdpi-item>
   </body>
 </html>

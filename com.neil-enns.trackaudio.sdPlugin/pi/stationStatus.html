@@ -29,39 +29,64 @@
       </sdpi-radio>
     </sdpi-item>
 
-    <sdpi-item>
-      <sdpi-checkbox
-        setting="showLastReceivedCallsign"
-        label="Show last received callsign"
-      ></sdpi-checkbox>
-    </sdpi-item>
-
-    <sdpi-item label="Not listening">
+    <sdpi-item label="Active comms">
       <sdpi-file
-        setting="notListeningIconPath"
+        setting="activeCommsImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
     <sdpi-item label="Listening">
       <sdpi-file
-        setting="listeningIconPath"
+        setting="listeningImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
-    <sdpi-item label="Active comms">
+    <sdpi-item label="Not listening">
       <sdpi-file
-        setting="activeCommsIconPath"
+        setting="notListeningImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
     <sdpi-item label="Unavailable">
       <sdpi-file
-        setting="unavailableIconPath"
+        setting="unavailableImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item>
+      <details class="sdpi-item-value">
+        <summary>Advanced options</summary>
+        <sdpi-checkbox
+          setting="showCallsign"
+          label="Show callsign"
+        ></sdpi-checkbox>
+
+        <sdpi-checkbox
+          setting="showFrequency"
+          label="Show frequency"
+        ></sdpi-checkbox>
+
+        <sdpi-checkbox
+          setting="showLastReceivedCallsign"
+          label="Show last received callsign"
+          default="true"
+        ></sdpi-checkbox>
+
+        <sdpi-checkbox
+          setting="showListenTo"
+          label="Show listen to"
+        ></sdpi-checkbox>
+
+        <sdpi-checkbox
+          setting="showTitle"
+          label="Show title"
+          default="true"
+        ></sdpi-checkbox>
+      </details>
     </sdpi-item>
 
     <script type="text/javascript">

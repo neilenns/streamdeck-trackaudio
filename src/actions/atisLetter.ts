@@ -6,7 +6,7 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 
 @action({ UUID: "com.neil-enns.trackaudio.atisletter" })
 /**
@@ -17,14 +17,14 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<AtisLetterSettings>): void | Promise<void> {
-    ActionManager.getInstance().addAtisLetter(ev.action, ev.payload.settings);
+    actionManager.addAtisLetter(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   onWillDisappear(
     ev: WillDisappearEvent<AtisLetterSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().remove(ev.action);
+    actionManager.remove(ev.action);
   }
 
   // When settings are received the ActionManager is called to update the existing
@@ -32,21 +32,20 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<AtisLetterSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().updateAtisLetter(
-      ev.action,
-      ev.payload.settings
-    );
+    actionManager.updateAtisLetter(ev.action, ev.payload.settings);
   }
 
   onKeyDown(ev: KeyDownEvent<AtisLetterSettings>): Promise<void> | void {
-    ActionManager.getInstance().atisLetterKeyDown(ev.action);
+    actionManager.atisLetterKeyDown(ev.action);
   }
 }
 
 export interface AtisLetterSettings {
   callsign?: string;
   title?: string;
-  currentIconPath?: string;
-  updatedIconPath?: string;
-  unavailableIconPath?: string;
+  currentImagePath?: string;
+  updatedImagePath?: string;
+  unavailableImagePath?: string;
+  showTitle?: boolean;
+  showLetter?: boolean;
 }

@@ -1,16 +1,30 @@
 import { HotlineSettings } from "@actions/hotline";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import { BaseController } from "./baseController";
+import { stringOrUndefined } from "@root/utils/utils";
+import TitleBuilder from "@root/utils/titleBuilder";
+
+const StateColor = {
+  BOTH_ACTIVE: "#900",
+  HOTLINE_ACTIVE: "#c60",
+  LISTENING: "#009",
+  NEITHER_ACTIVE: "black",
+  RECEIVING: "#060",
+  UNAVAILABLE: "black",
+};
+
+const defaultTemplatePath = "images/actions/hotline/template.svg";
+const defaultUnavailableTemplatePath = "images/actions/hotline/unavailable.svg";
 
 /**
  * A HotlineController action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class HotlineController implements Controller {
+export class HotlineController extends BaseController {
   type = "HotlineController";
-  action: Action;
 
-  private _settings: HotlineSettings;
+  private _settings!: HotlineSettings;
 
   private _primaryFrequency = 0;
   private _hotlineFrequency = 0;
@@ -20,16 +34,21 @@ export class HotlineController implements Controller {
   private _isReceiving = false;
   private _isAvailable: boolean | undefined = undefined;
 
+  private _bothActiveImagePath?: string;
+  private _unavailableImagePath?: string;
+  private _hotlineActiveImagePath?: string;
+  private _listeningImagePath?: string;
+  private _neitherActiveImagePath?: string;
+  private _receivingImagePath?: string;
+
   /**
    * Creates a new HotlineController object.
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
   constructor(action: Action, settings: HotlineSettings) {
-    this.action = action;
-    this._settings = settings;
-
-    this.setState();
+    super(action);
+    this.settings = settings;
   }
 
   /**
@@ -45,7 +64,107 @@ export class HotlineController implements Controller {
     this._hotlineFrequency = 0;
     this._isAvailable = undefined;
 
-    this.setState();
+    this.refreshTitle();
+    this.refreshImage();
+  }
+
+  //#region Getters/setters
+  /**
+   * Convenience method to return the action's title from settings or "HOTLINE"
+   * if it is undefined.
+   */
+  get title() {
+    return this._settings.title ?? "HOTLINE";
+  }
+
+  /**
+   * Returns the bothActiveImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get bothActiveImagePath(): string {
+    return this._bothActiveImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the bothActiveImagePath and re-compiles the SVG template if necessary.
+   */
+  set bothActiveImagePath(newValue: string | undefined) {
+    this._bothActiveImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the unavailableImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get unavailableImagePath(): string {
+    return this._unavailableImagePath ?? defaultUnavailableTemplatePath;
+  }
+
+  /**
+   * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
+   */
+  set unavailableImagePath(newValue: string | undefined) {
+    this._unavailableImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the hotlineActiveImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get hotlineActiveImagePath(): string {
+    return this._hotlineActiveImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the hotlineActiveImagePath and re-compiles the SVG template if necessary.
+   */
+  set hotlineActiveImagePath(newValue: string | undefined) {
+    this._hotlineActiveImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the listeningImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get listeningImagePath(): string {
+    return this._listeningImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the listeningImagePath and re-compiles the SVG template if necessary.
+   */
+  set listeningImagePath(newValue: string | undefined) {
+    this._listeningImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the neitherActiveImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get neitherActiveImagePath(): string {
+    return this._neitherActiveImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the neitherActiveImagePath and re-compiles the SVG template if necessary.
+   */
+  set neitherActiveImagePath(newValue: string | undefined) {
+    this._neitherActiveImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the receivingImagePath or the default template path if the
+   * user didn't specify a custom icon.
+   */
+  get receivingImagePath(): string {
+    return this._receivingImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the receivingImagePath and re-compiles the SVG template if necessary.
+   */
+  set receivingImagePath(newValue: string | undefined) {
+    this._receivingImagePath = stringOrUndefined(newValue);
   }
 
   /**
@@ -65,6 +184,9 @@ export class HotlineController implements Controller {
     this._primaryFrequency = newValue;
     this.isAvailable =
       this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
+
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
@@ -84,6 +206,9 @@ export class HotlineController implements Controller {
     this._hotlineFrequency = newValue;
     this.isAvailable =
       this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
+
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
@@ -102,7 +227,7 @@ export class HotlineController implements Controller {
     }
 
     this._isAvailable = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -115,7 +240,7 @@ export class HotlineController implements Controller {
     }
 
     this._isReceiving = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -182,6 +307,27 @@ export class HotlineController implements Controller {
   }
 
   /**
+   * Returns the showTitle setting, or true if undefined.
+   */
+  get showTitle() {
+    return this._settings.showTitle ?? true;
+  }
+
+  /**
+   * Returns the showHotlineCallsign setting, or false if undefined.
+   */
+  get showHotlineCallsign() {
+    return this._settings.showHotlineCallsign ?? false;
+  }
+
+  /**
+   * Returns the showPrimaryCallsign setting, or false if undefined.
+   */
+  get showPrimaryCallsign() {
+    return this._settings.showPrimaryCallsign ?? false;
+  }
+
+  /**
    * Gets the settings.
    */
   get settings() {
@@ -194,85 +340,99 @@ export class HotlineController implements Controller {
   set settings(newValue: HotlineSettings) {
     this._settings = newValue;
 
-    this.setState();
+    this.bothActiveImagePath = newValue.bothActiveImagePath;
+    this.hotlineActiveImagePath = newValue.hotlineActiveImagePath;
+    this.listeningImagePath = newValue.listeningImagePath;
+    this.neitherActiveImagePath = newValue.neitherActiveImagePath;
+    this.receivingImagePath = newValue.receivingImagePath;
+    this.unavailableImagePath = newValue.unavailableImagePath;
+
+    this.refreshTitle();
+    this.refreshImage();
+  }
+  //#endregion
+
+  /**
+   * Sets the title on the action.
+   */
+  public refreshTitle() {
+    const title = new TitleBuilder();
+
+    title.push(this.title, this.showTitle);
+    title.push(this.primaryCallsign, this.showPrimaryCallsign);
+    title.push(this.hotlineCallsign, this.showHotlineCallsign);
+
+    const finalTitle = title.join("\n");
+    this.setTitle(finalTitle);
   }
 
-  public setState() {
-    if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.action
-        .setImage(
-          this._settings.unavailableImagePath ??
-            "images/actions/hotline/unavailable.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
+  /**
+   * Sets the image based on the state of the action.
+   */
+  public refreshImage() {
+    const replacements = {
+      hotlineCallsign: this.hotlineCallsign,
+      hotlineFrequency: this.hotlineFrequency,
+      primaryCallsign: this.primaryCallsign,
+      primaryFrequency: this.primaryFrequency,
+      title: this.title,
+    };
 
+    if (this.isAvailable !== undefined && !this.isAvailable) {
+      this.setImage(this.unavailableImagePath, {
+        ...replacements,
+        stateColor: StateColor.UNAVAILABLE,
+        state: "unavailable",
+      });
       return;
     }
 
     // This state is bad, it means Tx is cross coupled
     // on both hotline and primary.
     if (this.isTxHotline && this.isTxPrimary) {
-      this.action
-        .setImage(
-          this._settings.bothActiveImagePath ??
-            "images/actions/hotline/conflict.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
+      this.setImage(this.bothActiveImagePath, {
+        ...replacements,
+        stateColor: StateColor.BOTH_ACTIVE,
+        state: "bothActive",
+      });
       return;
     }
 
     // Hotline is active tx, takes priority over active rx.
     if (this.isTxHotline) {
-      this.action
-        .setImage(
-          this._settings.hotlineActiveImagePath ??
-            "images/actions/hotline/talking.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
-
+      this.setImage(this.hotlineActiveImagePath, {
+        ...replacements,
+        stateColor: StateColor.HOTLINE_ACTIVE,
+        state: "hotlineActive",
+      });
       return;
     }
 
     if (this.isReceiving) {
-      this.action
-        .setImage(
-          this._settings.receivingImagePath ??
-            "images/actions/hotline/receiving.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
+      this.setImage(this.receivingImagePath, {
+        ...replacements,
+        stateColor: StateColor.RECEIVING,
+        state: "receiving",
+      });
       return;
     }
 
     // Primary active rx.
     if (this.isRxHotline) {
-      this.action
-        .setImage(
-          this._settings.listeningImagePath ??
-            "images/actions/hotline/listening.svg"
-        )
-        .catch((error: unknown) => {
-          console.error(error);
-        });
+      this.setImage(this.listeningImagePath, {
+        ...replacements,
+        stateColor: StateColor.LISTENING,
+        state: "listening",
+      });
       return;
     }
 
     // Nothing is active.
-    this.action
-      .setImage(
-        this._settings.neitherActiveImagePath ??
-          "images/actions/hotline/notConnected.svg"
-      )
-      .catch((error: unknown) => {
-        console.error(error);
-      });
+    this.setImage(this.neitherActiveImagePath, {
+      ...replacements,
+      stateColor: StateColor.NEITHER_ACTIVE,
+      state: "neitherActive",
+    });
   }
 }
 

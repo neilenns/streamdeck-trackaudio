@@ -1,0 +1,28 @@
+{ "Image setter/getter": {
+    "prefix": "imgPath",
+		"scope": "typescript",
+    "body": [
+      "/**",
+      " * Returns the ${1:listening}ImagePath or the default template path if the",
+      " * user didn't specify a custom icon.",
+      " */",
+      "get ${1:listening}ImagePath(): string {",
+      "  return this._${1:listening}ImagePath ?? defaultTemplatePath;",
+      "}",
+      "",
+      "/**",
+      " * Sets the ${1:listening}ImagePath and re-compiles the SVG template if necessary.",
+      " */",
+      "set ${1:listening}ImagePath(newValue: string | undefined) {",
+      "  if (",
+      "    !this._compiled${1/(.*)/${1:/capitalize}/}Svg ||",
+      "    this.${1:listening}ImagePath !== newValue",
+      "  ) {",
+      "    this._${1:listening}ImagePath = stringOrUndefined(newValue);",
+      "    this._compiled${1/(.*)/${1:/capitalize}/}Svg = compileSvg(this.${1:listening}ImagePath);",
+      "  }",
+      "}"
+    ],
+    "description": "Replace listening with your desired placeholder text"
+  }
+}

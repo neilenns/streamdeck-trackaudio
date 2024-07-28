@@ -1,21 +1,35 @@
 import { AtisLetterSettings } from "@actions/atisLetter";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { handleAsyncException } from "@root/utils/handleAsyncException";
+import TitleBuilder from "@root/utils/titleBuilder";
+import { BaseController } from "./baseController";
+import { stringOrUndefined } from "@root/utils/utils";
+
+const StateColor = {
+  CURRENT: "black",
+  UNAVAILABLE: "black",
+  UPDATED: "#f60",
+};
+
+const defaultTemplatePath = "images/actions/atisLetter/template.svg";
+const defaultUnavailableTemplatePath =
+  "images/actions/atisLetter/unavailable.svg";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
  */
-export class AtisLetterController implements Controller {
+export class AtisLetterController extends BaseController {
   type = "AtisLetterController";
-  action: Action;
 
-  // private _letter: string;
-  private _settings: AtisLetterSettings;
+  private _settings!: AtisLetterSettings;
   private _letter?: string;
   private _isUpdated = false;
   private _isUnavailable = false;
+
+  private _currentImagePath?: string;
+  private _unavailableImagePath?: string;
+  private _updatedImagePath?: string;
 
   /**
    * Creates a new StationStatusController object.
@@ -23,22 +37,23 @@ export class AtisLetterController implements Controller {
    * @param settings: The options for the action
    */
   constructor(action: Action, settings: AtisLetterSettings) {
-    this.action = action;
-    this._settings = settings;
-
-    this.showTitle();
-    this.setState();
+    super(action);
+    this.settings = settings;
   }
 
   /**
    * Resets the action to its default, disconnected, state.
    */
   public reset() {
-    this.letter = undefined;
-    this.isUpdated = false;
-    this.isUnavailable = false;
+    this._letter = undefined;
+    this._isUpdated = false;
+    this._isUnavailable = false;
+
+    this.refreshTitle();
+    this.refreshImage();
   }
 
+  //#region Getters and setters
   /**
    * Gets isUnavailable, which is true if no ATIS letter was available in the last VATSIM update.
    */
@@ -56,7 +71,7 @@ export class AtisLetterController implements Controller {
     }
 
     this._isUnavailable = newValue;
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -67,24 +82,62 @@ export class AtisLetterController implements Controller {
   }
 
   /**
-   * Returns the currentIconPath for the ATIS action.
+   * Returns the currentImagePath or the default template path if the
+   * user didn't specify a custom icon.
    */
-  get currentIconPath() {
-    return this._settings.currentIconPath;
+  get currentImagePath(): string {
+    return this._currentImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Returns the updatedIconPath for the ATIS action.
+   * Sets the currentImagePath and re-compiles the SVG template if necessary.
    */
-  get updatedIconPath() {
-    return this._settings.updatedIconPath;
+  set currentImagePath(newValue: string | undefined) {
+    this._currentImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the unavailableIconPath for the ATIS action.
+   * Returns the updatedImagePath or the default template path if the user
+   * didn't specify a custom icon.
    */
-  get unavailableIconPath() {
-    return this._settings.unavailableIconPath;
+  get updatedImagePath(): string {
+    return this._updatedImagePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the updatedImagePath and re-compiles the SVG template if necessary.
+   */
+  set updatedImagePath(newValue: string | undefined) {
+    this._updatedImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the unavailableImagePath or the default unavailable template path
+   * if the user didn't specify a custom icon.
+   */
+  get unavailableImagePath(): string {
+    return this._unavailableImagePath ?? defaultUnavailableTemplatePath;
+  }
+
+  /**
+   * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
+   */
+  set unavailableImagePath(newValue: string | undefined) {
+    this._unavailableImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the showTitle setting, or true if undefined.
+   */
+  get showTitle() {
+    return this._settings.showTitle ?? true;
+  }
+
+  /**
+   * Returns the showLetter setting, or true if undefined.
+   */
+  get showLetter() {
+    return this._settings.showLetter ?? true;
   }
 
   /**
@@ -95,17 +148,18 @@ export class AtisLetterController implements Controller {
   }
 
   /**
-   * Sets the settings.
+   * Sets the settings. Also updates the private icon paths and
+   * compiled SVGs.
    */
   set settings(newValue: AtisLetterSettings) {
     this._settings = newValue;
 
-    if (this._settings.title === "") {
-      this._settings.title = undefined;
-    }
+    this.currentImagePath = newValue.currentImagePath;
+    this.unavailableImagePath = newValue.unavailableImagePath;
+    this.updatedImagePath = newValue.updatedImagePath;
 
-    this.showTitle();
-    this.setState();
+    this.refreshTitle();
+    this.refreshImage();
   }
 
   /**
@@ -121,7 +175,7 @@ export class AtisLetterController implements Controller {
   public set isUpdated(newValue: boolean) {
     this._isUpdated = newValue;
 
-    this.setState();
+    this.refreshImage();
   }
 
   /**
@@ -149,7 +203,8 @@ export class AtisLetterController implements Controller {
     }
 
     this._letter = letter;
-    this.showTitle();
+    this.refreshTitle();
+    this.refreshImage(); // For cases where the state is fully responsible for displaying the content
   }
 
   /**
@@ -158,70 +213,53 @@ export class AtisLetterController implements Controller {
   get title() {
     return this._settings.title;
   }
+  //#endregion
 
   /**
-   * Sets the state of the action based on the value of isUpdated
+   * Sets the image based on the state of the action.
    */
-  private setState() {
+  private refreshImage() {
+    const replacements = {
+      callsign: this.callsign,
+      letter: this.letter,
+      title: this.title,
+    };
+
     if (this.isUnavailable) {
-      this.action
-        .setImage(
-          this.unavailableIconPath ??
-            "images/actions/atisLetter/unavailable.svg"
-        )
-        .catch((error: unknown) => {
-          handleAsyncException(
-            "Unable to set ATIS letter action image: ",
-            error
-          );
-        });
-    } else if (this.isUpdated) {
-      this.action
-        .setImage(
-          this.updatedIconPath ?? "images/actions/atisLetter/updated.svg"
-        )
-        .catch((error: unknown) => {
-          handleAsyncException(
-            "Unable to set ATIS letter action image: ",
-            error
-          );
-        });
-    } else {
-      this.action
-        .setImage(
-          this.currentIconPath ?? "images/actions/atisLetter/current.svg"
-        )
-        .catch((error: unknown) => {
-          handleAsyncException(
-            "Unable to set ATIS letter action state: ",
-            error
-          );
-        });
+      this.setImage(this.unavailableImagePath, {
+        ...replacements,
+        stateColor: StateColor.CURRENT,
+        state: "current",
+      });
+      return;
     }
+
+    if (this.isUpdated) {
+      this.setImage(this.updatedImagePath, {
+        ...replacements,
+        stateColor: StateColor.UPDATED,
+        state: "updated",
+      });
+      return;
+    }
+
+    this.setImage(this.currentImagePath, {
+      ...replacements,
+      stateColor: StateColor.CURRENT,
+      state: "current",
+    });
   }
 
   /**
-   * Shows the title on the action. This will either be the current ATIS letter
-   * or the station name and the word "ATIS".
+   * Sets the title on the action.
    */
-  public showTitle() {
-    if (this.letter) {
-      if (this.title) {
-        this.action
-          .setTitle(`${this.title}\n${this._letter ?? ""}`)
-          .catch((error: unknown) => {
-            handleAsyncException("Unable to set action title: ", error);
-          });
-      } else {
-        this.action.setTitle(this.letter).catch((error: unknown) => {
-          handleAsyncException("Unable to set action title: ", error);
-        });
-      }
-    } else {
-      this.action.setTitle(this.title ?? "ATIS").catch((error: unknown) => {
-        handleAsyncException("Unable to set action title: ", error);
-      });
-    }
+  public refreshTitle() {
+    const title = new TitleBuilder();
+
+    title.push(this.title, this.showTitle);
+    title.push(this.letter ?? "ATIS", this.showLetter);
+
+    this.setTitle(title.join("\n"));
   }
 }
 

@@ -22,27 +22,29 @@ import {
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { StationStateUpdate } from "@interfaces/messages";
-import TrackAudioManager from "@managers/trackAudio";
+import trackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
-import { EventEmitter } from "events";
-import VatsimManager from "./vatsim";
 import debounce from "debounce";
+import { EventEmitter } from "events";
+import vatsimManager from "./vatsim";
+import { PushToTalkSettings } from "@actions/pushToTalk";
 
 /**
  * Singleton class that manages StreamDeck actions
  */
-export default class ActionManager extends EventEmitter {
+class ActionManager extends EventEmitter {
   private static instance: ActionManager | null = null;
   private actions: Controller[] = [];
 
   private constructor() {
     super();
 
-    // Debounce the update methods that make websocket calls to avoid spamming
-    // TrackAudio on every keypress.
-    this.updateStation = debounce(this.updateStation.bind(this), 500);
-    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    // Debounce the update methods to avoid rapid pinging of TrackAudio or
+    // title redraws while typing
     this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
+    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    this.updateStation = debounce(this.updateStation.bind(this), 500);
   }
 
   /**
@@ -61,8 +63,8 @@ export default class ActionManager extends EventEmitter {
    * after the action is added.
    * @param action The action
    */
-  public addPushToTalk(action: Action): void {
-    this.actions.push(new PushToTalkController(action));
+  public addPushToTalk(action: Action, settings: PushToTalkSettings): void {
+    this.actions.push(new PushToTalkController(action, settings));
 
     this.emit("pushToTalkAdded");
   }
@@ -125,8 +127,7 @@ export default class ActionManager extends EventEmitter {
    * @param action The action
    */
   public trackAudioStatusKeyDown(action: Action): void {
-    const trackAudio = TrackAudioManager.getInstance();
-    trackAudio.refreshVoiceConnectedState(); // This also causes a refresh of the station states
+    trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
 
     action.showOk().catch((error: unknown) => {
       handleAsyncException(
@@ -143,7 +144,6 @@ export default class ActionManager extends EventEmitter {
    * @param action The action
    */
   public atisLetterKeyDown(action: Action): void {
-    const vatsimManager = VatsimManager.getInstance();
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -170,6 +170,7 @@ export default class ActionManager extends EventEmitter {
       action.letter = undefined;
     });
   }
+
   /**
    * Updates the settings associated with a station status action.
    * Emits a stationStatusSettingsUpdated event if the settings require
@@ -178,8 +179,6 @@ export default class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateStation(action: Action, settings: StationSettings) {
-    console.log("Updating station settings");
-
     const savedAction = this.getStationStatusControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -195,10 +194,6 @@ export default class ActionManager extends EventEmitter {
       savedAction.listenTo !== settings.listenTo;
 
     savedAction.settings = settings;
-
-    // Refreshes the title and icons in case that's what changed in settings
-    savedAction.showTitle();
-    savedAction.setState();
 
     if (requiresStationRefresh) {
       this.emit("stationStatusSettingsUpdated", savedAction);
@@ -249,17 +244,19 @@ export default class ActionManager extends EventEmitter {
 
     savedAction.settings = settings;
 
-    // Refreshes the icons in case that's what changed in settings
-    savedAction.setState();
-
     if (requiresStationRefresh) {
       this.emit("hotlineSettingsUpdated", savedAction);
     }
   }
 
+  /**
+   * Updates the settings associated with an ATIS letter status action.
+   * Emits a atisLetterUpdated event if the settings require
+   * the action to refresh.
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
   public updateAtisLetter(action: Action, settings: AtisLetterSettings) {
-    console.log("Updating ATIS settings");
-
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -275,6 +272,24 @@ export default class ActionManager extends EventEmitter {
     if (requiresRefresh) {
       this.emit("atisLetterUpdated", savedAction);
     }
+  }
+
+  /**
+   * Updates the settings associated with a push to talk action.
+   * the action to refresh.
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
+  public updatePushToTalk(action: Action, settings: PushToTalkSettings) {
+    const savedAction = this.getPushToTalkControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.settings = settings;
   }
 
   /**
@@ -302,7 +317,7 @@ export default class ActionManager extends EventEmitter {
           (data.value.xc && entry.listenTo === "xc") ||
           (data.value.xca && entry.listenTo === "xca");
 
-        entry.setState();
+        entry.refreshImage();
       });
 
     // Do the same for hotline actions
@@ -315,7 +330,7 @@ export default class ActionManager extends EventEmitter {
         entry.isRxHotline = data.value.rx;
       }
 
-      entry.setState();
+      entry.refreshImage();
     });
   }
 
@@ -510,7 +525,7 @@ export default class ActionManager extends EventEmitter {
 
     // The primary frequency always gets its xc state toggled to match the tx state,
     // ensuring xc is re-enabled when tx turns on.
-    TrackAudioManager.getInstance().sendMessage({
+    trackAudioManager.sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.primaryFrequency,
@@ -522,7 +537,7 @@ export default class ActionManager extends EventEmitter {
     });
 
     // The hotline frequency gets its tx state toggled
-    TrackAudioManager.getInstance().sendMessage({
+    trackAudioManager.sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.hotlineFrequency,
@@ -551,7 +566,7 @@ export default class ActionManager extends EventEmitter {
     }
 
     // Send the message to TrackAudio.
-    TrackAudioManager.getInstance().sendMessage({
+    trackAudioManager.sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.frequency,
@@ -594,14 +609,14 @@ export default class ActionManager extends EventEmitter {
    * Sends a message via TrackAudioManager to indicate a PushToTalk action was pressed.
    */
   public pttPressed() {
-    TrackAudioManager.getInstance().sendMessage({ type: "kPttPressed" });
+    trackAudioManager.sendMessage({ type: "kPttPressed" });
   }
 
   /**
    * Sends a message via TrackAudioManager to indicate a PushToTalk action was released.
    */
   public pttReleased() {
-    TrackAudioManager.getInstance().sendMessage({ type: "kPttReleased" });
+    trackAudioManager.sendMessage({ type: "kPttReleased" });
   }
 
   /**
@@ -700,3 +715,6 @@ export default class ActionManager extends EventEmitter {
     });
   }
 }
+
+const actionManagerInstance = ActionManager.getInstance();
+export default actionManagerInstance;

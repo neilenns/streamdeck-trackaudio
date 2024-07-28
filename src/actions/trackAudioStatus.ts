@@ -6,7 +6,7 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 
 @action({ UUID: "com.neil-enns.trackaudio.trackaudiostatus" })
 /**
@@ -18,33 +18,32 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   onWillAppear(
     ev: WillAppearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().addTrackAudio(ev.action, ev.payload.settings);
+    actionManager.addTrackAudio(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   onWillDisappear(
     ev: WillDisappearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
-    ActionManager.getInstance().remove(ev.action);
+    actionManager.remove(ev.action);
   }
 
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<TrackAudioStatusSettings>
   ): Promise<void> | void {
-    ActionManager.getInstance().updateTrackAudioStatus(
-      ev.action,
-      ev.payload.settings
-    );
+    actionManager.updateTrackAudioStatus(ev.action, ev.payload.settings);
   }
 
   onKeyDown(ev: KeyDownEvent<TrackAudioStatusSettings>): Promise<void> | void {
-    ActionManager.getInstance().trackAudioStatusKeyDown(ev.action);
+    actionManager.trackAudioStatusKeyDown(ev.action);
   }
 }
 
 // Currently no settings are needed for this action
 export interface TrackAudioStatusSettings {
-  notConnectedIconPath: string | null;
-  connectedIconPath: string | null;
-  voiceConnectedIconPath: string | null;
+  title?: string;
+  notConnectedImagePath?: string;
+  connectedImagePath?: string;
+  voiceConnectedImagePath?: string;
+  showTitle?: boolean;
 }

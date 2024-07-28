@@ -1,9 +1,7 @@
 import { VatsimData, Atis } from "@interfaces/vatsim";
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 
 export const handleVatsimDataReceived = (data: VatsimData) => {
-  const actionManager = ActionManager.getInstance();
-
   // Build a dictionary of the ATIS information
   const atisInfo = data.atis.reduce<Record<string, Atis>>((dict, atis) => {
     dict[atis.callsign] = atis;

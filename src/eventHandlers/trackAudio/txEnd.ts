@@ -1,5 +1,5 @@
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 
 export const handleTxEnd = () => {
-  ActionManager.getInstance().txEnd();
+  actionManager.txEnd();
 };
