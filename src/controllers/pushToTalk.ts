@@ -142,8 +142,13 @@ export class PushToTalkController extends BaseController {
    * Sets the action image to the correct one for when comms are active.
    */
   public refreshImage() {
+    const replacements = {
+      title: this.title,
+    };
+
     if (this.isTransmitting) {
       this.setImage(this.transmittingImagePath, {
+        ...replacements,
         stateColor: StateColor.TRANSMITTING,
         state: "transmitting",
       });
@@ -151,6 +156,7 @@ export class PushToTalkController extends BaseController {
     }
 
     this.setImage(this.notTransmittingImagePath, {
+      ...replacements,
       stateColor: StateColor.NOT_TRANSMITTING,
       state: "notTransmitting",
     });

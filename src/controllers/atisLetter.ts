@@ -7,8 +7,8 @@ import { stringOrUndefined } from "@root/utils/utils";
 
 const StateColor = {
   CURRENT: "black",
-  UPDATED: "#f60",
   UNAVAILABLE: "black",
+  UPDATED: "#f60",
 };
 
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
@@ -220,9 +220,9 @@ export class AtisLetterController extends BaseController {
    */
   private refreshImage() {
     const replacements = {
-      title: this.title,
-      letter: this.letter,
       callsign: this.callsign,
+      letter: this.letter,
+      title: this.title,
     };
 
     if (this.isUnavailable) {

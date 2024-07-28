@@ -11,9 +11,9 @@ import { stringOrUndefined } from "@root/utils/utils";
 export type ListenTo = "rx" | "tx" | "xc" | "xca";
 
 const StateColor = {
-  NOT_LISTENING: "black",
-  LISTENING: "#060",
   ACTIVE_COMMS: "#f60",
+  LISTENING: "#060",
+  NOT_LISTENING: "black",
   UNAVAILABLE: "black",
 };
 
@@ -380,12 +380,12 @@ export class StationStatusController extends BaseController {
    */
   public refreshImage() {
     const replacements = {
-      title: this.title,
       callsign: this.callsign,
       frequency: this.frequency,
       formattedFrequency: this.formattedFrequency,
-      listenTo: this.listenTo.toUpperCase(),
       lastReceivedCallsign: this.lastReceivedCallsign,
+      listenTo: this.listenTo.toUpperCase(),
+      title: this.title,
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {

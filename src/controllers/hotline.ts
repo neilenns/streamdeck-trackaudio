@@ -6,10 +6,10 @@ import { stringOrUndefined } from "@root/utils/utils";
 import TitleBuilder from "@root/utils/titleBuilder";
 
 const StateColor = {
-  NEITHER_ACTIVE: "black",
   BOTH_ACTIVE: "#900",
   HOTLINE_ACTIVE: "#c60",
   LISTENING: "#009",
+  NEITHER_ACTIVE: "black",
   RECEIVING: "#060",
   UNAVAILABLE: "black",
 };
@@ -365,11 +365,11 @@ export class HotlineController extends BaseController {
    */
   public refreshImage() {
     const replacements = {
-      title: this.title,
-      primaryCallsign: this.primaryCallsign,
-      primaryFrequency: this.primaryFrequency,
       hotlineCallsign: this.hotlineCallsign,
       hotlineFrequency: this.hotlineFrequency,
+      primaryCallsign: this.primaryCallsign,
+      primaryFrequency: this.primaryFrequency,
+      title: this.title,
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {

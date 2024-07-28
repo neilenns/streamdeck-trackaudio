@@ -189,22 +189,31 @@ export class TrackAudioStatusController extends BaseController {
    * Sets the action image based on the isConnected state
    */
   public refreshImage() {
+    const replacements = {
+      title: this.title,
+    };
+
     if (this.isVoiceConnected) {
       this.setImage(this.voiceConnectedImagePath, {
+        ...replacements,
         stateColor: StateColor.VOICE_CONNECTED,
+        state: "voiceConnected",
       });
       return;
     }
 
     if (this.isConnected) {
       this.setImage(this.connectedImagePath, {
+        ...replacements,
         stateColor: StateColor.CONNECTED,
+        state: "connected",
       });
       return;
     }
 
     this.setImage(this.notConnectedImagePath, {
       stateColor: StateColor.NOT_CONNECTED,
+      state: "notConnected",
     });
   }
 }
