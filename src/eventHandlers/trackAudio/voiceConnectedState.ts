@@ -1,12 +1,9 @@
 import { VoiceConnectedState } from "@interfaces/messages";
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
-import VatsimManager from "@managers/vatsim";
+import vatsimManager from "@managers/vatsim";
 
 export const handleVoiceConnectedState = (data: VoiceConnectedState) => {
-  const actionManager = ActionManager.getInstance();
-  const vatsimManager = VatsimManager.getInstance();
-
   if (data.value.connected) {
     actionManager.setTrackAudioVoiceConnectedState(true);
     trackAudioManager.refreshStationStates();

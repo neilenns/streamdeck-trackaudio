@@ -26,13 +26,13 @@ import trackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
 import debounce from "debounce";
 import { EventEmitter } from "events";
-import VatsimManager from "./vatsim";
+import vatsimManager from "./vatsim";
 import { PushToTalkSettings } from "@actions/pushToTalk";
 
 /**
  * Singleton class that manages StreamDeck actions
  */
-export default class ActionManager extends EventEmitter {
+class ActionManager extends EventEmitter {
   private static instance: ActionManager | null = null;
   private actions: Controller[] = [];
 
@@ -144,7 +144,6 @@ export default class ActionManager extends EventEmitter {
    * @param action The action
    */
   public atisLetterKeyDown(action: Action): void {
-    const vatsimManager = VatsimManager.getInstance();
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -723,3 +722,6 @@ export default class ActionManager extends EventEmitter {
     });
   }
 }
+
+const actionManagerInstance = ActionManager.getInstance();
+export default actionManagerInstance;

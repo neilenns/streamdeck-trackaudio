@@ -1,9 +1,7 @@
-import ActionManager from "@managers/action";
+import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
 
 export const handleTrackAudioStatusAdded = () => {
-  const actionManager = ActionManager.getInstance();
-
   if (
     actionManager.getTrackAudioStatusControllers().length === 1 &&
     !trackAudioManager.isConnected

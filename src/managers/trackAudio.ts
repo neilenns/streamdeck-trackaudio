@@ -215,5 +215,4 @@ class TrackAudioManager extends EventEmitter {
 }
 
 const trackAudioManagerInstance = TrackAudioManager.getInstance();
-
 export default trackAudioManagerInstance;
