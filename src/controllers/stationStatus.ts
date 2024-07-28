@@ -14,6 +14,7 @@ const StateColor = {
   NOT_LISTENING: "black",
   LISTENING: "#060",
   ACTIVE_COMMS: "#f60",
+  UNAVAILABLE: "black",
 };
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
@@ -357,6 +358,23 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Shows the title on the action. Appends the last received callsign to
+   * the base title if it exists, showLastReceivedCallsign is enabled in settings,
+   * and the action is listening to RX.
+   */
+  public refreshTitle() {
+    const title = new TitleBuilder();
+
+    title.push(this.title, this.showTitle);
+    title.push(this.callsign, this.showCallsign);
+    title.push(this.formattedFrequency, this.showFrequency);
+    title.push(this.listenTo.toUpperCase(), this.showListenTo);
+    title.push(this.lastReceivedCallsign, this.showLastReceivedCallsign);
+
+    this.setTitle(title.join("\n"));
+  }
+
+  /**
    * Sets the action image to the correct one given the current isReceiving, isTransmitting, isAvailable and
    * isListening value.
    */
@@ -373,7 +391,8 @@ export class StationStatusController extends BaseController {
     if (this.isAvailable !== undefined && !this.isAvailable) {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
-        stateColor: StateColor.ACTIVE_COMMS,
+        stateColor: StateColor.UNAVAILABLE,
+        state: "unavailable",
       });
       return;
     }
@@ -382,6 +401,7 @@ export class StationStatusController extends BaseController {
       this.setImage(this.activeCommsImagePath, {
         ...replacements,
         stateColor: StateColor.ACTIVE_COMMS,
+        state: "activeComms",
       });
       return;
     }
@@ -390,6 +410,7 @@ export class StationStatusController extends BaseController {
       this.setImage(this.listeningImagePath, {
         ...replacements,
         stateColor: StateColor.LISTENING,
+        state: "listening",
       });
       return;
     }
@@ -397,24 +418,8 @@ export class StationStatusController extends BaseController {
     this.setImage(this.notListeningImagePath, {
       ...replacements,
       stateColor: StateColor.NOT_LISTENING,
+      state: "notListening",
     });
-  }
-
-  /**
-   * Shows the title on the action. Appends the last received callsign to
-   * the base title if it exists, showLastReceivedCallsign is enabled in settings,
-   * and the action is listening to RX.
-   */
-  public refreshTitle() {
-    const title = new TitleBuilder();
-
-    title.push(this.title, this.showTitle);
-    title.push(this.callsign, this.showCallsign);
-    title.push(this.formattedFrequency, this.showFrequency);
-    title.push(this.listenTo.toUpperCase(), this.showListenTo);
-    title.push(this.lastReceivedCallsign, this.showLastReceivedCallsign);
-
-    this.setTitle(title.join("\n"));
   }
 }
 

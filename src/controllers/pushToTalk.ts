@@ -145,12 +145,14 @@ export class PushToTalkController extends BaseController {
     if (this.isTransmitting) {
       this.setImage(this.transmittingImagePath, {
         stateColor: StateColor.TRANSMITTING,
+        state: "transmitting",
       });
       return;
     }
 
     this.setImage(this.notTransmittingImagePath, {
       stateColor: StateColor.NOT_TRANSMITTING,
+      state: "notTransmitting",
     });
   }
 }

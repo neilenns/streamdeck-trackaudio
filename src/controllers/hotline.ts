@@ -373,6 +373,7 @@ export class HotlineController extends BaseController {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
         stateColor: StateColor.UNAVAILABLE,
+        state: "unavailable",
       });
       return;
     }
@@ -383,6 +384,7 @@ export class HotlineController extends BaseController {
       this.setImage(this.bothActiveImagePath, {
         ...replacements,
         stateColor: StateColor.BOTH_ACTIVE,
+        state: "bothActive",
       });
       return;
     }
@@ -392,6 +394,7 @@ export class HotlineController extends BaseController {
       this.setImage(this.hotlineActiveImagePath, {
         ...replacements,
         stateColor: StateColor.HOTLINE_ACTIVE,
+        state: "hotlineActive",
       });
       return;
     }
@@ -400,6 +403,7 @@ export class HotlineController extends BaseController {
       this.setImage(this.receivingImagePath, {
         ...replacements,
         stateColor: StateColor.RECEIVING,
+        state: "receiving",
       });
       return;
     }
@@ -409,6 +413,7 @@ export class HotlineController extends BaseController {
       this.setImage(this.listeningImagePath, {
         ...replacements,
         stateColor: StateColor.LISTENING,
+        state: "listening",
       });
       return;
     }
@@ -417,6 +422,7 @@ export class HotlineController extends BaseController {
     this.setImage(this.neitherActiveImagePath, {
       ...replacements,
       stateColor: StateColor.NEITHER_ACTIVE,
+      state: "neitherActive",
     });
   }
 }

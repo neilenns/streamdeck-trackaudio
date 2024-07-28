@@ -229,6 +229,7 @@ export class AtisLetterController extends BaseController {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
         stateColor: StateColor.CURRENT,
+        state: "current",
       });
       return;
     }
@@ -237,6 +238,7 @@ export class AtisLetterController extends BaseController {
       this.setImage(this.updatedImagePath, {
         ...replacements,
         stateColor: StateColor.UPDATED,
+        state: "updated",
       });
       return;
     }
@@ -244,6 +246,7 @@ export class AtisLetterController extends BaseController {
     this.setImage(this.currentImagePath, {
       ...replacements,
       stateColor: StateColor.CURRENT,
+      state: "current",
     });
   }
 
