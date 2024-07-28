@@ -1,14 +1,25 @@
+# SVG templates <!-- omit from toc -->
+
+- [Introduction](#introduction)
+- [ATIS letter variables](#atis-letter-variables)
+- [Hotline variables](#hotline-variables)
+- [Push to talk variables](#push-to-talk-variables)
+- [Station status variables](#station-status-variables)
+- [TrackAudio status variables](#trackaudio-status-variables)
+
+## Introduction
+
 All image properties on all actions support using SVG templates instead of a standard SVG image. The templates use [Handlebars](https://handlebarsjs.com/) for placeholders and enables using the same SVG image across multiple action.
 
 For example, the following SVG template renders an ATIS letter large with the action's title centered small across the top of the button:
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" width="144" height="144">
-	<rect width="144" height="144" fill="{{stateColor}}" />
-	<text x="72" y="36" font-family="Arial" font-weight="bold" font-size="22" text-anchor="middle"
-		fill="white">{{title}}</text>
-	<text x="72" y="92" fill="white" font-family="Arial" font-weight="bold" font-size="60" text-anchor="middle">{{#if
-		letter}}{{letter}}{{else}}ATIS{{/if}}</text>
+  <rect width="144" height="144" fill="{{stateColor}}" />
+  <text x="72" y="36" font-family="Arial" font-weight="bold" font-size="22" text-anchor="middle"
+    fill="white">{{title}}</text>
+  <text x="72" y="92" fill="white" font-family="Arial" font-weight="bold" font-size="60" text-anchor="middle">{{#if
+    letter}}{{letter}}{{else}}ATIS{{/if}}</text>
 </svg>
 ```
 
