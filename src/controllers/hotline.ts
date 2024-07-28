@@ -2,9 +2,9 @@ import { HotlineSettings } from "@actions/hotline";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { BaseController } from "./baseController";
-import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import { stringOrUndefined } from "@root/utils/utils";
 import TitleBuilder from "@root/utils/titleBuilder";
+import svgManager from "@managers/svg";
 
 const StateColor = {
   NEITHER_ACTIVE: "#000",
@@ -41,14 +41,6 @@ export class HotlineController extends BaseController {
   private _listeningImagePath?: string;
   private _neitherActiveImagePath?: string;
   private _receivingImagePath?: string;
-
-  // Pre-compiled action SVGs
-  private _compiledBothActiveSvg: CompiledSvgTemplate;
-  private _compiledUnavailableSvg: CompiledSvgTemplate;
-  private _compiledHotlineActiveSvg: CompiledSvgTemplate;
-  private _compiledListeningSvg: CompiledSvgTemplate;
-  private _compiledNeitherActiveSvg: CompiledSvgTemplate;
-  private _compiledReceivingSvg: CompiledSvgTemplate;
 
   /**
    * Creates a new HotlineController object.
@@ -101,10 +93,8 @@ export class HotlineController extends BaseController {
    * Sets the bothActiveImagePath and re-compiles the SVG template if necessary.
    */
   set bothActiveImagePath(newValue: string | undefined) {
-    if (!this._compiledBothActiveSvg || this.bothActiveImagePath !== newValue) {
-      this._bothActiveImagePath = stringOrUndefined(newValue);
-      this._compiledBothActiveSvg = compileSvg(this.bothActiveImagePath);
-    }
+    this._bothActiveImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.bothActiveImagePath);
   }
 
   /**
@@ -119,13 +109,8 @@ export class HotlineController extends BaseController {
    * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
    */
   set unavailableImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledUnavailableSvg ||
-      this.unavailableImagePath !== newValue
-    ) {
-      this._unavailableImagePath = stringOrUndefined(newValue);
-      this._compiledUnavailableSvg = compileSvg(this.unavailableImagePath);
-    }
+    this._unavailableImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.unavailableImagePath);
   }
 
   /**
@@ -140,13 +125,8 @@ export class HotlineController extends BaseController {
    * Sets the hotlineActiveImagePath and re-compiles the SVG template if necessary.
    */
   set hotlineActiveImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledHotlineActiveSvg ||
-      this.hotlineActiveImagePath !== newValue
-    ) {
-      this._hotlineActiveImagePath = stringOrUndefined(newValue);
-      this._compiledHotlineActiveSvg = compileSvg(this.hotlineActiveImagePath);
-    }
+    this._hotlineActiveImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.hotlineActiveImagePath);
   }
 
   /**
@@ -161,10 +141,8 @@ export class HotlineController extends BaseController {
    * Sets the listeningImagePath and re-compiles the SVG template if necessary.
    */
   set listeningImagePath(newValue: string | undefined) {
-    if (!this._compiledListeningSvg || this.listeningImagePath !== newValue) {
-      this._listeningImagePath = stringOrUndefined(newValue);
-      this._compiledListeningSvg = compileSvg(this.listeningImagePath);
-    }
+    this._listeningImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.listeningImagePath);
   }
 
   /**
@@ -179,13 +157,8 @@ export class HotlineController extends BaseController {
    * Sets the neitherActiveImagePath and re-compiles the SVG template if necessary.
    */
   set neitherActiveImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledNeitherActiveSvg ||
-      this.neitherActiveImagePath !== newValue
-    ) {
-      this._neitherActiveImagePath = stringOrUndefined(newValue);
-      this._compiledNeitherActiveSvg = compileSvg(this.neitherActiveImagePath);
-    }
+    this._neitherActiveImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.neitherActiveImagePath);
   }
 
   /**
@@ -200,11 +173,10 @@ export class HotlineController extends BaseController {
    * Sets the receivingImagePath and re-compiles the SVG template if necessary.
    */
   set receivingImagePath(newValue: string | undefined) {
-    if (!this._compiledReceivingSvg || this.receivingImagePath !== newValue) {
-      this._receivingImagePath = stringOrUndefined(newValue);
-      this._compiledReceivingSvg = compileSvg(this.receivingImagePath);
-    }
+    this._receivingImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.receivingImagePath);
   }
+
   /**
    * Returns the frequency for the primary callsign.
    */
@@ -408,7 +380,7 @@ export class HotlineController extends BaseController {
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.setImage(this.unavailableImagePath, this._compiledUnavailableSvg, {
+      this.setImage(this.unavailableImagePath, {
         ...replacements,
         stateColor: StateColor.UNAVAILABLE,
       });
@@ -418,7 +390,7 @@ export class HotlineController extends BaseController {
     // This state is bad, it means Tx is cross coupled
     // on both hotline and primary.
     if (this.isTxHotline && this.isTxPrimary) {
-      this.setImage(this.bothActiveImagePath, this._compiledBothActiveSvg, {
+      this.setImage(this.bothActiveImagePath, {
         ...replacements,
         stateColor: StateColor.BOTH_ACTIVE,
       });
@@ -427,19 +399,15 @@ export class HotlineController extends BaseController {
 
     // Hotline is active tx, takes priority over active rx.
     if (this.isTxHotline) {
-      this.setImage(
-        this.hotlineActiveImagePath,
-        this._compiledHotlineActiveSvg,
-        {
-          ...replacements,
-          stateColor: StateColor.HOTLINE_ACTIVE,
-        }
-      );
+      this.setImage(this.hotlineActiveImagePath, {
+        ...replacements,
+        stateColor: StateColor.HOTLINE_ACTIVE,
+      });
       return;
     }
 
     if (this.isReceiving) {
-      this.setImage(this.receivingImagePath, this._compiledReceivingSvg, {
+      this.setImage(this.receivingImagePath, {
         ...replacements,
         stateColor: StateColor.RECEIVING,
       });
@@ -448,7 +416,7 @@ export class HotlineController extends BaseController {
 
     // Primary active rx.
     if (this.isRxHotline) {
-      this.setImage(this.listeningImagePath, this._compiledReceivingSvg, {
+      this.setImage(this.listeningImagePath, {
         ...replacements,
         stateColor: StateColor.LISTENING,
       });
@@ -456,7 +424,7 @@ export class HotlineController extends BaseController {
     }
 
     // Nothing is active.
-    this.setImage(this.neitherActiveImagePath, this._compiledNeitherActiveSvg, {
+    this.setImage(this.neitherActiveImagePath, {
       ...replacements,
       stateColor: StateColor.NEITHER_ACTIVE,
     });

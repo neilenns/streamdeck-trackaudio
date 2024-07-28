@@ -2,7 +2,7 @@ import { Hotline } from "@actions/hotline";
 import { StationStatus } from "@actions/stationStatus";
 import streamDeck from "@elgato/streamdeck";
 import ActionManager from "@managers/action";
-import TrackAudioManager from "@managers/trackAudio";
+import trackAudioManager from "@managers/trackAudio";
 
 // Event handlers
 import { TrackAudioStatus } from "@actions/trackAudioStatus";
@@ -29,7 +29,6 @@ import { handleAtisLetterUpdated } from "@eventHandlers/actionManager/atisLetter
 import { handleStationAdded } from "@eventHandlers/trackAudio/stationAdded";
 import { handleFrequencyRemoved } from "@eventHandlers/trackAudio/frequencyRemoved";
 
-const trackAudio = TrackAudioManager.getInstance();
 const actionManager = ActionManager.getInstance();
 const vatsimManager = VatsimManager.getInstance();
 
@@ -48,25 +47,25 @@ streamDeck.actions.registerAction(new PushToTalk());
 streamDeck.actions.registerAction(new StationStatus());
 streamDeck.actions.registerAction(new TrackAudioStatus());
 
-trackAudio.on("connected", () => {
+trackAudioManager.on("connected", () => {
   disconnectHandled = false;
   handleConnected();
 });
-trackAudio.on("disconnected", () => {
+trackAudioManager.on("disconnected", () => {
   if (!disconnectHandled) {
     disconnectHandled = true;
     handleDisconnected();
   }
 });
-trackAudio.on("rxBegin", handleRxBegin);
-trackAudio.on("rxEnd", handleRxEnd);
-trackAudio.on("stationAdded", handleStationAdded);
-trackAudio.on("frequencyRemoved", handleFrequencyRemoved);
-trackAudio.on("stationStates", handleStationStates);
-trackAudio.on("stationStateUpdate", handleStationStateUpdate);
-trackAudio.on("txBegin", handleTxBegin);
-trackAudio.on("txEnd", handleTxEnd);
-trackAudio.on("voiceConnectedState", handleVoiceConnectedState);
+trackAudioManager.on("rxBegin", handleRxBegin);
+trackAudioManager.on("rxEnd", handleRxEnd);
+trackAudioManager.on("stationAdded", handleStationAdded);
+trackAudioManager.on("frequencyRemoved", handleFrequencyRemoved);
+trackAudioManager.on("stationStates", handleStationStates);
+trackAudioManager.on("stationStateUpdate", handleStationStateUpdate);
+trackAudioManager.on("txBegin", handleTxBegin);
+trackAudioManager.on("txEnd", handleTxEnd);
+trackAudioManager.on("voiceConnectedState", handleVoiceConnectedState);
 
 actionManager.on("hotlineSettingsUpdated", handleHotlineSettingsUpdated);
 actionManager.on("removed", handleRemoved);

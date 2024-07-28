@@ -1,10 +1,10 @@
 import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
+import svgManager from "@managers/svg";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -40,12 +40,6 @@ export class StationStatusController extends BaseController {
   private _activeCommsImagePath?: string;
   private _unavailableImagePath?: string;
 
-  // Pre-compiled action SVGs
-  private _compiledActiveCommsSvg: CompiledSvgTemplate;
-  private _compiledListeningSvg: CompiledSvgTemplate;
-  private _compiledNotListeningSvg: CompiledSvgTemplate;
-  private _compiledUnavailableSvg: CompiledSvgTemplate;
-
   /**
    * Creates a new StationStatusController object.
    * @param action The callsign for the action
@@ -80,13 +74,8 @@ export class StationStatusController extends BaseController {
    * Sets the notListeningImagePath and re-compiles the SVG template if necessary.
    */
   set notListeningImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledNotListeningSvg ||
-      this.notListeningImagePath !== newValue
-    ) {
-      this._notListeningImagePath = stringOrUndefined(newValue);
-      this._compiledNotListeningSvg = compileSvg(this.notListeningImagePath);
-    }
+    this._notListeningImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.notListeningImagePath);
   }
 
   /**
@@ -101,10 +90,8 @@ export class StationStatusController extends BaseController {
    * Sets the listeningImagePath and re-compiles the SVG template if necessary.
    */
   set listeningImagePath(newValue: string | undefined) {
-    if (!this._compiledListeningSvg || this.listeningImagePath !== newValue) {
-      this._listeningImagePath = stringOrUndefined(newValue);
-      this._compiledListeningSvg = compileSvg(this.listeningImagePath);
-    }
+    this._listeningImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.listeningImagePath);
   }
 
   /**
@@ -119,13 +106,8 @@ export class StationStatusController extends BaseController {
    * Sets the activeCommsImagePath and re-compiles the SVG template if necessary.
    */
   set activeCommsImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledActiveCommsSvg ||
-      this.activeCommsImagePath !== newValue
-    ) {
-      this._activeCommsImagePath = stringOrUndefined(newValue);
-      this._compiledActiveCommsSvg = compileSvg(this.activeCommsImagePath);
-    }
+    this._activeCommsImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.activeCommsImagePath);
   }
 
   /**
@@ -140,13 +122,8 @@ export class StationStatusController extends BaseController {
    * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
    */
   set unavailableImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledUnavailableSvg ||
-      this.unavailableImagePath !== newValue
-    ) {
-      this._unavailableImagePath = stringOrUndefined(newValue);
-      this._compiledUnavailableSvg = compileSvg(this.unavailableImagePath);
-    }
+    this._unavailableImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.unavailableImagePath);
   }
 
   /**
@@ -409,7 +386,7 @@ export class StationStatusController extends BaseController {
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.setImage(this.unavailableImagePath, this._compiledUnavailableSvg, {
+      this.setImage(this.unavailableImagePath, {
         ...replacements,
         stateColor: StateColor.ACTIVE_COMMS,
       });
@@ -417,7 +394,7 @@ export class StationStatusController extends BaseController {
     }
 
     if (this.isReceiving || this.isTransmitting) {
-      this.setImage(this.activeCommsImagePath, this._compiledActiveCommsSvg, {
+      this.setImage(this.activeCommsImagePath, {
         ...replacements,
         stateColor: StateColor.ACTIVE_COMMS,
       });
@@ -425,14 +402,14 @@ export class StationStatusController extends BaseController {
     }
 
     if (this.isListening) {
-      this.setImage(this.listeningImagePath, this._compiledListeningSvg, {
+      this.setImage(this.listeningImagePath, {
         ...replacements,
         stateColor: StateColor.LISTENING,
       });
       return;
     }
 
-    this.setImage(this.notListeningImagePath, this._compiledNotListeningSvg, {
+    this.setImage(this.notListeningImagePath, {
       ...replacements,
       stateColor: StateColor.NOT_LISTENING,
     });

@@ -1,10 +1,10 @@
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { BaseController } from "./baseController";
-import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import { PushToTalkSettings } from "@actions/pushToTalk";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
+import svgManager from "@managers/svg";
 
 const StateColor = {
   NOT_TRANSMITTING: "black",
@@ -25,9 +25,6 @@ export class PushToTalkController extends BaseController {
 
   private _notTransmittingImagePath?: string;
   private _transmittingImagePath?: string;
-
-  private _compiledNotTransmittingSvg: CompiledSvgTemplate;
-  private _compiledTransmittingSvg: CompiledSvgTemplate;
 
   /**
    * Creates a new PushToTalkController object.
@@ -61,13 +58,8 @@ export class PushToTalkController extends BaseController {
    * Sets the transmittingImagePath and re-compiles the SVG template if necessary.
    */
   set transmittingImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledTransmittingSvg ||
-      this.transmittingImagePath !== newValue
-    ) {
-      this._transmittingImagePath = stringOrUndefined(newValue);
-      this._compiledTransmittingSvg = compileSvg(this.transmittingImagePath);
-    }
+    this._transmittingImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.transmittingImagePath);
   }
 
   /**
@@ -82,15 +74,8 @@ export class PushToTalkController extends BaseController {
    * Sets the notTransmittingImagePath and re-compiles the SVG template if necessary.
    */
   set notTransmittingImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledNotTransmittingSvg ||
-      this.notTransmittingImagePath !== newValue
-    ) {
-      this._notTransmittingImagePath = stringOrUndefined(newValue);
-      this._compiledNotTransmittingSvg = compileSvg(
-        this.notTransmittingImagePath
-      );
-    }
+    this._notTransmittingImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.notTransmittingImagePath);
   }
 
   /**
@@ -164,19 +149,15 @@ export class PushToTalkController extends BaseController {
    */
   public refreshImage() {
     if (this.isTransmitting) {
-      this.setImage(this.transmittingImagePath, this._compiledTransmittingSvg, {
+      this.setImage(this.transmittingImagePath, {
         stateColor: StateColor.TRANSMITTING,
       });
       return;
     }
 
-    this.setImage(
-      this.notTransmittingImagePath,
-      this._compiledNotTransmittingSvg,
-      {
-        stateColor: StateColor.NOT_TRANSMITTING,
-      }
-    );
+    this.setImage(this.notTransmittingImagePath, {
+      stateColor: StateColor.NOT_TRANSMITTING,
+    });
   }
 }
 

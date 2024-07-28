@@ -1,10 +1,10 @@
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import { BaseController } from "./baseController";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
+import svgManager from "@managers/svg";
 
 const StateColor = {
   NOT_CONNECTED: "white",
@@ -28,11 +28,6 @@ export class TrackAudioStatusController extends BaseController {
   private _notConnectedImagePath?: string;
   private _connectedImagePath?: string;
   private _voiceConnectedImagePath?: string;
-
-  // Pre-compiled action SVGs
-  private _compiledNotConnectedSvg: CompiledSvgTemplate;
-  private _compiledConnectedSvg: CompiledSvgTemplate;
-  private _compiledVoiceConnectedSvg: CompiledSvgTemplate;
 
   /**
    * Creates a new TrackAudioStatusController.
@@ -78,13 +73,8 @@ export class TrackAudioStatusController extends BaseController {
    * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
    */
   set notConnectedImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledNotConnectedSvg ||
-      this.notConnectedImagePath !== newValue
-    ) {
-      this._notConnectedImagePath = stringOrUndefined(newValue);
-      this._compiledNotConnectedSvg = compileSvg(this.notConnectedImagePath);
-    }
+    this._notConnectedImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.notConnectedImagePath);
   }
 
   /**
@@ -99,10 +89,8 @@ export class TrackAudioStatusController extends BaseController {
    * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
    */
   set connectedImagePath(newValue: string | undefined) {
-    if (!this._compiledConnectedSvg || this.connectedImagePath !== newValue) {
-      this._connectedImagePath = stringOrUndefined(newValue);
-      this._compiledConnectedSvg = compileSvg(this.connectedImagePath);
-    }
+    this._connectedImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.connectedImagePath);
   }
 
   /**
@@ -117,15 +105,8 @@ export class TrackAudioStatusController extends BaseController {
    * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
    */
   set voiceConnectedImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledVoiceConnectedSvg ||
-      this.voiceConnectedImagePath !== newValue
-    ) {
-      this._voiceConnectedImagePath = stringOrUndefined(newValue);
-      this._compiledVoiceConnectedSvg = compileSvg(
-        this.voiceConnectedImagePath
-      );
-    }
+    this._voiceConnectedImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.voiceConnectedImagePath);
   }
 
   /**
@@ -216,24 +197,20 @@ export class TrackAudioStatusController extends BaseController {
    */
   public refreshImage() {
     if (this.isVoiceConnected) {
-      this.setImage(
-        this.voiceConnectedImagePath,
-        this._compiledVoiceConnectedSvg,
-        {
-          stateColor: StateColor.VOICE_CONNECTED,
-        }
-      );
+      this.setImage(this.voiceConnectedImagePath, {
+        stateColor: StateColor.VOICE_CONNECTED,
+      });
       return;
     }
 
     if (this.isConnected) {
-      this.setImage(this.connectedImagePath, this._compiledConnectedSvg, {
+      this.setImage(this.connectedImagePath, {
         stateColor: StateColor.CONNECTED,
       });
       return;
     }
 
-    this.setImage(this.notConnectedImagePath, this._compiledNotConnectedSvg, {
+    this.setImage(this.notConnectedImagePath, {
       stateColor: StateColor.NOT_CONNECTED,
     });
   }

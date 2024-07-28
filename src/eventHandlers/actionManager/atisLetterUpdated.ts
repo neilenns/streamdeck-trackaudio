@@ -1,5 +1,5 @@
 import { AtisLetterController } from "@controllers/atisLetter";
-import TrackAudioManager from "@managers/trackAudio";
+import trackAudioManager from "@managers/trackAudio";
 import VatsimManager from "@managers/vatsim";
 
 /**
@@ -10,6 +10,5 @@ export const handleAtisLetterUpdated = (controller: AtisLetterController) => {
   controller.letter = undefined;
 
   // Only refresh if voice is connected
-  if (TrackAudioManager.getInstance().isVoiceConnected)
-    VatsimManager.getInstance().refresh();
+  if (trackAudioManager.isVoiceConnected) VatsimManager.getInstance().refresh();
 };

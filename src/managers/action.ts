@@ -22,7 +22,7 @@ import {
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { StationStateUpdate } from "@interfaces/messages";
-import TrackAudioManager from "@managers/trackAudio";
+import trackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
 import debounce from "debounce";
 import { EventEmitter } from "events";
@@ -127,8 +127,7 @@ export default class ActionManager extends EventEmitter {
    * @param action The action
    */
   public trackAudioStatusKeyDown(action: Action): void {
-    const trackAudio = TrackAudioManager.getInstance();
-    trackAudio.refreshVoiceConnectedState(); // This also causes a refresh of the station states
+    trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
 
     action.showOk().catch((error: unknown) => {
       handleAsyncException(
@@ -534,7 +533,7 @@ export default class ActionManager extends EventEmitter {
 
     // The primary frequency always gets its xc state toggled to match the tx state,
     // ensuring xc is re-enabled when tx turns on.
-    TrackAudioManager.getInstance().sendMessage({
+    trackAudioManager.sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.primaryFrequency,
@@ -546,7 +545,7 @@ export default class ActionManager extends EventEmitter {
     });
 
     // The hotline frequency gets its tx state toggled
-    TrackAudioManager.getInstance().sendMessage({
+    trackAudioManager.sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.hotlineFrequency,
@@ -575,7 +574,7 @@ export default class ActionManager extends EventEmitter {
     }
 
     // Send the message to TrackAudio.
-    TrackAudioManager.getInstance().sendMessage({
+    trackAudioManager.sendMessage({
       type: "kSetStationState",
       value: {
         frequency: foundAction.frequency,
@@ -618,14 +617,14 @@ export default class ActionManager extends EventEmitter {
    * Sends a message via TrackAudioManager to indicate a PushToTalk action was pressed.
    */
   public pttPressed() {
-    TrackAudioManager.getInstance().sendMessage({ type: "kPttPressed" });
+    trackAudioManager.sendMessage({ type: "kPttPressed" });
   }
 
   /**
    * Sends a message via TrackAudioManager to indicate a PushToTalk action was released.
    */
   public pttReleased() {
-    TrackAudioManager.getInstance().sendMessage({ type: "kPttReleased" });
+    trackAudioManager.sendMessage({ type: "kPttReleased" });
   }
 
   /**

@@ -17,7 +17,7 @@ import WebSocket from "ws";
 /**
  * Manages the websocket connection to TrackAudio.
  */
-export default class TrackAudioManager extends EventEmitter {
+class TrackAudioManager extends EventEmitter {
   private static instance: TrackAudioManager | null;
   private socket: WebSocket | null = null;
   private reconnectInterval = 1000 * 5; // 5 seconds
@@ -213,3 +213,7 @@ export default class TrackAudioManager extends EventEmitter {
     }
   }
 }
+
+const trackAudioManagerInstance = TrackAudioManager.getInstance();
+
+export default trackAudioManagerInstance;

@@ -1,23 +1,22 @@
 import { StationStatusController } from "@controllers/stationStatus";
 import ActionManager from "@managers/action";
-import TrackAudioManager from "@managers/trackAudio";
+import trackAudioManager from "@managers/trackAudio";
 
 export const handleStationStatusAdded = (
   controller: StationStatusController
 ) => {
-  const trackAudio = TrackAudioManager.getInstance();
   const actionManager = ActionManager.getInstance();
 
   // If this is the first button added then connect to TrackAudio. That will
   // also cause a dump of the current state of all stations in TrackAudio.
   if (
     actionManager.getStationStatusControllers().length === 1 &&
-    !trackAudio.isConnected
+    !trackAudioManager.isConnected
   ) {
-    trackAudio.connect();
+    trackAudioManager.connect();
   }
   // Otherwise just request the state for the newly added station status.
   else {
-    trackAudio.refreshStationState(controller.callsign);
+    trackAudioManager.refreshStationState(controller.callsign);
   }
 };

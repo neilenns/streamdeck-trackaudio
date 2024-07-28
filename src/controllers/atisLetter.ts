@@ -1,10 +1,10 @@
 import { AtisLetterSettings } from "@actions/atisLetter";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { CompiledSvgTemplate, compileSvg } from "@root/utils/svg";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
+import svgManager from "@managers/svg";
 
 const StateColor = {
   CURRENT: "black",
@@ -31,11 +31,6 @@ export class AtisLetterController extends BaseController {
   private _currentImagePath?: string;
   private _unavailableImagePath?: string;
   private _updatedImagePath?: string;
-
-  // Pre-compiled action SVGs
-  private _compiledCurrentSvg: CompiledSvgTemplate;
-  private _compiledUnavailableSvg: CompiledSvgTemplate;
-  private _compiledUpdatedSvg: CompiledSvgTemplate;
 
   /**
    * Creates a new StationStatusController object.
@@ -102,10 +97,8 @@ export class AtisLetterController extends BaseController {
    * Sets the currentImagePath and re-compiles the SVG template if necessary.
    */
   set currentImagePath(newValue: string | undefined) {
-    if (!this._compiledCurrentSvg || this.currentImagePath !== newValue) {
-      this._currentImagePath = stringOrUndefined(newValue);
-      this._compiledCurrentSvg = compileSvg(this.currentImagePath);
-    }
+    this._currentImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.currentImagePath);
   }
 
   /**
@@ -120,10 +113,8 @@ export class AtisLetterController extends BaseController {
    * Sets the updatedImagePath and re-compiles the SVG template if necessary.
    */
   set updatedImagePath(newValue: string | undefined) {
-    if (!this._compiledUpdatedSvg || this.updatedImagePath !== newValue) {
-      this._updatedImagePath = stringOrUndefined(newValue);
-      this._compiledUpdatedSvg = compileSvg(this.updatedImagePath);
-    }
+    this._updatedImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.updatedImagePath);
   }
 
   /**
@@ -138,13 +129,8 @@ export class AtisLetterController extends BaseController {
    * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
    */
   set unavailableImagePath(newValue: string | undefined) {
-    if (
-      !this._compiledUnavailableSvg ||
-      this.unavailableImagePath !== newValue
-    ) {
-      this._unavailableImagePath = stringOrUndefined(newValue);
-      this._compiledUnavailableSvg = compileSvg(this.unavailableImagePath);
-    }
+    this._unavailableImagePath = stringOrUndefined(newValue);
+    svgManager.addTemplate(this.unavailableImagePath);
   }
 
   /**
@@ -247,7 +233,7 @@ export class AtisLetterController extends BaseController {
     };
 
     if (this.isUnavailable) {
-      this.setImage(this.unavailableImagePath, this._compiledUnavailableSvg, {
+      this.setImage(this.unavailableImagePath, {
         ...replacements,
         stateColor: StateColor.CURRENT,
       });
@@ -255,14 +241,14 @@ export class AtisLetterController extends BaseController {
     }
 
     if (this.isUpdated) {
-      this.setImage(this.updatedImagePath, this._compiledUpdatedSvg, {
+      this.setImage(this.updatedImagePath, {
         ...replacements,
         stateColor: StateColor.UPDATED,
       });
       return;
     }
 
-    this.setImage(this.currentImagePath, this._compiledCurrentSvg, {
+    this.setImage(this.currentImagePath, {
       ...replacements,
       stateColor: StateColor.CURRENT,
     });
