@@ -195,10 +195,6 @@ class ActionManager extends EventEmitter {
 
     savedAction.settings = settings;
 
-    // Refreshes the title and icons in case that's what changed in settings
-    savedAction.refreshTitle();
-    savedAction.refreshImage();
-
     if (requiresStationRefresh) {
       this.emit("stationStatusSettingsUpdated", savedAction);
     }
