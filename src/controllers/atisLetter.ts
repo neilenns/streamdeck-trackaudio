@@ -4,7 +4,6 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
-import svgManager from "@managers/svg";
 
 const StateColor = {
   CURRENT: "black",
@@ -40,9 +39,6 @@ export class AtisLetterController extends BaseController {
   constructor(action: Action, settings: AtisLetterSettings) {
     super(action);
     this.settings = settings;
-
-    this.refreshTitle();
-    this.refreshImage();
   }
 
   /**
@@ -98,7 +94,6 @@ export class AtisLetterController extends BaseController {
    */
   set currentImagePath(newValue: string | undefined) {
     this._currentImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.currentImagePath);
   }
 
   /**
@@ -114,7 +109,6 @@ export class AtisLetterController extends BaseController {
    */
   set updatedImagePath(newValue: string | undefined) {
     this._updatedImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.updatedImagePath);
   }
 
   /**
@@ -130,7 +124,6 @@ export class AtisLetterController extends BaseController {
    */
   set unavailableImagePath(newValue: string | undefined) {
     this._unavailableImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.unavailableImagePath);
   }
 
   /**

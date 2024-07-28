@@ -38,14 +38,25 @@ class SvgTemplateManager {
   }
 
   /**
+   * Checks to see if a filePath ends in ".svg".
+   * @param filePath The path to the file to test
+   * @returns True if the filename ends in ".svg"
+   */
+  private static isSvg(filePath: string | undefined) {
+    return (
+      filePath !== undefined && path.extname(filePath).toLowerCase() === ".svg"
+    );
+  }
+
+  /**
    * Adds an SVG template to the manager. If the doesn't exist
    * or isn't an SVG then nothing is added. If the file hasn't changed
    * since it was last added then nothing is generated.
    * @param filePath
    */
-  public addTemplate(filePath: string): void {
+  private addTemplate(filePath: string): CompiledSvgTemplate {
     if (!SvgTemplateManager.isSvg(filePath)) {
-      return;
+      return undefined;
     }
 
     try {
@@ -55,28 +66,36 @@ class SvgTemplateManager {
 
       if (!templateInfo || templateInfo.lastModified < lastModified) {
         const templateContent = fs.readFileSync(filePath, "utf8");
+        const compiledTemplate = Handlebars.compile(templateContent);
         this.templates.set(filePath, {
-          compiledTemplate: Handlebars.compile(templateContent),
-          lastModified: lastModified,
+          compiledTemplate,
+          lastModified,
         });
+
+        return compiledTemplate;
       }
     } catch (err: unknown) {
       console.error(err);
     }
+
+    return undefined;
   }
 
   /**
-   * Gets the compiled template for a given file path.
+   * Gets the compiled template for a given file path. If the template
+   * wasn't already cached, generates the compiled version and caches it.
    * @param filePath The file path to retrieve the template for.
    * @returns The compiled template or undefined if none is available.
    */
-  public getTemplate(filePath: string | undefined): CompiledSvgTemplate {
+  private getTemplate(filePath: string | undefined): CompiledSvgTemplate {
     if (!filePath) {
       return undefined;
     }
 
     const templateInfo = this.templates.get(filePath);
-    return templateInfo ? templateInfo.compiledTemplate : undefined;
+    return templateInfo
+      ? templateInfo.compiledTemplate
+      : this.addTemplate(filePath);
   }
 
   /**
@@ -106,17 +125,6 @@ class SvgTemplateManager {
    */
   public reset() {
     this.templates = new Map<string, TemplateInfo>();
-  }
-
-  /**
-   * Checks to see if a filePath ends in ".svg".
-   * @param filePath The path to the file to test
-   * @returns True if the filename ends in ".svg"
-   */
-  private static isSvg(filePath: string | undefined) {
-    return (
-      filePath !== undefined && path.extname(filePath).toLowerCase() === ".svg"
-    );
   }
 }
 

@@ -4,7 +4,6 @@ import { BaseController } from "./baseController";
 import { PushToTalkSettings } from "@actions/pushToTalk";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
-import svgManager from "@managers/svg";
 
 const StateColor = {
   NOT_TRANSMITTING: "black",
@@ -33,9 +32,6 @@ export class PushToTalkController extends BaseController {
   constructor(action: Action, settings: PushToTalkSettings) {
     super(action);
     this.settings = settings;
-
-    this.refreshTitle();
-    this.refreshImage();
   }
 
   /**
@@ -59,7 +55,6 @@ export class PushToTalkController extends BaseController {
    */
   set transmittingImagePath(newValue: string | undefined) {
     this._transmittingImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.transmittingImagePath);
   }
 
   /**
@@ -75,7 +70,6 @@ export class PushToTalkController extends BaseController {
    */
   set notTransmittingImagePath(newValue: string | undefined) {
     this._notTransmittingImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.notTransmittingImagePath);
   }
 
   /**

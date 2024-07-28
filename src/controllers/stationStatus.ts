@@ -4,7 +4,6 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
-import svgManager from "@managers/svg";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -49,16 +48,6 @@ export class StationStatusController extends BaseController {
     super(action);
     this.action = action;
     this.settings = settings;
-
-    // Issue 171: The listenTo property doesn't get set unless the user actually
-    // changes the radio button. Default is "rx" so force it here to avoid problems
-    // elsewhere.
-    if (!this._settings.listenTo) {
-      this._settings.listenTo = "rx";
-    }
-
-    this.refreshTitle();
-    this.refreshImage();
   }
 
   //#region Getters and setters
@@ -75,7 +64,6 @@ export class StationStatusController extends BaseController {
    */
   set notListeningImagePath(newValue: string | undefined) {
     this._notListeningImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.notListeningImagePath);
   }
 
   /**
@@ -91,7 +79,6 @@ export class StationStatusController extends BaseController {
    */
   set listeningImagePath(newValue: string | undefined) {
     this._listeningImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.listeningImagePath);
   }
 
   /**
@@ -107,7 +94,6 @@ export class StationStatusController extends BaseController {
    */
   set activeCommsImagePath(newValue: string | undefined) {
     this._activeCommsImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.activeCommsImagePath);
   }
 
   /**
@@ -123,7 +109,6 @@ export class StationStatusController extends BaseController {
    */
   set unavailableImagePath(newValue: string | undefined) {
     this._unavailableImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.unavailableImagePath);
   }
 
   /**

@@ -4,7 +4,6 @@ import { Controller } from "@interfaces/controller";
 import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
 import TitleBuilder from "@root/utils/titleBuilder";
-import svgManager from "@managers/svg";
 
 const StateColor = {
   NEITHER_ACTIVE: "#000",
@@ -50,9 +49,6 @@ export class HotlineController extends BaseController {
   constructor(action: Action, settings: HotlineSettings) {
     super(action);
     this.settings = settings;
-
-    this.refreshTitle();
-    this.refreshImage();
   }
 
   /**
@@ -94,7 +90,6 @@ export class HotlineController extends BaseController {
    */
   set bothActiveImagePath(newValue: string | undefined) {
     this._bothActiveImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.bothActiveImagePath);
   }
 
   /**
@@ -110,7 +105,6 @@ export class HotlineController extends BaseController {
    */
   set unavailableImagePath(newValue: string | undefined) {
     this._unavailableImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.unavailableImagePath);
   }
 
   /**
@@ -126,7 +120,6 @@ export class HotlineController extends BaseController {
    */
   set hotlineActiveImagePath(newValue: string | undefined) {
     this._hotlineActiveImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.hotlineActiveImagePath);
   }
 
   /**
@@ -142,7 +135,6 @@ export class HotlineController extends BaseController {
    */
   set listeningImagePath(newValue: string | undefined) {
     this._listeningImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.listeningImagePath);
   }
 
   /**
@@ -158,7 +150,6 @@ export class HotlineController extends BaseController {
    */
   set neitherActiveImagePath(newValue: string | undefined) {
     this._neitherActiveImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.neitherActiveImagePath);
   }
 
   /**
@@ -174,7 +165,6 @@ export class HotlineController extends BaseController {
    */
   set receivingImagePath(newValue: string | undefined) {
     this._receivingImagePath = stringOrUndefined(newValue);
-    svgManager.addTemplate(this.receivingImagePath);
   }
 
   /**
