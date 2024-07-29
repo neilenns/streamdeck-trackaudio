@@ -1,4 +1,4 @@
-name: Pull request validation
+name: CI
 
 on:
   pull_request:
@@ -16,6 +16,7 @@ jobs:
         with:
           mode: exactly
           count: 1
+          add_comment: true
           labels: |
             ignore-for-release-notes
             feature
