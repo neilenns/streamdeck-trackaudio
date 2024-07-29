@@ -2,6 +2,7 @@ import * as fs from "fs";
 import Handlebars from "handlebars";
 import path from "path";
 import * as chokidar from "chokidar";
+import EventEmitter from "events";
 
 export type CompiledSvgTemplate =
   | ReturnType<typeof Handlebars.compile>
@@ -18,19 +19,18 @@ interface TemplateInfo {
  * and unnecessarily compiling templates repeatedly when they
  * are shared across actions.
  */
-class SvgTemplateManager {
+class SvgTemplateManager extends EventEmitter {
   private static instance: SvgTemplateManager | null = null;
   private templates: Map<string, TemplateInfo>;
   private watcher: chokidar.FSWatcher;
 
   private constructor() {
+    super();
+
     this.templates = new Map<string, TemplateInfo>();
     this.watcher = chokidar.watch([]);
     this.watcher.on("change", (filePath) => {
-      // Chokidar provides the filePath in the platform-specific format, so on
-      // windows the slashes are the wrong way around for what the code expects.
-      // Normalize everything here so the cache will hit properly.
-      this.cacheTemplate(path.normalize(filePath).replace(/\\/g, "/"));
+      this.handleFileChange(filePath);
     });
   }
 
@@ -44,6 +44,16 @@ class SvgTemplateManager {
     }
 
     return SvgTemplateManager.instance;
+  }
+
+  private handleFileChange(filePath: string) {
+    // Chokidar provides the filePath in the platform-specific format, so on
+    // windows the slashes are the wrong way around for what the code expects.
+    // Normalize everything here so the cache will hit properly.
+    const normalizedPath = path.normalize(filePath).replace(/\\/g, "/");
+
+    this.cacheTemplate(normalizedPath);
+    this.emit("imageChanged", normalizedPath);
   }
 
   /**
@@ -64,6 +74,12 @@ class SvgTemplateManager {
    * @param filePath
    */
   private cacheTemplate(filePath: string): CompiledSvgTemplate {
+    if (!filePath) {
+      return undefined;
+    }
+
+    this.watcher.add(filePath);
+
     if (!SvgTemplateManager.isSvg(filePath)) {
       return undefined;
     }

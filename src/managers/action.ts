@@ -694,6 +694,24 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Refreshes the image on all tracked actions.
+   */
+  public refreshAllImages() {
+    this.actions.forEach((entry) => {
+      entry.refreshImage();
+    });
+  }
+
+  /**
+   * Refreshes the title on all tracked actions.
+   */
+  public refreshAllTitles() {
+    this.actions.forEach((entry) => {
+      entry.refreshTitle();
+    });
+  }
+
+  /**
    * Resets all tracked actions except the TrackAudio status action.
    */
   public resetAllButTrackAudio() {
