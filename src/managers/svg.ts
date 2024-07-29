@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import Handlebars from "handlebars";
 import path from "path";
+import * as chokidar from "chokidar";
 
 export type CompiledSvgTemplate =
   | ReturnType<typeof Handlebars.compile>
@@ -20,9 +21,17 @@ interface TemplateInfo {
 class SvgTemplateManager {
   private static instance: SvgTemplateManager | null = null;
   private templates: Map<string, TemplateInfo>;
+  private watcher: chokidar.FSWatcher;
 
   private constructor() {
     this.templates = new Map<string, TemplateInfo>();
+    this.watcher = chokidar.watch([]);
+    this.watcher.on("change", (filePath) => {
+      // Chokidar provides the filePath in the platform-specific format, so on
+      // windows the slashes are the wrong way around for what the code expects.
+      // Normalize everything here so the cache will hit properly.
+      this.cacheTemplate(path.normalize(filePath).replace(/\\/g, "/"));
+    });
   }
 
   /**
@@ -54,7 +63,7 @@ class SvgTemplateManager {
    * since it was last added then nothing is generated.
    * @param filePath
    */
-  private addTemplate(filePath: string): CompiledSvgTemplate {
+  private cacheTemplate(filePath: string): CompiledSvgTemplate {
     if (!SvgTemplateManager.isSvg(filePath)) {
       return undefined;
     }
@@ -62,18 +71,17 @@ class SvgTemplateManager {
     try {
       const stats = fs.statSync(filePath);
       const lastModified = stats.mtime;
-      const templateInfo = this.templates.get(filePath);
+      const templateContent = fs.readFileSync(filePath, "utf8");
+      const compiledTemplate = Handlebars.compile(templateContent);
 
-      if (!templateInfo || templateInfo.lastModified < lastModified) {
-        const templateContent = fs.readFileSync(filePath, "utf8");
-        const compiledTemplate = Handlebars.compile(templateContent);
-        this.templates.set(filePath, {
-          compiledTemplate,
-          lastModified,
-        });
+      this.templates.set(filePath, {
+        compiledTemplate,
+        lastModified,
+      });
 
-        return compiledTemplate;
-      }
+      this.watcher.add(filePath);
+
+      return compiledTemplate;
     } catch (err: unknown) {
       console.error(err);
     }
@@ -93,9 +101,9 @@ class SvgTemplateManager {
     }
 
     const templateInfo = this.templates.get(filePath);
-    return templateInfo
-      ? templateInfo.compiledTemplate
-      : this.addTemplate(filePath);
+
+    // If the template wasn't cached then cache it and return the newly cached template.
+    return templateInfo?.compiledTemplate ?? this.cacheTemplate(filePath);
   }
 
   /**
