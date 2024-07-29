@@ -22,7 +22,7 @@ const defaultUnavailableTemplatePath =
 export class AtisLetterController extends BaseController {
   type = "AtisLetterController";
 
-  private _settings!: AtisLetterSettings;
+  private _settings: AtisLetterSettings | null = null;
   private _letter?: string;
   private _isUpdated = false;
   private _isUnavailable = false;
@@ -78,7 +78,7 @@ export class AtisLetterController extends BaseController {
    * Returns the callsign for the ATIS action.
    */
   get callsign() {
-    return this._settings.callsign;
+    return this.settings.callsign;
   }
 
   /**
@@ -130,20 +130,24 @@ export class AtisLetterController extends BaseController {
    * Returns the showTitle setting, or true if undefined.
    */
   get showTitle() {
-    return this._settings.showTitle ?? true;
+    return this.settings.showTitle ?? true;
   }
 
   /**
    * Returns the showLetter setting, or true if undefined.
    */
   get showLetter() {
-    return this._settings.showLetter ?? true;
+    return this.settings.showLetter ?? true;
   }
 
   /**
    * Gets the settings.
    */
   get settings() {
+    if (this._settings === null) {
+      throw new Error("Settings not initialized. This should never happen.");
+    }
+
     return this._settings;
   }
 
@@ -211,7 +215,7 @@ export class AtisLetterController extends BaseController {
    * Convenience method to return the action's title from settings.
    */
   get title() {
-    return this._settings.title;
+    return this.settings.title;
   }
   //#endregion
 

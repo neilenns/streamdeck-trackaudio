@@ -19,7 +19,7 @@ const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 export class PushToTalkController extends BaseController {
   type = "PushToTalkController";
 
-  private _settings!: PushToTalkSettings;
+  private _settings: PushToTalkSettings | null = null;
   private _isTransmitting = false;
 
   private _notTransmittingImagePath?: string;
@@ -76,14 +76,14 @@ export class PushToTalkController extends BaseController {
    * Convenience method to return the action's title from settings.
    */
   get title() {
-    return this._settings.title;
+    return this.settings.title;
   }
 
   /**
    * Returns the showTitle setting, or false if undefined.
    */
   get showTitle() {
-    return this._settings.showTitle ?? false;
+    return this.settings.showTitle ?? false;
   }
 
   /**
@@ -110,6 +110,10 @@ export class PushToTalkController extends BaseController {
    * Gets the settings.
    */
   get settings() {
+    if (this._settings === null) {
+      throw new Error("Settings not initialized. This should never happen.");
+    }
+
     return this._settings;
   }
 

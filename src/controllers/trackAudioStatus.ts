@@ -22,7 +22,7 @@ export class TrackAudioStatusController extends BaseController {
 
   private _isConnected = false;
   private _isVoiceConnected = false;
-  private _settings!: TrackAudioStatusSettings;
+  private _settings: TrackAudioStatusSettings | null = null;
 
   private _notConnectedImagePath?: string;
   private _connectedImagePath?: string;
@@ -47,14 +47,14 @@ export class TrackAudioStatusController extends BaseController {
    * Returns the showTitle setting, or false if undefined.
    */
   get showTitle() {
-    return this._settings.showTitle ?? false;
+    return this.settings.showTitle ?? false;
   }
 
   /**
    * Convenience method to return the action's title from settings.
    */
   get title() {
-    return this._settings.title;
+    return this.settings.title;
   }
 
   /**
@@ -106,6 +106,10 @@ export class TrackAudioStatusController extends BaseController {
    * Gets the settings.
    */
   get settings() {
+    if (this._settings === null) {
+      throw new Error("Settings not initialized. This should never happen.");
+    }
+
     return this._settings;
   }
 
