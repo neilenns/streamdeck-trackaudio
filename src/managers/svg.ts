@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import Handlebars from "handlebars";
 import path from "path";
+import * as chokidar from "chokidar";
 
 export type CompiledSvgTemplate =
   | ReturnType<typeof Handlebars.compile>
@@ -20,9 +21,17 @@ interface TemplateInfo {
 class SvgTemplateManager {
   private static instance: SvgTemplateManager | null = null;
   private templates: Map<string, TemplateInfo>;
+  private watcher: chokidar.FSWatcher;
 
   private constructor() {
     this.templates = new Map<string, TemplateInfo>();
+    this.watcher = chokidar.watch([]);
+    this.watcher.on("change", (filePath) => {
+      // Chokidar provides the filePath in the platform-specific format, so on
+      // windows the slashes are the wrong way around for what the code expects.
+      // Normalize everything here so the cache will hit properly.
+      this.cacheTemplate(path.normalize(filePath).replace(/\\/g, "/"));
+    });
   }
 
   /**
@@ -49,24 +58,6 @@ class SvgTemplateManager {
   }
 
   /**
-   * Tests to see if the template at the filePath needs its cached compiled version refreshed.
-   * @param filePath The path to test
-   * @returns True if the file has been updated since the last time the template was compiled or
-   * the template isn't already cached.
-   */
-  private isCacheStale(filePath: string): boolean {
-    const templateInfo = this.templates.get(filePath);
-    if (!templateInfo) {
-      return true;
-    }
-
-    const stats = fs.statSync(filePath);
-    const fileLastModified = stats.mtime;
-
-    return fileLastModified > templateInfo.lastModified;
-  }
-
-  /**
    * Adds an SVG template to the manager. If the doesn't exist
    * or isn't an SVG then nothing is added. If the file hasn't changed
    * since it was last added then nothing is generated.
@@ -88,6 +79,8 @@ class SvgTemplateManager {
         lastModified,
       });
 
+      this.watcher.add(filePath);
+
       return compiledTemplate;
     } catch (err: unknown) {
       console.error(err);
@@ -107,14 +100,10 @@ class SvgTemplateManager {
       return undefined;
     }
 
-    // Check and see if the template was modified on disk. If so, refresh
-    // the cache before returning the compiled template.
-    if (this.isCacheStale(filePath)) {
-      this.cacheTemplate(filePath);
-    }
-
     const templateInfo = this.templates.get(filePath);
-    return templateInfo?.compiledTemplate;
+
+    // If the template wasn't cached then cache it and return the newly cached template.
+    return templateInfo?.compiledTemplate ?? this.cacheTemplate(filePath);
   }
 
   /**
