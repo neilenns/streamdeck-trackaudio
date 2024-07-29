@@ -112,7 +112,7 @@ the voice connection in TrackAudio is up. Pressing the action will force a state
 ## Configuring an ATIS letter action
 
 > [!IMPORTANT]
-> TrackAudio must be running and you must be connected for teh ATIS letter to update. It can take five minutes or
+> TrackAudio must be running and you must be connected for the ATIS letter to update. It can take five minutes or
 > longer for the VATSIM data source to refresh and reflect the latest ATIS letter.
 
 The ATIS letter action shows the current AITS letter for a station, refreshed automatically every minute.
@@ -167,27 +167,27 @@ Used by a final approach controller to keep an eye on the current ATIS letter fo
 
 The actions are configured as follows, from left to right, top to bottom.
 
-| Action         | Settings                                                      |
-| -------------- | ------------------------------------------------------------- |
-| Station status | **Title**: GND, **Callsign**: SEA_GND, **Listen to**: RX      |
-| Station status | **Title**: E TWR, **Callsign**: SEA_E_TWR, **Listen to**: XCA |
-| Station status | **Title**: S46, **Callsign**: SEA_W_APP, **Listen to**: RX    |
-| Station status | **Title**: S16, **Callsign**: SEA_CTR, **Listen to**: RX      |
-| Station status | **Title**: Final, **Callsign**: SEA_F_APP, **Listen to**: RX  |
-| ATIS letter    | **Title**: _blank_, **Callsign**: KSEA_ATIS                   |
-| Switch profile | **Title**: SEA                                                |
+| Action         | Settings                                                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Station status | **Title**: GND, **Callsign**: SEA_GND, **Listen to**: RX, **Show title**: checked, **Show last received callsign**: checked      |
+| Station status | **Title**: E TWR, **Callsign**: SEA_E_TWR, **Listen to**: XCA, **Show title**: checked, **Show last received callsign**: checked |
+| Station status | **Title**: S46, **Callsign**: SEA_W_APP, **Listen to**: RX, **Show title**: checked, **Show last received callsign**: checked    |
+| Station status | **Title**: S16, **Callsign**: SEA_CTR, **Listen to**: RX, **Show title**: checked, **Show last received callsign**: checked      |
+| Station status | **Title**: Final, **Callsign**: SEA_F_APP, **Listen to**: RX, **Show title**: checked, **Show last received callsign**: checked  |
+| ATIS letter    | **Title**: _blank_, **Callsign**: KSEA_ATIS, **Show title**: unchecked, **Show letter**: checked                                 |
+| Switch profile | **Title**: SEA                                                                                                                   |
 
 ![Two columns of four actions showing the airport and current ATIS letter for SEA, BFI, PAE, RNT, TIW, OLM, TCM, and GRF. Four of the buttons show an orange background indicating an updated ATIS letter](docs/images/examples/sea-app-atis.png)
 
 The actions are configured as follows, from left to right, top to bottom.
 
-| Action      | Settings                                |
-| ----------- | --------------------------------------- |
-| ATIS letter | **Title**: SEA, **Callsign**: KSEA_ATIS |
-| ATIS letter | **Title**: BFI, **Callsign**: KBFI_ATIS |
-| ATIS letter | **Title**: PAE, **Callsign**: KPAE_ATIS |
-| ATIS letter | **Title**: RNT, **Callsign**: KRNT_ATIS |
-| ATIS letter | **Title**: TIW, **Callsign**: KTIW_ATIS |
-| ATIS letter | **Title**: OLM, **Callsign**: KOLM_ATIS |
-| ATIS letter | **Title**: TCM, **Callsign**: KTCM_ATIS |
-| ATIS letter | **Title**: GRF, **Callsign**: KGRF_ATIS |
+| Action      | Settings                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------ |
+| ATIS letter | **Title**: SEA, **Callsign**: KSEA_ATIS, **Show title**: checked, **Show letter**: checked |
+| ATIS letter | **Title**: BFI, **Callsign**: KBFI_ATIS, **Show title**: checked, **Show letter**: checked |
+| ATIS letter | **Title**: PAE, **Callsign**: KPAE_ATIS, **Show title**: checked, **Show letter**: checked |
+| ATIS letter | **Title**: RNT, **Callsign**: KRNT_ATIS, **Show title**: checked, **Show letter**: checked |
+| ATIS letter | **Title**: TIW, **Callsign**: KTIW_ATIS, **Show title**: checked, **Show letter**: checked |
+| ATIS letter | **Title**: OLM, **Callsign**: KOLM_ATIS, **Show title**: checked, **Show letter**: checked |
+| ATIS letter | **Title**: TCM, **Callsign**: KTCM_ATIS, **Show title**: checked, **Show letter**: checked |
+| ATIS letter | **Title**: GRF, **Callsign**: KGRF_ATIS, **Show title**: checked, **Show letter**: checked |
