@@ -6,6 +6,25 @@ on:
       - main
 
 jobs:
+  label:
+    name: "Require label"
+    runs-on: windows-latest
+
+    steps:
+      - name: Verify labels
+        uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 1
+          labels: |
+            ignore-for-release-notes
+            feature
+            enhancement
+            bug
+            documentation
+            development
+            dependencies
+
   build:
     name: "Pull request validation"
     runs-on: windows-latest
