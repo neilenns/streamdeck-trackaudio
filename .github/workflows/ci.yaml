@@ -2,31 +2,10 @@ name: CI
 
 on:
   pull_request:
-    types: [opened, labeled, unlabeled, synchronize]
     branches:
       - main
 
 jobs:
-  label:
-    name: "Require label"
-    runs-on: windows-latest
-
-    steps:
-      - name: Verify labels
-        uses: mheap/github-action-required-labels@v5
-        with:
-          mode: exactly
-          count: 1
-          add_comment: true
-          labels: |
-            ignore-for-release-notes
-            feature
-            enhancement
-            bug
-            documentation
-            development
-            dependencies
-
   build:
     name: "Build, lint and pack"
     runs-on: windows-latest
