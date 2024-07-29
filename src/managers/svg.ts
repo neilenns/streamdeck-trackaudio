@@ -49,12 +49,30 @@ class SvgTemplateManager {
   }
 
   /**
+   * Tests to see if the template at the filePath needs its cached compiled version refreshed.
+   * @param filePath The path to test
+   * @returns True if the file has been updated since the last time the template was compiled or
+   * the template isn't already cached.
+   */
+  private isCacheStale(filePath: string): boolean {
+    const templateInfo = this.templates.get(filePath);
+    if (!templateInfo) {
+      return true;
+    }
+
+    const stats = fs.statSync(filePath);
+    const fileLastModified = stats.mtime;
+
+    return fileLastModified > templateInfo.lastModified;
+  }
+
+  /**
    * Adds an SVG template to the manager. If the doesn't exist
    * or isn't an SVG then nothing is added. If the file hasn't changed
    * since it was last added then nothing is generated.
    * @param filePath
    */
-  private addTemplate(filePath: string): CompiledSvgTemplate {
+  private cacheTemplate(filePath: string): CompiledSvgTemplate {
     if (!SvgTemplateManager.isSvg(filePath)) {
       return undefined;
     }
@@ -62,18 +80,15 @@ class SvgTemplateManager {
     try {
       const stats = fs.statSync(filePath);
       const lastModified = stats.mtime;
-      const templateInfo = this.templates.get(filePath);
+      const templateContent = fs.readFileSync(filePath, "utf8");
+      const compiledTemplate = Handlebars.compile(templateContent);
 
-      if (!templateInfo || templateInfo.lastModified < lastModified) {
-        const templateContent = fs.readFileSync(filePath, "utf8");
-        const compiledTemplate = Handlebars.compile(templateContent);
-        this.templates.set(filePath, {
-          compiledTemplate,
-          lastModified,
-        });
+      this.templates.set(filePath, {
+        compiledTemplate,
+        lastModified,
+      });
 
-        return compiledTemplate;
-      }
+      return compiledTemplate;
     } catch (err: unknown) {
       console.error(err);
     }
@@ -92,10 +107,14 @@ class SvgTemplateManager {
       return undefined;
     }
 
+    // Check and see if the template was modified on disk. If so, refresh
+    // the cache before returning the compiled template.
+    if (this.isCacheStale(filePath)) {
+      this.cacheTemplate(filePath);
+    }
+
     const templateInfo = this.templates.get(filePath);
-    return templateInfo
-      ? templateInfo.compiledTemplate
-      : this.addTemplate(filePath);
+    return templateInfo?.compiledTemplate;
   }
 
   /**
