@@ -1,18 +1,8 @@
 import { HotlineController } from "@controllers/hotline";
-import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
 
 export const handleHotlineAdded = (controller: HotlineController) => {
-  // If this is the first button added then connect to TrackAudio. That will
-  // also cause a dump of the current state of all stations in TrackAudio.
-  if (
-    actionManager.getHotlineControllers().length === 1 &&
-    !trackAudioManager.isConnected
-  ) {
-    trackAudioManager.connect();
-  }
-  // Otherwise just request the state for the newly added hotline.
-  else {
+  if (trackAudioManager.isConnected) {
     trackAudioManager.refreshStationState(controller.primaryCallsign);
     trackAudioManager.refreshStationState(controller.hotlineCallsign);
   }

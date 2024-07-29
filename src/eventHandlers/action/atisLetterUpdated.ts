@@ -9,6 +9,10 @@ import vatsimManager from "@managers/vatsim";
 export const handleAtisLetterUpdated = (controller: AtisLetterController) => {
   controller.letter = undefined;
 
-  // Only refresh if voice is connected
-  if (trackAudioManager.isVoiceConnected) vatsimManager.refresh();
+  // Only refresh if voice is connected. Show the unavailable
+  // icon until the data comes back from VATSIM.
+  if (trackAudioManager.isVoiceConnected) {
+    controller.isUnavailable = true;
+    vatsimManager.refresh();
+  }
 };

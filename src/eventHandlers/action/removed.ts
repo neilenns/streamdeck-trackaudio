@@ -13,4 +13,9 @@ export const handleRemoved = (count: number) => {
   if (actionManager.getAtisLetterControllers().length === 0) {
     vatsimManager.stop();
   }
+
+  // If there are no more actions at all stop trying to connect to TrackAudio
+  if (actionManager.getActions().length === 0) {
+    trackAudioManager.disconnect();
+  }
 };

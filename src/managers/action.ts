@@ -64,9 +64,11 @@ class ActionManager extends EventEmitter {
    * @param action The action
    */
   public addPushToTalk(action: Action, settings: PushToTalkSettings): void {
-    this.actions.push(new PushToTalkController(action, settings));
+    const controller = new PushToTalkController(action, settings);
+    this.actions.push(controller);
 
-    this.emit("pushToTalkAdded");
+    this.emit("pushToTalkAdded", controller);
+    this.emit("actionAdded", controller);
   }
 
   /**
@@ -79,6 +81,7 @@ class ActionManager extends EventEmitter {
 
     this.actions.push(controller);
     this.emit("trackAudioStatusAdded", controller);
+    this.emit("actionAdded", controller);
   }
 
   /**
@@ -93,6 +96,7 @@ class ActionManager extends EventEmitter {
     // Force buttons to refresh so the newly added button shows the correct state.
     this.actions.push(controller);
     this.emit("hotlineAdded", controller);
+    this.emit("actionAdded", controller);
   }
 
   /**
@@ -106,6 +110,7 @@ class ActionManager extends EventEmitter {
 
     this.actions.push(controller);
     this.emit("stationStatusAdded", controller);
+    this.emit("actionAdded", controller);
   }
 
   /**
@@ -119,6 +124,7 @@ class ActionManager extends EventEmitter {
 
     this.actions.push(controller);
     this.emit("atisLetterAdded", controller);
+    this.emit("actionAdded", controller);
   }
 
   /**

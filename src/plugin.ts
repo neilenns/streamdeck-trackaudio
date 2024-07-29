@@ -30,6 +30,7 @@ import { handleTxBegin } from "@eventHandlers/trackAudio/txBegin";
 import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
 import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnectedState";
 import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
+import { handleActionAdded } from "@eventHandlers/action/actionAdded";
 
 // Flag to prevent handling repeated disconnect events
 let disconnectHandled = false;
@@ -77,6 +78,7 @@ actionManager.on("trackAudioStatusAdded", handleTrackAudioStatusAdded);
 actionManager.on("trackAudioStatusUpdated", handleTrackAudioStatusAdded);
 actionManager.on("atisLetterAdded", handleAtisLetterAdded);
 actionManager.on("atisLetterUpdated", handleAtisLetterUpdated);
+actionManager.on("actionAdded", handleActionAdded);
 
 vatsimManager.on("vatsimDataReceived", handleVatsimDataReceived);
 
