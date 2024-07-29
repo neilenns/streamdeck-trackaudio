@@ -4,8 +4,9 @@ import trackAudioManager from "@managers/trackAudio";
 import vatsimManager from "@managers/vatsim";
 
 export const handleVoiceConnectedState = (data: VoiceConnectedState) => {
+  actionManager.updateTrackAudioConnectionState();
+
   if (data.value.connected) {
-    actionManager.setTrackAudioVoiceConnectedState(true);
     trackAudioManager.refreshStationStates();
 
     // Only start polling VATSIM if there are ATIS letters.
@@ -14,7 +15,6 @@ export const handleVoiceConnectedState = (data: VoiceConnectedState) => {
     }
   } else {
     actionManager.resetAllButTrackAudio();
-    actionManager.setTrackAudioVoiceConnectedState(false);
     vatsimManager.stop();
   }
 };

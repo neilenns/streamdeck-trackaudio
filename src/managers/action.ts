@@ -585,29 +585,14 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Sets the connection state on all VectorAudio status buttons to the specified state
+   * Updates the connection state on all TrackAudio status buttons to the current connected states
    * and updates the background image to the appropriate state image.
    * @param isConnected True if connected, false if not
    */
-  public setTrackAudioConnectionState(isConnected: boolean) {
+  public updateTrackAudioConnectionState() {
     this.getTrackAudioStatusControllers().forEach((entry) => {
-      // Don't do anything if the state didn't change. This prevents repeated unnecessary updates
-      // when no connection is available and there's a reconnect attempt every 5 seconds.
-      if (entry.isConnected === isConnected) {
-        return;
-      }
-
-      entry.isConnected = isConnected;
-    });
-  }
-
-  public setTrackAudioVoiceConnectedState(isVoiceConnected: boolean) {
-    this.getTrackAudioStatusControllers().forEach((entry) => {
-      if (entry.isVoiceConnected === isVoiceConnected) {
-        return;
-      }
-
-      entry.isVoiceConnected = isVoiceConnected;
+      entry.isConnected = trackAudioManager.isConnected;
+      entry.isVoiceConnected = trackAudioManager.isVoiceConnected;
     });
   }
 
