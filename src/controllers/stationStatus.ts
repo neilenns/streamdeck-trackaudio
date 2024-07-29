@@ -27,7 +27,7 @@ const defaultUnavailableTemplatePath =
 export class StationStatusController extends BaseController {
   type = "StationStatusController";
 
-  private _settings!: StationSettings;
+  private _settings: StationSettings | null = null;
   private _frequency = 0;
   private _isReceiving = false;
   private _isTransmitting = false;
@@ -151,7 +151,7 @@ export class StationStatusController extends BaseController {
    * Conveinence property to get the listenTo value of settings.
    */
   get listenTo() {
-    return this._settings.listenTo ?? "rx";
+    return this.settings.listenTo ?? "rx";
   }
 
   /**
@@ -182,55 +182,59 @@ export class StationStatusController extends BaseController {
    * Convenience property to get the callsign value of settings.
    */
   get callsign() {
-    return this._settings.callsign;
+    return this.settings.callsign;
   }
 
   /**
    * Returns the title specified by the user in the property inspector.
    */
   get title() {
-    return this._settings.title;
+    return this.settings.title;
   }
 
   /**
    * Returns the showTitle setting, or true if undefined.
    */
   get showTitle() {
-    return this._settings.showTitle ?? true;
+    return this.settings.showTitle ?? true;
   }
 
   /**
    * Returns the showCallsign setting, or false if undefined.
    */
   get showCallsign() {
-    return this._settings.showCallsign ?? false;
+    return this.settings.showCallsign ?? false;
   }
 
   /**
    * Returns the showListenTo setting, or false if undefined
    */
   get showListenTo() {
-    return this._settings.showListenTo ?? false;
+    return this.settings.showListenTo ?? false;
   }
 
   /**
    * Returns the showFrequency setting, or false if undefined
    */
   get showFrequency() {
-    return this._settings.showFrequency ?? false;
+    return this.settings.showFrequency ?? false;
   }
 
   /**
    * Returns the showLastReceivedCallsign setting, or true if undefined
    */
   get showLastReceivedCallsign() {
-    return this._settings.showLastReceivedCallsign ?? true;
+    return this.settings.showLastReceivedCallsign ?? true;
   }
 
   /**
    * Gets the settings.
    */
   get settings() {
+    if (this._settings === null) {
+      throw new Error("Settings not initialized. This should never happen.");
+    }
+
     return this._settings;
   }
 
@@ -238,6 +242,11 @@ export class StationStatusController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: StationSettings) {
+    // Issue 183: Clear the frequency if the callsign changes.
+    if (this._settings && this._settings.callsign !== newValue.callsign) {
+      this.frequency = 0;
+    }
+
     this._settings = newValue;
 
     this.activeCommsImagePath = newValue.activeCommsImagePath;

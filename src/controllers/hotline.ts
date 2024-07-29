@@ -24,7 +24,7 @@ const defaultUnavailableTemplatePath = "images/actions/hotline/unavailable.svg";
 export class HotlineController extends BaseController {
   type = "HotlineController";
 
-  private _settings!: HotlineSettings;
+  private _settings: HotlineSettings | null = null;
 
   private _primaryFrequency = 0;
   private _hotlineFrequency = 0;
@@ -74,7 +74,7 @@ export class HotlineController extends BaseController {
    * if it is undefined.
    */
   get title() {
-    return this._settings.title ?? "HOTLINE";
+    return this.settings.title ?? "HOTLINE";
   }
 
   /**
@@ -296,41 +296,45 @@ export class HotlineController extends BaseController {
    * Convenience property to get the primaryCallsign value of settings.
    */
   get primaryCallsign() {
-    return this._settings.primaryCallsign;
+    return this.settings.primaryCallsign;
   }
 
   /**
    * Convenience property to get the hotlineCallsign value of settings.
    */
   get hotlineCallsign() {
-    return this._settings.hotlineCallsign;
+    return this.settings.hotlineCallsign;
   }
 
   /**
    * Returns the showTitle setting, or true if undefined.
    */
   get showTitle() {
-    return this._settings.showTitle ?? true;
+    return this.settings.showTitle ?? true;
   }
 
   /**
    * Returns the showHotlineCallsign setting, or false if undefined.
    */
   get showHotlineCallsign() {
-    return this._settings.showHotlineCallsign ?? false;
+    return this.settings.showHotlineCallsign ?? false;
   }
 
   /**
    * Returns the showPrimaryCallsign setting, or false if undefined.
    */
   get showPrimaryCallsign() {
-    return this._settings.showPrimaryCallsign ?? false;
+    return this.settings.showPrimaryCallsign ?? false;
   }
 
   /**
    * Gets the settings.
    */
   get settings() {
+    if (this._settings === null) {
+      throw new Error("Settings not initialized. This should never happen.");
+    }
+
     return this._settings;
   }
 
@@ -338,6 +342,22 @@ export class HotlineController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: HotlineSettings) {
+    // Issue 183: Clear the frequency if the callsign changes.
+    // The first time this gets set the _settings will be null so skip the check.
+    if (
+      this._settings &&
+      this._settings.primaryCallsign !== newValue.primaryCallsign
+    ) {
+      this.primaryFrequency = 0;
+    }
+
+    if (
+      this._settings &&
+      this._settings.hotlineCallsign !== newValue.hotlineCallsign
+    ) {
+      this.hotlineFrequency = 0;
+    }
+
     this._settings = newValue;
 
     this.bothActiveImagePath = newValue.bothActiveImagePath;
