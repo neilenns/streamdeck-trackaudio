@@ -27,7 +27,7 @@ jobs:
             dependencies
 
   build:
-    name: "Pull request validation"
+    name: "Build, lint and pack"
     runs-on: windows-latest
 
     steps:
