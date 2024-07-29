@@ -2,32 +2,34 @@ import { Hotline } from "@actions/hotline";
 import { StationStatus } from "@actions/stationStatus";
 import streamDeck from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import svgManager from "@managers/svg";
 import trackAudioManager from "@managers/trackAudio";
+import vatsimManager from "@managers/vatsim";
 
 // Event handlers
+import { AtisLetter } from "@actions/atisLetter";
+import { PushToTalk } from "@actions/pushToTalk";
 import { TrackAudioStatus } from "@actions/trackAudioStatus";
-import { handleHotlineSettingsUpdated } from "@eventHandlers/actionManager/hotlineSettingsUpdated";
-import { handleRemoved } from "@eventHandlers/actionManager/removed";
-import { handleStationStatusAdded } from "@eventHandlers/actionManager/stationStatusAdded";
-import { handleStationStatusSettingsUpdated } from "@eventHandlers/actionManager/stationStatusSettingsUpdated";
-import { handleTrackAudioStatusAdded } from "@eventHandlers/actionManager/trackAudioStatusAdded";
+import { handleAtisLetterAdded } from "@eventHandlers/action/atisLetterAdded";
+import { handleAtisLetterUpdated } from "@eventHandlers/action/atisLetterUpdated";
+import { handleHotlineSettingsUpdated } from "@eventHandlers/action/hotlineSettingsUpdated";
+import { handleRemoved } from "@eventHandlers/action/removed";
+import { handleStationStatusAdded } from "@eventHandlers/action/stationStatusAdded";
+import { handleStationStatusSettingsUpdated } from "@eventHandlers/action/stationStatusSettingsUpdated";
+import { handleTrackAudioStatusAdded } from "@eventHandlers/action/trackAudioStatusAdded";
+import { handleImageChanged } from "@eventHandlers/svg/imageChanged";
 import { handleConnected } from "@eventHandlers/trackAudio/connected";
 import { handleDisconnected } from "@eventHandlers/trackAudio/disconnected";
+import { handleFrequencyRemoved } from "@eventHandlers/trackAudio/frequencyRemoved";
 import { handleRxBegin } from "@eventHandlers/trackAudio/rxBegin";
 import { handleRxEnd } from "@eventHandlers/trackAudio/rxEnd";
+import { handleStationAdded } from "@eventHandlers/trackAudio/stationAdded";
 import { handleStationStateUpdate } from "@eventHandlers/trackAudio/stationStateUpdate";
 import { handleStationStates } from "@eventHandlers/trackAudio/stationStates";
 import { handleTxBegin } from "@eventHandlers/trackAudio/txBegin";
 import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
-import { PushToTalk } from "@actions/pushToTalk";
 import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnectedState";
-import { AtisLetter } from "@actions/atisLetter";
-import { handleAtisLetterAdded } from "@eventHandlers/actionManager/atisLetterAdded";
-import vatsimManager from "@managers/vatsim";
 import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
-import { handleAtisLetterUpdated } from "@eventHandlers/actionManager/atisLetterUpdated";
-import { handleStationAdded } from "@eventHandlers/trackAudio/stationAdded";
-import { handleFrequencyRemoved } from "@eventHandlers/trackAudio/frequencyRemoved";
 
 // Flag to prevent handling repeated disconnect events
 let disconnectHandled = false;
@@ -77,6 +79,8 @@ actionManager.on("atisLetterAdded", handleAtisLetterAdded);
 actionManager.on("atisLetterUpdated", handleAtisLetterUpdated);
 
 vatsimManager.on("vatsimDataReceived", handleVatsimDataReceived);
+
+svgManager.on("imageChanged", handleImageChanged);
 
 // Finally, connect to the Stream Deck.
 await streamDeck.connect();

@@ -7,4 +7,6 @@ export interface Controller {
   type: string;
   action: Action;
   reset(): void;
+  refreshImage(): void;
+  refreshTitle(): void;
 }

@@ -222,7 +222,7 @@ export class AtisLetterController extends BaseController {
   /**
    * Sets the image based on the state of the action.
    */
-  private refreshImage() {
+  public refreshImage() {
     const replacements = {
       callsign: this.callsign,
       letter: this.letter,
