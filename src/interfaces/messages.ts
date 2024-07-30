@@ -14,14 +14,18 @@ export interface VoiceConnectedState {
 export interface StationStates {
   type: "kStationStates";
   value: {
-    stations: StationStateUpdate[];
+    stations: StationStateUpdateAvailable[];
   };
 }
 
+export type StationStateUpdate =
+  | StationStateUpdateAvailable
+  | StationStateUpdateNotAvailable;
+
 /**
- * Represents the kStationStateUpdate message from TrackAudio.
+ * Represents the kStationStateUpdate message from TrackAudio when avilable is true.
  */
-export interface StationStateUpdate {
+export interface StationStateUpdateAvailable {
   type: "kStationStateUpdate";
   value: {
     callsign: string | undefined;
@@ -31,6 +35,18 @@ export interface StationStateUpdate {
     xc: boolean;
     xca: boolean;
     headset: boolean;
+    isAvailable: true;
+  };
+}
+
+/**
+ * Represents the kStationStateUpdate message from TrackAudio when avilable is false.
+ */
+export interface StationStateUpdateNotAvailable {
+  type: "kStationStateUpdate";
+  value: {
+    callsign: string;
+    isAvailable: false;
   };
 }
 
@@ -182,6 +198,28 @@ export function isStationStateUpdate(
   message: IncomingMessage
 ): message is StationStateUpdate {
   return message.type === "kStationStateUpdate";
+}
+
+/**
+ * Typeguard for StationStateUpdate when the station is available.
+ * @param message The message
+ * @returns True if the message is a StationStateUpdate with isAvailable true.
+ */
+export function isStationStateUpdateAvailable(
+  message: IncomingMessage
+): message is StationStateUpdateAvailable {
+  return message.type === "kStationStateUpdate" && message.value.isAvailable;
+}
+
+/**
+ * Typeguard for StationStateUpdate when the station is available.
+ * @param message The message
+ * @returns True if the message is a StationStateUpdate with isAvailable true.
+ */
+export function isStationStateUpdateNotAvailable(
+  message: IncomingMessage
+): message is StationStateUpdateNotAvailable {
+  return message.type === "kStationStateUpdate" && !message.value.isAvailable;
 }
 
 /**

@@ -1,4 +1,8 @@
-import { StationStateUpdate } from "@interfaces/messages";
+import {
+  isStationStateUpdateAvailable,
+  isStationStateUpdateNotAvailable,
+  StationStateUpdate,
+} from "@interfaces/messages";
 import actionManager from "@managers/action";
 
 /**
@@ -6,5 +10,9 @@ import actionManager from "@managers/action";
  * StreamDeck action with the new data.
  */
 export const handleStationStateUpdate = (data: StationStateUpdate) => {
-  actionManager.updateStationState(data);
+  if (isStationStateUpdateAvailable(data)) {
+    actionManager.updateStationState(data);
+  } else if (isStationStateUpdateNotAvailable(data)) {
+    actionManager.setStationUnavailable(data.value.callsign);
+  }
 };
