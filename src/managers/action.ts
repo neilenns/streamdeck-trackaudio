@@ -21,7 +21,10 @@ import {
 } from "@controllers/trackAudioStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { StationStateUpdate } from "@interfaces/messages";
+import {
+  StationStateUpdate,
+  StationStateUpdateAvailable,
+} from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
 import debounce from "debounce";
@@ -299,12 +302,37 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Updates all stations that match the callsign in the data so its
+   * state is unavailable.
+   * @param data The station that is not available
+   */
+  public setStationUnavailable(callsign: string) {
+    // Do all the station status controllers
+    this.getStationStatusControllers()
+      .filter((entry) => entry.callsign === callsign)
+      .forEach((entry) => {
+        entry.frequency = 0;
+      });
+
+    // Do all the hotlines
+    this.getHotlineControllers().forEach((entry) => {
+      if (entry.primaryCallsign === callsign) {
+        entry.primaryFrequency = 0;
+      }
+
+      if (entry.hotlineCallsign === callsign) {
+        entry.hotlineFrequency = 0;
+      }
+    });
+  }
+
+  /**
    * Updates stations to match the provided station state update.
    * If a callsign is provided in the update then all stations with that callsign
    * have their frequency set.
    * @param data The StationStateUpdate message from TrackAudio
    */
-  public updateStationState(data: StationStateUpdate) {
+  public updateStationState(data: StationStateUpdateAvailable) {
     // First set the frequency if one was provided. This usually comes in the first
     // station state update message from TrackAudio. Setting the frequency also
     // updates the isAvailable state since any station with a frequency is available.
