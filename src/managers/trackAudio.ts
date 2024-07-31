@@ -86,12 +86,12 @@ class TrackAudioManager extends EventEmitter {
     this.socket = new WebSocket(this.url);
 
     this.socket.on("open", () => {
-      console.log("WebSocket connection established.");
+      console.debug("WebSocket connection established.");
       this.emit("connected");
     });
 
     this.socket.on("close", () => {
-      console.log("WebSocket connection closed");
+      console.debug("WebSocket connection closed");
 
       this._isVoiceConnected = false;
       this.emit("disconnected");
@@ -122,7 +122,7 @@ class TrackAudioManager extends EventEmitter {
    * @param message The message to process
    */
   private processMessage(message: string): void {
-    console.log("received: %s", message);
+    console.debug("Received: %s", message);
 
     const data = JSON.parse(message) as IncomingMessage;
 
@@ -193,7 +193,7 @@ class TrackAudioManager extends EventEmitter {
     }
 
     this.reconnectTimer = setTimeout(() => {
-      console.log(`Attempting to reconnect...`);
+      console.debug(`Attempting to reconnect...`);
       this.connect();
     }, this.reconnectInterval);
   }
