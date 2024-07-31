@@ -200,7 +200,7 @@ class ActionManager extends EventEmitter {
     // didn't change.
     const requiresStationRefresh =
       savedAction.callsign !== settings.callsign ||
-      savedAction.listenTo !== settings.listenTo;
+      savedAction.listenTo !== (settings.listenTo ?? "rx");
 
     savedAction.settings = settings;
 
