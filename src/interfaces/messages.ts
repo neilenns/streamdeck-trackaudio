@@ -210,8 +210,9 @@ export function isStationStateUpdateAvailable(
 ): message is StationStateUpdateAvailable {
   return (
     message.type === "kStationStateUpdate" &&
-    message.value.isAvailable !== undefined &&
-    message.value.isAvailable
+    // This is for backwards compatibility with older versions of TrackAudio
+    // that do not include the isAvailable property.
+    (message.value.isAvailable === undefined || message.value.isAvailable)
   );
 }
 
