@@ -7,6 +7,7 @@ import {
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import * as logger from "@utils/logger";
 
 @action({ UUID: "com.neil-enns.trackaudio.hotline" })
 /**
@@ -24,7 +25,7 @@ export class Hotline extends SingletonAction<HotlineSettings> {
     ev.action
       .setTitle(ev.payload.settings.hotlineCallsign)
       .catch((error: unknown) => {
-        console.error(error);
+        logger.error(error);
       });
   }
 

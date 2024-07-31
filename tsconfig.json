@@ -11,7 +11,8 @@
       "@helpers/*": ["./src/helpers/*"],
       "@interfaces/*": ["./src/interfaces/*"],
       "@managers/*": ["./src/managers/*"],
-      "@root/*": ["./src/*"]
+      "@root/*": ["./src/*"],
+			"@utils/*": ["./src/utils/*"],
     }
   },
   "include": ["src/**/*.ts"],
