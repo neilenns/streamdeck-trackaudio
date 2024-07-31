@@ -192,21 +192,17 @@ export class AtisLetterController extends BaseController {
   /**
    * Sets the current AITS letter.
    */
-  set letter(letter: string | undefined) {
+  set letter(newLetter: string | undefined) {
     // This crazy check catches two situations where the state should not show as updated:
     // 1. The first time the letter is set on the action
     // 2. Any time the letter is set to undefined to reset the action
-    if (
-      this._letter !== undefined &&
-      letter !== undefined &&
-      this._letter !== letter
-    ) {
+    if (this._letter && newLetter && this._letter !== newLetter) {
       this.isUpdated = true;
     } else {
       this.isUpdated = false;
     }
 
-    this._letter = letter;
+    this._letter = newLetter;
     this.refreshTitle();
     this.refreshImage(); // For cases where the state is fully responsible for displaying the content
   }
