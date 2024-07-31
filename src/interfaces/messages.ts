@@ -35,7 +35,7 @@ export interface StationStateUpdateAvailable {
     xc: boolean;
     xca: boolean;
     headset: boolean;
-    isAvailable: true;
+    isAvailable?: true;
   };
 }
 
@@ -46,7 +46,7 @@ export interface StationStateUpdateNotAvailable {
   type: "kStationStateUpdate";
   value: {
     callsign: string;
-    isAvailable: false;
+    isAvailable?: false;
   };
 }
 
@@ -208,7 +208,11 @@ export function isStationStateUpdate(
 export function isStationStateUpdateAvailable(
   message: IncomingMessage
 ): message is StationStateUpdateAvailable {
-  return message.type === "kStationStateUpdate" && message.value.isAvailable;
+  return (
+    message.type === "kStationStateUpdate" &&
+    message.value.isAvailable !== undefined &&
+    message.value.isAvailable
+  );
 }
 
 /**
@@ -219,7 +223,11 @@ export function isStationStateUpdateAvailable(
 export function isStationStateUpdateNotAvailable(
   message: IncomingMessage
 ): message is StationStateUpdateNotAvailable {
-  return message.type === "kStationStateUpdate" && !message.value.isAvailable;
+  return (
+    message.type === "kStationStateUpdate" &&
+    message.value.isAvailable !== undefined &&
+    !message.value.isAvailable
+  );
 }
 
 /**
