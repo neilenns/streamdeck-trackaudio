@@ -70,11 +70,11 @@ export class HotlineController extends BaseController {
 
   //#region Getters/setters
   /**
-   * Convenience method to return the action's title from settings or "HOTLINE"
+   * Convenience method to return the action's title from settings or empty string
    * if it is undefined.
    */
   get title() {
-    return this.settings.title ?? "HOTLINE";
+    return this.settings.title ?? "";
   }
 
   /**

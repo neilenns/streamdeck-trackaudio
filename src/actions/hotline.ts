@@ -7,7 +7,6 @@ import {
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
-import * as logger from "@utils/logger";
 
 @action({ UUID: "com.neil-enns.trackaudio.hotline" })
 /**
@@ -19,14 +18,6 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   // to something useful.
   onWillAppear(ev: WillAppearEvent<HotlineSettings>): void | Promise<void> {
     actionManager.addHotline(ev.action, ev.payload.settings);
-
-    // Set the default title to the provided callsign. StreamDeck will use this if the user
-    // didn't specify a custom title.
-    ev.action
-      .setTitle(ev.payload.settings.hotlineCallsign)
-      .catch((error: unknown) => {
-        logger.error(error);
-      });
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
