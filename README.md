@@ -119,6 +119,9 @@ The ATIS letter action shows the current AITS letter for a station, refreshed au
 When the ATIS letter updates the action will show an orange background until the action is pressed to reset the
 state. Pressing the action when it is not in the updated state will force a refresh of the ATIS information.
 
+See the [SVG template documentation](https://github.com/neilenns/streamdeck-trackaudio/wiki/SVG-templates) for an example
+template that shows the title small and station letter big.
+
 ### ATIS letter action settings <!-- omit from toc -->
 
 | Setting     | Description                                                                                                               | Default                                            |
