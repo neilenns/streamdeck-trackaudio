@@ -13,7 +13,6 @@ import {
 } from "@interfaces/messages";
 import { EventEmitter } from "events";
 import WebSocket from "ws";
-import * as logger from "../utils/logger";
 
 /**
  * Manages the websocket connection to TrackAudio.
@@ -74,7 +73,7 @@ class TrackAudioManager extends EventEmitter {
    */
   public connect(): void {
     if (this.socket && this.socket.readyState !== WebSocket.CLOSED) {
-      logger.warn("WebSocket is already connected or connecting.");
+      console.warn("WebSocket is already connected or connecting.");
       return;
     }
 
@@ -87,12 +86,12 @@ class TrackAudioManager extends EventEmitter {
     this.socket = new WebSocket(this.url);
 
     this.socket.on("open", () => {
-      logger.debug("WebSocket connection established.");
+      console.debug("WebSocket connection established.");
       this.emit("connected");
     });
 
     this.socket.on("close", () => {
-      logger.debug("WebSocket connection closed");
+      console.debug("WebSocket connection closed");
 
       this._isVoiceConnected = false;
       this.emit("disconnected");
@@ -101,11 +100,11 @@ class TrackAudioManager extends EventEmitter {
 
     this.socket.on("error", (err: Error & { code: string }) => {
       if (err.code === "ECONNREFUSED") {
-        logger.error(
+        console.error(
           "Unable to connect to TrackAudio, connection refused. TrackAudio probably isn't running."
         );
       } else {
-        logger.error("WebSocket error:", err.message);
+        console.error("WebSocket error:", err.message);
       }
 
       this._isVoiceConnected = false;
@@ -123,7 +122,7 @@ class TrackAudioManager extends EventEmitter {
    * @param message The message to process
    */
   private processMessage(message: string): void {
-    logger.debug("Received: %s", message);
+    console.debug("Received: %s", message);
 
     const data = JSON.parse(message) as IncomingMessage;
 
@@ -194,7 +193,7 @@ class TrackAudioManager extends EventEmitter {
     }
 
     this.reconnectTimer = setTimeout(() => {
-      logger.debug(`Attempting to reconnect...`);
+      console.debug(`Attempting to reconnect...`);
       this.connect();
     }, this.reconnectInterval);
   }

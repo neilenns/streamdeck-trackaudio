@@ -5,7 +5,6 @@ import typescript from "@rollup/plugin-typescript";
 import path from "node:path";
 import url from "node:url";
 import json from "@rollup/plugin-json";
-import replace from "@rollup/plugin-replace";
 
 const isWatching = !!process.env.ROLLUP_WATCH;
 const sdPlugin = "com.neil-enns.trackaudio.sdPlugin";
@@ -25,14 +24,6 @@ const config = {
     },
   },
   plugins: [
-    replace({
-      preventAssignment: true,
-      sourcemap: true,
-      values: {
-        "process.env.NODE_ENV":
-          JSON.stringify(process.env.NODE_ENV) ?? "production",
-      },
-    }),
     {
       name: "watch-externals",
       buildStart: function () {

@@ -3,7 +3,6 @@ import Handlebars from "handlebars";
 import path from "path";
 import * as chokidar from "chokidar";
 import EventEmitter from "events";
-import * as logger from "@utils/logger";
 
 export type CompiledSvgTemplate =
   | ReturnType<typeof Handlebars.compile>
@@ -100,7 +99,7 @@ class SvgTemplateManager extends EventEmitter {
 
       return compiledTemplate;
     } catch (err: unknown) {
-      logger.error(err);
+      console.error(err);
     }
 
     return undefined;
