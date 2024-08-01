@@ -59,7 +59,7 @@ export class AtisLetterController extends BaseController {
    * Gets the autoClear setting, returning true as default if it wasn't set.
    */
   get autoClear() {
-    return this._settings?.autoClear ?? true;
+    return this.settings.autoClear ?? true;
   }
 
   /**
