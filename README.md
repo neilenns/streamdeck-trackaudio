@@ -162,10 +162,6 @@ details of how you have the actions configured.
 Used by a Seattle Tower controller to listen to the controllers working above and below, and to quickly
 turn those stations off when it gets busy.
 
-### Seattle final approach - ATIS letters
-
-Used by a final approach controller to keep an eye on the current ATIS letter for all the satellite fields around KSEA.
-
 ![Two rows of four actions. The top row shows GND and AAL809, E TWR and ASA324, S46 and SEA_W_APP, and S16. The bottom row shows Final SEA_F_APP, I for the current ATIS, a blank space, and SEA indicating what airport the buttons are for.](docs/images/examples/sea-twr.png)
 
 The actions are configured as follows, from left to right, top to bottom.
@@ -179,6 +175,10 @@ The actions are configured as follows, from left to right, top to bottom.
 | Station status | **Title**: Final, **Callsign**: SEA_F_APP, **Listen to**: RX, **Show title**: checked, **Show last received callsign**: checked  |
 | ATIS letter    | **Title**: _blank_, **Callsign**: KSEA_ATIS, **Show title**: unchecked, **Show letter**: checked                                 |
 | Switch profile | **Title**: SEA                                                                                                                   |
+
+### Seattle final approach - ATIS letters
+
+Used by a final approach controller to keep an eye on the current ATIS letter for all the satellite fields around KSEA.
 
 ![Two columns of four actions showing the airport and current ATIS letter for SEA, BFI, PAE, RNT, TIW, OLM, TCM, and GRF. Four of the buttons show an orange background indicating an updated ATIS letter](docs/images/examples/sea-app-atis.png)
 
