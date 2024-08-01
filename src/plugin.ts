@@ -31,14 +31,13 @@ import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
 import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnectedState";
 import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
 import { handleActionAdded } from "@eventHandlers/action/actionAdded";
-import * as logger from "@utils/logger";
 
 // Flag to prevent handling repeated disconnect events
 let disconnectHandled = false;
 
 // Register for uncaught exceptions
 process.on("uncaughtException", (error) => {
-  logger.error("Uncaught Exception:", error);
+  console.error("Uncaught Exception:", error);
 });
 
 // Register all the event handlers

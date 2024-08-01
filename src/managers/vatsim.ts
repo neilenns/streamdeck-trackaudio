@@ -2,7 +2,6 @@ import { VatsimData } from "@interfaces/vatsim";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
 import axios from "axios";
 import EventEmitter from "events";
-import * as logger from "@utils/logger";
 
 /**
  * Singleton class that manages communication with VATSIM.
@@ -35,7 +34,7 @@ class VatsimManager extends EventEmitter {
 
       this.emit("vatsimDataReceived", data);
     } catch (error) {
-      logger.error("Error fetching VATSIM data: ", error);
+      console.error("Error fetching VATSIM data: ", error);
     }
   }
 
