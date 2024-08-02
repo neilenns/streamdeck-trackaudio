@@ -22,7 +22,7 @@ const defaultUnavailableTemplatePath =
 export class AtisLetterController extends BaseController {
   type = "AtisLetterController";
 
-  private _autoClearInterval?: NodeJS.Timeout;
+  private _autoClearTimeout?: NodeJS.Timeout;
   private _isUnavailable = false;
   private _isUpdated = false;
   private _letter?: string;
@@ -185,16 +185,20 @@ export class AtisLetterController extends BaseController {
    * Sets the isUpdated state on the action and refreshes the state image to match.
    */
   public set isUpdated(newValue: boolean) {
+    if (this._autoClearTimeout) {
+      clearTimeout(this._autoClearTimeout);
+      this._autoClearTimeout = undefined;
+    }
+
     this._isUpdated = newValue;
 
     if (this.isUpdated && this.autoClear) {
-      // Cancel any existing timer
-      clearInterval(this._autoClearInterval);
-      this._autoClearInterval = setInterval(() => {
-        this._autoClearInterval = undefined;
-        this.isUpdated = false;
-      }, 1000);
+      this._autoClearTimeout = setTimeout(() => {
+        this._autoClearTimeout = undefined;
+        this.isUpdated = false; // Using the setter to force refreshImage and the timeout to clear.
+      }, 1000 * 60 * 2); // Two minute timeout
     }
+
     this.refreshImage();
   }
 
