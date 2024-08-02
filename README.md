@@ -124,15 +124,16 @@ template that shows the title small and station letter big.
 
 ### ATIS letter action settings <!-- omit from toc -->
 
-| Setting     | Description                                                                                                               | Default                                            |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| Title       | The title to show on the action. The current ATIS letter will be appended to this title separated by a newline. Optional. | Blank                                              |
-| Callsign    | The callsign to get the current AITS letter for, for example `KSEA_ATIS`. Required.                                       |                                                    |
-| Current     | The image to display when the ATIS letter shown is current. Optional.                                                     | ![Black background](docs/images/atis-current.png)  |
-| Unavailable | The image to display when no ATIS letter is available. Optional.                                                          | ![Warning icon](docs/images/atis-unavailable.png)  |
-| Updated     | The image to display when the ATIS letter updated to a new one. Optional.                                                 | ![Orange background](docs/images/atis-updated.png) |
-| Show letter | Show the letter on thea ction.                                                                                            | true                                               |
-| Show title  | Show the title on the action.                                                                                             | true                                               |
+| Setting                     | Description                                                                                                               | Default                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Title                       | The title to show on the action. The current ATIS letter will be appended to this title separated by a newline. Optional. | Blank                                              |
+| Callsign                    | The callsign to get the current AITS letter for, for example `KSEA_ATIS`. Required.                                       |                                                    |
+| Current                     | The image to display when the ATIS letter shown is current. Optional.                                                     | ![Black background](docs/images/atis-current.png)  |
+| Unavailable                 | The image to display when no ATIS letter is available. Optional.                                                          | ![Warning icon](docs/images/atis-unavailable.png)  |
+| Updated                     | The image to display when the ATIS letter updated to a new one. Optional.                                                 | ![Orange background](docs/images/atis-updated.png) |
+| Automatically clear updates | Clears the updated state automatically after two minutes. Pressing the action will always clear the update state.         | true                                               |
+| Show letter                 | Show the letter on thea ction.                                                                                            | true                                               |
+| Show title                  | Show the title on the action.                                                                                             | true                                               |
 
 ## Configuring a push to talk action
 

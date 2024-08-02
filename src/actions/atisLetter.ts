@@ -41,11 +41,12 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
 }
 
 export interface AtisLetterSettings {
+  autoClear?: boolean;
   callsign?: string;
-  title?: string;
   currentImagePath?: string;
-  updatedImagePath?: string;
-  unavailableImagePath?: string;
-  showTitle?: boolean;
   showLetter?: boolean;
+  showTitle?: boolean;
+  title?: string;
+  unavailableImagePath?: string;
+  updatedImagePath?: string;
 }
