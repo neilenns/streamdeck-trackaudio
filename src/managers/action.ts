@@ -345,11 +345,17 @@ class ActionManager extends EventEmitter {
     this.getStationStatusControllers()
       .filter((entry) => entry.frequency === data.value.frequency)
       .forEach((entry) => {
-        entry.isListening =
-          (data.value.rx && entry.listenTo === "rx") ||
-          (data.value.tx && entry.listenTo === "tx") ||
-          (data.value.xc && entry.listenTo === "xc") ||
-          (data.value.xca && entry.listenTo === "xca");
+        // Issue 231: Handle listenTo xc or xca
+        if (
+          (data.value.rx || data.value.tx) &&
+          (entry.listenTo === "xc" || entry.listenTo === "xca")
+        ) {
+          entry.isListening = true;
+        } else {
+          entry.isListening =
+            (data.value.rx && entry.listenTo === "rx") ||
+            (data.value.tx && entry.listenTo === "tx");
+        }
 
         entry.refreshImage();
       });
