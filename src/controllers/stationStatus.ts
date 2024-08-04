@@ -2,8 +2,8 @@ import { StationSettings } from "@actions/stationStatus";
 import { Action } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
-import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
+import { BaseController } from "./baseController";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -168,13 +168,14 @@ export class StationStatusController extends BaseController {
 
   /**
    * Returns true if listenTo is tx, xc or xca, the settings that mean
-   * tx is active in TrackAudio.
+   * tx is active in TrackAudio, and the station in TrackAudio is listening.
    */
   get isListeningForTransmit() {
     return (
-      this.listenTo === "tx" ||
-      this.listenTo === "xc" ||
-      this.listenTo === "xca"
+      (this.listenTo === "tx" ||
+        this.listenTo === "xc" ||
+        this.listenTo === "xca") &&
+      this.isListening
     );
   }
 
