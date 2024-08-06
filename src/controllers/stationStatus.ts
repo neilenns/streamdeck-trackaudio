@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
+import { LRUCache } from "lru-cache";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -34,6 +35,9 @@ export class StationStatusController extends BaseController {
   private _isListening = false;
   private _isAvailable: boolean | undefined = undefined;
   private _lastReceivedCallsign?: string;
+  private _lastReceivedCallsignList = new LRUCache<string, string>({
+    max: 4,
+  });
 
   private _notListeningImagePath?: string;
   private _listeningImagePath?: string;
@@ -229,6 +233,13 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Returns the showLastReceivedCallsignList setting, or false if undefined
+   */
+  get showLastReceivedCallsignList() {
+    return this.settings.showLastReceivedCallsignList ?? false;
+  }
+
+  /**
    * Gets the settings.
    */
   get settings() {
@@ -351,7 +362,19 @@ export class StationStatusController extends BaseController {
   set lastReceivedCallsign(callsign: string | undefined) {
     this._lastReceivedCallsign = callsign;
 
+    if (callsign) {
+      this._lastReceivedCallsignList.set(callsign, callsign);
+    }
+
     this.refreshTitle();
+  }
+
+  /**
+   * Returns an array of the last five received callsigns
+   */
+  get lastReceivedCallsignList() {
+    const entries = [...this._lastReceivedCallsignList.values()];
+    return entries;
   }
   //#endregion
 
@@ -361,7 +384,7 @@ export class StationStatusController extends BaseController {
    */
   public reset() {
     this._lastReceivedCallsign = undefined;
-
+    this._lastReceivedCallsignList.clear();
     this._frequency = 0;
     this._isListening = false;
     this._isReceiving = false;
@@ -380,12 +403,17 @@ export class StationStatusController extends BaseController {
   public refreshTitle() {
     const title = new TitleBuilder();
 
+    console.log(this.lastReceivedCallsignList);
+
     title.push(this.title, this.showTitle);
     title.push(this.callsign, this.showCallsign);
     title.push(this.formattedFrequency, this.showFrequency);
     title.push(this.listenTo.toUpperCase(), this.showListenTo);
     title.push(this.lastReceivedCallsign, this.showLastReceivedCallsign);
-
+    title.push(
+      this.lastReceivedCallsignList.join("\n"),
+      this.showLastReceivedCallsignList
+    );
     this.setTitle(title.join("\n"));
   }
 
@@ -399,6 +427,8 @@ export class StationStatusController extends BaseController {
       frequency: this.frequency,
       formattedFrequency: this.formattedFrequency,
       lastReceivedCallsign: this.lastReceivedCallsign,
+      lastReceivedCallsignlist: this.lastReceivedCallsignList,
+      lastReceivedCallsignListJoined: this.lastReceivedCallsignList.join("\n"),
       listenTo: this.listenTo.toUpperCase(),
       title: this.title,
     };

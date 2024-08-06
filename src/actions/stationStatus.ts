@@ -57,4 +57,5 @@ export interface StationSettings {
   showFrequency?: boolean;
   showListenTo?: boolean;
   showLastReceivedCallsign?: boolean;
+  showLastReceivedCallsignList?: boolean;
 }
