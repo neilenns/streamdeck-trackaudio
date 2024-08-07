@@ -36,8 +36,8 @@ export class StationStatusController extends BaseController {
   private _isAvailable: boolean | undefined = undefined;
   // This gets initialized in the settings setter so it can be re-created if the
   // number of callsigns to track changes.
-  private _lastReceivedCallsignList: LRUCache<string, string> | undefined;
-
+  private _lastReceivedCallsignHistory: LRUCache<string, string> | undefined;
+  private _lastReceivedCallsign: string | undefined = undefined;
   private _notListeningImagePath?: string;
   private _listeningImagePath?: string;
   private _activeCommsImagePath?: string;
@@ -256,7 +256,7 @@ export class StationStatusController extends BaseController {
 
     // Recreate the last received callsign cache with the new length
     if ((this._settings.lastReceivedCallsignCount ?? 0) > 0) {
-      this._lastReceivedCallsignList = new LRUCache<string, string>({
+      this._lastReceivedCallsignHistory = new LRUCache<string, string>({
         max: this._settings.lastReceivedCallsignCount,
         ttl: 1000 * 10, // 10 seconds
         ttlAutopurge: true,
@@ -270,7 +270,7 @@ export class StationStatusController extends BaseController {
         },
       });
     } else {
-      this._lastReceivedCallsignList = undefined;
+      this._lastReceivedCallsignHistory = undefined;
     }
 
     this.activeCommsImagePath = newValue.activeCommsImagePath;
@@ -365,19 +365,31 @@ export class StationStatusController extends BaseController {
    * Sets the last received callsign property and updates the action title accordingly.
    */
   set lastReceivedCallsign(callsign: string | undefined) {
+    this._lastReceivedCallsign = callsign;
+
     if (callsign) {
-      this._lastReceivedCallsignList?.set(callsign, callsign);
+      this._lastReceivedCallsignHistory?.set(callsign, callsign);
+    } else {
+      this._lastReceivedCallsignHistory?.clear();
     }
 
     this.refreshTitle();
   }
 
   /**
-   * Returns an array of the last five received callsigns
+   * Returns the last received callsign.
    */
-  get lastReceivedCallsignList() {
-    const entries = this._lastReceivedCallsignList
-      ? [...this._lastReceivedCallsignList.values()]
+  get lastReceivedCallsign() {
+    return this._lastReceivedCallsign;
+  }
+
+  /**
+   * Returns an array of received callsigns, up to the length specified by the user in the
+   * action's settings.
+   */
+  get lastReceivedCallsignHistory() {
+    const entries = this._lastReceivedCallsignHistory
+      ? [...this._lastReceivedCallsignHistory.values()]
       : [];
     return entries;
   }
@@ -406,7 +418,7 @@ export class StationStatusController extends BaseController {
    * and no active coms image.
    */
   public reset() {
-    this._lastReceivedCallsignList?.clear();
+    this._lastReceivedCallsign = undefined; // This also clears _lastReceivedCallsignHistory
     this._frequency = 0;
     this._isListening = false;
     this._isReceiving = false;
@@ -430,7 +442,7 @@ export class StationStatusController extends BaseController {
     title.push(this.formattedFrequency, this.showFrequency);
     title.push(this.listenTo.toUpperCase(), this.showListenTo);
     title.push(
-      this.lastReceivedCallsignList.join("\n"),
+      this.lastReceivedCallsignHistory.join("\n"),
       this.showLastReceivedCallsign
     );
 
@@ -446,8 +458,10 @@ export class StationStatusController extends BaseController {
       callsign: this.callsign,
       frequency: this.frequency,
       formattedFrequency: this.formattedFrequency,
-      lastReceivedCallsignlist: this.lastReceivedCallsignList,
-      lastReceivedCallsignListJoined: this.lastReceivedCallsignList.join("\n"),
+      lastReceivedCallsign: this.lastReceivedCallsign,
+      lastReceivedCallsignHistory: this.lastReceivedCallsignHistory,
+      lastReceivedCallsignHistoryJoined:
+        this.lastReceivedCallsignHistory.join("\n"),
       listenTo: this.listenTo.toUpperCase(),
       title: this.title,
     };
