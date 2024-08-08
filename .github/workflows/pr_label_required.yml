@@ -1,4 +1,4 @@
-name: Label
+name: Docs
 
 on:
   pull_request:
