@@ -258,7 +258,7 @@ export class StationStatusController extends BaseController {
     if ((this._settings.lastReceivedCallsignCount ?? 0) > 0) {
       this._lastReceivedCallsignHistory = new LRUCache<string, string>({
         max: this._settings.lastReceivedCallsignCount,
-        ttl: 1000 * 10, // 10 seconds
+        ttl: 1000 * 60 * 5, // 10 seconds
         ttlAutopurge: true,
         allowStale: false,
         disposeAfter: (
