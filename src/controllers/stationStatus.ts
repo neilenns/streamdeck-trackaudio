@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
+import { LRUCache } from "lru-cache";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -33,8 +34,10 @@ export class StationStatusController extends BaseController {
   private _isTransmitting = false;
   private _isListening = false;
   private _isAvailable: boolean | undefined = undefined;
-  private _lastReceivedCallsign?: string;
-
+  // This gets initialized in the settings setter so it can be re-created if the
+  // number of callsigns to track changes.
+  private _lastReceivedCallsignHistory: LRUCache<string, string> | undefined;
+  private _lastReceivedCallsign: string | undefined = undefined;
   private _notListeningImagePath?: string;
   private _listeningImagePath?: string;
   private _activeCommsImagePath?: string;
@@ -47,6 +50,7 @@ export class StationStatusController extends BaseController {
    */
   constructor(action: Action, settings: StationSettings) {
     super(action);
+
     this.action = action;
     this.settings = settings;
   }
@@ -222,10 +226,10 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Returns the showLastReceivedCallsign setting, or true if undefined
+   * Returns true if the number of last received callsigns to display is greater than 0
    */
   get showLastReceivedCallsign() {
-    return this.settings.showLastReceivedCallsign ?? true;
+    return (this.settings.lastReceivedCallsignCount ?? 0) > 0;
   }
 
   /**
@@ -249,6 +253,25 @@ export class StationStatusController extends BaseController {
     }
 
     this._settings = newValue;
+
+    // Recreate the last received callsign cache with the new length
+    if ((this._settings.lastReceivedCallsignCount ?? 0) > 0) {
+      this._lastReceivedCallsignHistory = new LRUCache<string, string>({
+        max: this._settings.lastReceivedCallsignCount,
+        ttl: 1000 * 60 * 5, // 10 seconds
+        ttlAutopurge: true,
+        allowStale: false,
+        disposeAfter: (
+          key: string,
+          value: string,
+          reason: LRUCache.DisposeReason
+        ) => {
+          this.handleDisposeAfter(key, value, reason);
+        },
+      });
+    } else {
+      this._lastReceivedCallsignHistory = undefined;
+    }
 
     this.activeCommsImagePath = newValue.activeCommsImagePath;
     this.listeningImagePath = newValue.listeningImagePath;
@@ -339,29 +362,63 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Returns the last received callsign or undefined if no last received callsign is available.
-   */
-  get lastReceivedCallsign(): string | undefined {
-    return this._lastReceivedCallsign;
-  }
-
-  /**
    * Sets the last received callsign property and updates the action title accordingly.
    */
   set lastReceivedCallsign(callsign: string | undefined) {
     this._lastReceivedCallsign = callsign;
 
+    if (callsign) {
+      this._lastReceivedCallsignHistory?.set(callsign, callsign);
+    } else {
+      this._lastReceivedCallsignHistory?.clear();
+    }
+
     this.refreshTitle();
   }
+
+  /**
+   * Returns the last received callsign.
+   */
+  get lastReceivedCallsign() {
+    return this._lastReceivedCallsign;
+  }
+
+  /**
+   * Returns an array of received callsigns, up to the length specified by the user in the
+   * action's settings.
+   */
+  get lastReceivedCallsignHistory() {
+    const entries = this._lastReceivedCallsignHistory
+      ? [...this._lastReceivedCallsignHistory.values()]
+      : [];
+    return entries;
+  }
   //#endregion
+
+  /**
+   * Refreshes the display if a cached callsign expired and the last callsign
+   * is being displayed.
+   * @param key The key being disposed
+   * @param value The value being disposed
+   * @param reason The reason for the disposal
+   */
+  private handleDisposeAfter(
+    key: string,
+    value: string,
+    reason: LRUCache.DisposeReason
+  ) {
+    if (this.showLastReceivedCallsign && reason === "expire") {
+      this.refreshImage();
+      this.refreshTitle();
+    }
+  }
 
   /**
    * Resets the action to the initial display state: no last received callsign
    * and no active coms image.
    */
   public reset() {
-    this._lastReceivedCallsign = undefined;
-
+    this._lastReceivedCallsign = undefined; // This also clears _lastReceivedCallsignHistory
     this._frequency = 0;
     this._isListening = false;
     this._isReceiving = false;
@@ -384,7 +441,10 @@ export class StationStatusController extends BaseController {
     title.push(this.callsign, this.showCallsign);
     title.push(this.formattedFrequency, this.showFrequency);
     title.push(this.listenTo.toUpperCase(), this.showListenTo);
-    title.push(this.lastReceivedCallsign, this.showLastReceivedCallsign);
+    title.push(
+      this.lastReceivedCallsignHistory.join("\n"),
+      this.showLastReceivedCallsign
+    );
 
     this.setTitle(title.join("\n"));
   }
@@ -399,6 +459,9 @@ export class StationStatusController extends BaseController {
       frequency: this.frequency,
       formattedFrequency: this.formattedFrequency,
       lastReceivedCallsign: this.lastReceivedCallsign,
+      lastReceivedCallsignHistory: this.lastReceivedCallsignHistory,
+      lastReceivedCallsignHistoryJoined:
+        this.lastReceivedCallsignHistory.join("\n"),
       listenTo: this.listenTo.toUpperCase(),
       title: this.title,
     };

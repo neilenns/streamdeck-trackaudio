@@ -29,6 +29,17 @@
       </sdpi-radio>
     </sdpi-item>
 
+    <sdpi-item label="Last received callsigns" style="text-align: right">
+      <sdpi-range
+        setting="lastReceivedCallsignCount"
+        min="0"
+        max="4"
+        step="1"
+        default="0"
+        showlabels
+      ></sdpi-range>
+    </sdpi-item>
+
     <sdpi-item label="Active comms">
       <sdpi-file
         setting="activeCommsImagePath"
@@ -68,12 +79,6 @@
         <sdpi-checkbox
           setting="showFrequency"
           label="Show frequency"
-        ></sdpi-checkbox>
-
-        <sdpi-checkbox
-          setting="showLastReceivedCallsign"
-          label="Show last received callsign"
-          default="true"
         ></sdpi-checkbox>
 
         <sdpi-checkbox
