@@ -36,7 +36,8 @@
     "chokidar": "^3.6.0",
     "debounce": "^2.1.0",
     "handlebars": "^4.7.8",
-    "winston": "file:../winston/winston-3.14.0.tgz",
+    "streamdeck-transport": "file:../streamdeck-transport/streamdeck-transport-v1.0.0.tgz",
+    "winston": "file:../winston/winston-3.14.1.tgz",
     "ws": "^8.17.0"
   }
 }

@@ -32,9 +32,6 @@ import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnec
 import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
 import { handleActionAdded } from "@eventHandlers/action/actionAdded";
 
-import mainLogger from "@utils/logger";
-console.log = mainLogger.log.bind(mainLogger);
-
 // Flag to prevent handling repeated disconnect events
 let disconnectHandled = false;
 
