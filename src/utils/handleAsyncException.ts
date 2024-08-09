@@ -1,4 +1,8 @@
+import mainLogger from "@utils/logger";
+
+const logger = mainLogger.child({ service: "system" });
+
 export const handleAsyncException = (preamble: string, error: unknown) => {
   const err = error as Error;
-  console.error(`${preamble}${err.message}`);
+  logger.error(`${preamble}${err.message}`);
 };
