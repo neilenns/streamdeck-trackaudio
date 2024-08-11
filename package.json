@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.neil-enns.trackaudio\"",
+    "watch": "cross-env NODE_ENV=development rollup -c -w --watch.onEnd=\"streamdeck restart com.neil-enns.trackaudio\"",
     "pack": "streamdeck pack com.neil-enns.trackaudio.sdPlugin -o .",
     "link": "streamdeck link com.neil-enns.trackaudio.sdPlugin",
     "lint": "npm run eslint && npm run markdownlint",
@@ -13,12 +13,15 @@
     "@elgato/cli": "^0.3.0",
     "@eslint/js": "^9.2.0",
     "@rollup/plugin-commonjs": "^26.0.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.2",
+    "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
     "@tsconfig/node20": "^20.1.2",
     "@types/node": "20.14.14",
     "@types/ws": "^8.5.10",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.2.0",
@@ -31,12 +34,11 @@
   },
   "dependencies": {
     "@elgato/streamdeck": "^0.3.0",
-    "@rollup/plugin-json": "^6.1.0",
     "axios": "^1.7.2",
     "chokidar": "^3.6.0",
     "debounce": "^2.1.0",
     "handlebars": "^4.7.8",
-    "streamdeck-transport": "^1.0.0",
+    "streamdeck-transport": "^1.0.1",
     "winston": "file:../winston/winston-3.14.1.tgz",
     "ws": "^8.17.0"
   }
