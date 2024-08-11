@@ -52,7 +52,7 @@ const config = {
     }),
     commonjs(),
     json(),
-    //    !isWatching && terser(),
+    !isWatching && terser(),
     {
       name: "emit-module-package-file",
       generateBundle() {
