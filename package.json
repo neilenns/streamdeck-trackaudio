@@ -2,7 +2,7 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "cross-env NODE_ENV=development rollup -c -w --watch.onEnd=\"streamdeck restart com.neil-enns.trackaudio\"",
-    "pack": "streamdeck pack com.neil-enns.trackaudio.sdPlugin -o .",
+    "pack": "streamdeck pack com.neil-enns.trackaudio.sdPlugin -f -o .",
     "link": "streamdeck link com.neil-enns.trackaudio.sdPlugin",
     "lint": "npm run eslint && npm run markdownlint",
     "eslint": "eslint src --report-unused-disable-directives --max-warnings 0",
@@ -38,9 +38,9 @@
     "chokidar": "^3.6.0",
     "debounce": "^2.1.0",
     "handlebars": "^4.7.8",
-    "streamdeck-transport": "^1.0.1",
-    "winston": "file:../winston/winston-3.14.1.tgz",
     "lru-cache": "^11.0.0",
+    "streamdeck-transport": "^1.0.1",
+    "winston": "^3.14.1",
     "ws": "^8.17.0"
   }
 }
