@@ -40,6 +40,7 @@
     "handlebars": "^4.7.8",
     "streamdeck-transport": "^1.0.1",
     "winston": "file:../winston/winston-3.14.1.tgz",
+    "lru-cache": "^11.0.0",
     "ws": "^8.17.0"
   }
 }
