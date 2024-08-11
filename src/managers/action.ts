@@ -31,6 +31,9 @@ import debounce from "debounce";
 import { EventEmitter } from "events";
 import vatsimManager from "./vatsim";
 import { PushToTalkSettings } from "@actions/pushToTalk";
+import mainLogger from "@utils/logger";
+
+const logger = mainLogger.child({ service: "action" });
 
 /**
  * Singleton class that manages StreamDeck actions
@@ -707,7 +710,7 @@ class ActionManager extends EventEmitter {
   public showAlertOnAll() {
     this.actions.forEach((entry) => {
       entry.action.showAlert().catch((error: unknown) => {
-        console.error(error);
+        logger.error(error);
       });
     });
   }
