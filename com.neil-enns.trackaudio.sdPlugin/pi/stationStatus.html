@@ -91,6 +91,20 @@
           label="Show title"
           default="true"
         ></sdpi-checkbox>
+
+        <sdpi-item
+          label="Clear callsigns after (minutes)"
+          style="text-align: right"
+        >
+          <sdpi-range
+            setting="clearAfterInMinutes"
+            min="0"
+            max="5"
+            step="1"
+            default="2"
+            showlabels
+          ></sdpi-range>
+        </sdpi-item>
       </details>
     </sdpi-item>
 
