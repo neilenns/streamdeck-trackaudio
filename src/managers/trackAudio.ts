@@ -125,7 +125,7 @@ class TrackAudioManager extends EventEmitter {
    * @param message The message to process
    */
   private processMessage(message: string): void {
-    logger.debug("Received: %s", message);
+    logger.debug(`Received: ${message}`);
 
     const data = JSON.parse(message) as IncomingMessage;
 
