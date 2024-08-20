@@ -233,6 +233,14 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Returns the number of minutes to clear callsigns after, or three if it wasn't defined
+   * by the user in settings.
+   */
+  get clearAfterInMinutes() {
+    return this.settings.clearAfterInMinutes ?? 3;
+  }
+
+  /**
    * Gets the settings.
    */
   get settings() {
@@ -254,11 +262,11 @@ export class StationStatusController extends BaseController {
 
     this._settings = newValue;
 
-    // Recreate the last received callsign cache with the new length
+    // Recreate the last received callsign cache with the new length and TTL
     if ((this._settings.lastReceivedCallsignCount ?? 0) > 0) {
       this._lastReceivedCallsignHistory = new LRUCache<string, string>({
         max: this._settings.lastReceivedCallsignCount,
-        ttl: 1000 * 60 * 5, // 10 seconds
+        ttl: this.clearAfterInMinutes * 60 * 1000, // Convert minutes to milliseconds. If this is zero it automatically disables TTL.
         ttlAutopurge: true,
         allowStale: false,
         disposeAfter: (

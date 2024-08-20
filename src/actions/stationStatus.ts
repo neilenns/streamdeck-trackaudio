@@ -45,16 +45,17 @@ export class StationStatus extends SingletonAction<StationSettings> {
 }
 
 export interface StationSettings {
-  title?: string;
+  clearAfterInMinutes?: number;
+  activeCommsImagePath?: string;
   callsign?: string;
+  lastReceivedCallsignCount?: number;
+  listeningImagePath?: string;
   listenTo: ListenTo | null;
   notListeningImagePath?: string;
-  listeningImagePath?: string;
-  activeCommsImagePath?: string;
-  unavailableImagePath?: string;
-  showTitle?: boolean;
   showCallsign?: boolean;
   showFrequency?: boolean;
   showListenTo?: boolean;
-  lastReceivedCallsignCount?: number;
+  showTitle?: boolean;
+  title?: string;
+  unavailableImagePath?: string;
 }

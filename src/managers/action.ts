@@ -139,6 +139,7 @@ class ActionManager extends EventEmitter {
    * @param action The action
    */
   public trackAudioStatusKeyDown(action: Action): void {
+    this.resetAll();
     trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
 
     action.showOk().catch((error: unknown) => {
