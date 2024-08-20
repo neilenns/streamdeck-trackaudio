@@ -1,5 +1,6 @@
 import { AtisLetterSettings } from "@actions/atisLetter";
 import { HotlineSettings } from "@actions/hotline";
+import { PushToTalkSettings } from "@actions/pushToTalk";
 import { StationSettings } from "@actions/stationStatus";
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import {
@@ -27,11 +28,10 @@ import {
 } from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
+import mainLogger from "@utils/logger";
 import debounce from "debounce";
 import { EventEmitter } from "events";
 import vatsimManager from "./vatsim";
-import { PushToTalkSettings } from "@actions/pushToTalk";
-import mainLogger from "@utils/logger";
 
 const logger = mainLogger.child({ service: "action" });
 
@@ -650,14 +650,22 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Returns a list of controllers that match the type guard.
+   * @param typeGuard Function that returns true if the Controller is the correct type
+   * @returns A list of controllers matching the type guard
+   */
+  public getControllers<T extends Controller>(
+    typeGuard: (action: Controller) => action is T
+  ): T[] {
+    return this.actions.filter(typeGuard);
+  }
+
+  /**
    * Retrieves the list of all tracked StationStatusControllers.
    * @returns An array of StationStatusControllers
    */
   public getStationStatusControllers(): StationStatusController[] {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    return this.actions.filter((action) =>
-      isStationStatusController(action)
-    ) as StationStatusController[];
+    return this.getControllers(isStationStatusController);
   }
 
   /**
@@ -665,10 +673,7 @@ class ActionManager extends EventEmitter {
    * @returns An array of PushToTalkControllers
    */
   public getPushToTalkControllers(): PushToTalkController[] {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    return this.actions.filter((action) =>
-      isPushToTalkController(action)
-    ) as PushToTalkController[];
+    return this.getControllers(isPushToTalkController);
   }
 
   /**
@@ -676,10 +681,7 @@ class ActionManager extends EventEmitter {
    * @returns An array of HotlineControllers
    */
   public getHotlineControllers(): HotlineController[] {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    return this.actions.filter((action) =>
-      isHotlineController(action)
-    ) as HotlineController[];
+    return this.getControllers(isHotlineController);
   }
 
   /**
@@ -687,10 +689,7 @@ class ActionManager extends EventEmitter {
    * @returns An array of AtisLetterControllers
    */
   public getAtisLetterControllers(): AtisLetterController[] {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    return this.actions.filter((action) =>
-      isAtisLetterController(action)
-    ) as AtisLetterController[];
+    return this.getControllers(isAtisLetterController);
   }
 
   /**
@@ -698,10 +697,7 @@ class ActionManager extends EventEmitter {
    * @returns An array of TrackAudioStatusControllers
    */
   public getTrackAudioStatusControllers(): TrackAudioStatusController[] {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    return this.actions.filter((action) =>
-      isTrackAudioStatusController(action)
-    ) as TrackAudioStatusController[];
+    return this.getControllers(isTrackAudioStatusController);
   }
 
   /**
