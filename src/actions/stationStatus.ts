@@ -47,9 +47,9 @@ export class StationStatus extends SingletonAction<StationSettings> {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {
-      actionManager.stationStatusLongPress(ev.action.id);
+      actionManager.stationStatusLongPress(ev.action);
     } else {
-      actionManager.stationStatusShortPress(ev.action.id);
+      actionManager.stationStatusShortPress(ev.action);
     }
   }
 }
