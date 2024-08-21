@@ -138,7 +138,7 @@ class ActionManager extends EventEmitter {
    * Forces a refresh of the TrackAudio status.
    * @param action The action
    */
-  public trackAudioStatusKeyDown(action: Action): void {
+  public trackAudioStatusLongPress(action: Action) {
     this.resetAll();
     trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
 
@@ -151,12 +151,10 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Called when an ATIS letter action keydown event is triggered. If the
-   * action is in the isUpdated state then it clears the state. If the
-   * station is not in the isUpdated state then forces a VATSIM data refresh.
-   * @param action The action
+   * Called when an ATIS letter action has a short press. Clears the state.
+   * @param actionId The ID of the action that had the short press
    */
-  public atisLetterKeyDown(action: Action): void {
+  public atisLetterShortPress(action: Action) {
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -165,16 +163,29 @@ class ActionManager extends EventEmitter {
       return;
     }
 
-    if (savedAction.isUpdated) {
-      savedAction.isUpdated = false;
-    } else {
-      savedAction.action.showOk().catch((error: unknown) => {
-        handleAsyncException("Unable to show OK on ATIS button:", error);
-      });
-      vatsimManager.refresh();
-    }
+    savedAction.isUpdated = false;
   }
 
+  /**
+   * Called when an ATIS letter action has a long press. Refreshses the ATIS.
+   * @param actionId The ID of the action that had the long press
+   */
+  public atisLetterLongPress(action: Action) {
+    const savedAction = this.getAtisLetterControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.reset();
+    vatsimManager.refresh();
+
+    action.showOk().catch((error: unknown) => {
+      handleAsyncException("Unable to show OK on ATIS button:", error);
+    });
+  }
   /**
    * Resets the ATIS letter on all ATIS letter actions to undefined.
    */
@@ -542,13 +553,15 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Toggles the tx on both the primary and hotline frequency.
-   * @param id The action id to toggle the state of
+   * Handles the short press of a hotline action. Toggles the tx on both the primary and hotline frequency.
+   * @param actionId The action id to toggle the state of
    */
-  public toggleHotline(id: string): void {
-    const foundAction = this.actions.find((entry) => entry.action.id === id);
+  public hotlineShortPress(action: Action): void {
+    const foundAction = this.getHotlineControllers().find(
+      (entry) => entry.action.id === action.id
+    );
 
-    if (!foundAction || !isHotlineController(foundAction)) {
+    if (!foundAction) {
       return;
     }
 
@@ -587,12 +600,36 @@ class ActionManager extends EventEmitter {
     });
   }
 
+  public hotlineLongPress(action: Action) {
+    const foundAction = this.getHotlineControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!foundAction) {
+      return;
+    }
+
+    foundAction.reset();
+    trackAudioManager.refreshStationState(foundAction.primaryCallsign);
+    trackAudioManager.refreshStationState(foundAction.hotlineCallsign);
+
+    action.showOk().catch((error: unknown) => {
+      handleAsyncException(
+        "Unable to show OK status on TrackAudio action: ",
+        error
+      );
+    });
+  }
+
   /**
-   * Toggles the tx, rx, xc, or spkr state of a frequency bound to a StreamDeck action.
-   * @param id The action id to toggle the state of
+   * Handles a short press of a station status action. Toggles the
+   * the tx, rx, xc, or spkr state of a frequency bound to a StreamDeck action.
+   * @param actionId The action id to toggle the state of
    */
-  public toggleFrequency(id: string): void {
-    const foundAction = this.actions.find((entry) => entry.action.id === id);
+  public stationStatusShortPress(action: Action): void {
+    const foundAction = this.actions.find(
+      (entry) => entry.action.id === action.id
+    );
 
     if (!foundAction || !isStationStatusController(foundAction)) {
       return;
@@ -613,6 +650,31 @@ class ActionManager extends EventEmitter {
         xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
         xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
       },
+    });
+  }
+
+  /**
+   * Called when a station status action has a long press. Resets the
+   * station status and refreshses its state.
+   * @param actionId The ID of the action that had the long press
+   */
+  public stationStatusLongPress(action: Action) {
+    const savedAction = this.getStationStatusControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.reset();
+    trackAudioManager.refreshStationState(savedAction.callsign);
+
+    action.showOk().catch((error: unknown) => {
+      handleAsyncException(
+        "Unable to show OK on station status button:",
+        error
+      );
     });
   }
 

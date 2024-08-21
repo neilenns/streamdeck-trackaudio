@@ -37,7 +37,7 @@ After installation the plugin actions are available under the TrackAudio categor
 The station status action displays the current status of a single station's button in TrackAudio, including
 whether communication is currently active. Pressing the action will toggle the equivalent button in TrackAudio,
 convenient for listening to other frequencies while controlling with the ability to quickly turn off listening
-to those frequencies when things get busy.
+to those frequencies when things get busy. A long press of the action will refresh the action's state.
 
 For example, if you are controlling `LMT_TWR` and have TrackAudio set up like this:
 
@@ -79,6 +79,7 @@ be added with `XCA` enabled and the hotline station should be added with `RX` en
 hotline action with the primary and hotline station callsigns.
 
 Once configured, pressing the action will toggle `TX` active between your primary and hotline frequencies.
+A long press of the action will refresh the action's state.
 
 ### Hotline action settings <!-- omit from toc -->
 
@@ -99,7 +100,8 @@ Once configured, pressing the action will toggle `TX` active between your primar
 ## Configuring a TrackAudio status action
 
 The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio, and whether
-the voice connection in TrackAudio is up. Pressing the action will force a state refresh.
+the voice connection in TrackAudio is up. A long press of the action will force a refresh of all the StreamDeck
+TrackAudio actions.
 
 ### TrackAudio status action settings <!-- omit from toc -->
 
@@ -118,7 +120,7 @@ the voice connection in TrackAudio is up. Pressing the action will force a state
 
 The ATIS letter action shows the current AITS letter for a station, refreshed automatically every minute.
 When the ATIS letter updates the action will show an orange background until the action is pressed to reset the
-state. Pressing the action when it is not in the updated state will force a refresh of the ATIS information.
+state. A long press of the action will force a refresh of the ATIS information.
 
 See the [SVG template documentation](https://github.com/neilenns/streamdeck-trackaudio/wiki/SVG-templates) for an example
 template that shows the title small and station letter big.

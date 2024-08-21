@@ -1,18 +1,21 @@
 import {
   action,
   DidReceiveSettingsEvent,
-  KeyDownEvent,
+  KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import { LONG_PRESS_THRESHOLD } from "@utils/constants";
 
 @action({ UUID: "com.neil-enns.trackaudio.hotline" })
 /**
  * Represents the status of a TrackAudio station
  */
 export class Hotline extends SingletonAction<HotlineSettings> {
+  private _keyDownStart = 0;
+
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
@@ -35,9 +38,18 @@ export class Hotline extends SingletonAction<HotlineSettings> {
     actionManager.updateHotline(ev.action, ev.payload.settings);
   }
 
-  // When the key is pressed send the request to toggle the hotline.
-  onKeyDown(ev: KeyDownEvent<HotlineSettings>): void | Promise<void> {
-    actionManager.toggleHotline(ev.action.id);
+  onKeyDown(): void | Promise<void> {
+    this._keyDownStart = Date.now();
+  }
+
+  onKeyUp(ev: KeyUpEvent<HotlineSettings>): Promise<void> | void {
+    const pressLength = Date.now() - this._keyDownStart;
+
+    if (pressLength > LONG_PRESS_THRESHOLD) {
+      actionManager.hotlineLongPress(ev.action);
+    } else {
+      actionManager.hotlineShortPress(ev.action);
+    }
   }
 }
 

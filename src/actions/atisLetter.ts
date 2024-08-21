@@ -1,18 +1,21 @@
 import {
   action,
   DidReceiveSettingsEvent,
-  KeyDownEvent,
+  KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import { LONG_PRESS_THRESHOLD } from "@utils/constants";
 
 @action({ UUID: "com.neil-enns.trackaudio.atisletter" })
 /**
  * Represents the status of a TrackAudio station
  */
 export class AtisLetter extends SingletonAction<AtisLetterSettings> {
+  private _keyDownStart = 0;
+
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
@@ -35,8 +38,18 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
     actionManager.updateAtisLetter(ev.action, ev.payload.settings);
   }
 
-  onKeyDown(ev: KeyDownEvent<AtisLetterSettings>): Promise<void> | void {
-    actionManager.atisLetterKeyDown(ev.action);
+  onKeyDown(): Promise<void> | void {
+    this._keyDownStart = Date.now();
+  }
+
+  onKeyUp(ev: KeyUpEvent<AtisLetterSettings>): Promise<void> | void {
+    const pressLength = Date.now() - this._keyDownStart;
+
+    if (pressLength > LONG_PRESS_THRESHOLD) {
+      actionManager.atisLetterLongPress(ev.action);
+    } else {
+      actionManager.atisLetterShortPress(ev.action);
+    }
   }
 }
 
