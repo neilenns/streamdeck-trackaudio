@@ -55,9 +55,10 @@ export class StationStatus extends SingletonAction<StationSettings> {
 }
 
 export interface StationSettings {
-  clearAfterInMinutes?: number;
+  blockedCommsImagePath?: string;
   activeCommsImagePath?: string;
   callsign?: string;
+  clearAfterInMinutes?: number;
   lastReceivedCallsignCount?: number;
   listeningImagePath?: string;
   listenTo: ListenTo | null;

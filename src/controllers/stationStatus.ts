@@ -16,11 +16,14 @@ const StateColor = {
   LISTENING: "#060",
   NOT_LISTENING: "black",
   UNAVAILABLE: "black",
+  BLOCKING: "yellow",
 };
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
 const defaultUnavailableTemplatePath =
   "images/actions/stationStatus/unavailable.svg";
+const defaultBlockedCommsImagePath = "images/actions/stationStatus/blocked.svg";
+
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and StreamDeck action for an individual action in a profile.
@@ -38,9 +41,11 @@ export class StationStatusController extends BaseController {
   // number of callsigns to track changes.
   private _lastReceivedCallsignHistory: LRUCache<string, string> | undefined;
   private _lastReceivedCallsign: string | undefined = undefined;
-  private _notListeningImagePath?: string;
-  private _listeningImagePath?: string;
+
+  private _blockedCommsImagePath?: string;
   private _activeCommsImagePath?: string;
+  private _listeningImagePath?: string;
+  private _notListeningImagePath?: string;
   private _unavailableImagePath?: string;
 
   /**
@@ -84,6 +89,21 @@ export class StationStatusController extends BaseController {
    */
   set listeningImagePath(newValue: string | undefined) {
     this._listeningImagePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Returns the blockingImagePath or the default blocking image path if the
+   * user didn't specify a custom icon.
+   */
+  get blockedCommsImagePath(): string {
+    return this._blockedCommsImagePath ?? defaultBlockedCommsImagePath;
+  }
+
+  /**
+   * Sets the activeCommsImagePath and re-compiles the SVG template if necessary.
+   */
+  set blockedCommsImagePath(newValue: string | undefined) {
+    this._blockedCommsImagePath = stringOrUndefined(newValue);
   }
 
   /**
@@ -282,6 +302,7 @@ export class StationStatusController extends BaseController {
     }
 
     this.activeCommsImagePath = newValue.activeCommsImagePath;
+    this.blockedCommsImagePath = newValue.blockedCommsImagePath;
     this.listeningImagePath = newValue.listeningImagePath;
     this.notListeningImagePath = newValue.notListeningImagePath;
     this.unavailableImagePath = newValue.unavailableImagePath;
@@ -479,6 +500,15 @@ export class StationStatusController extends BaseController {
         ...replacements,
         stateColor: StateColor.UNAVAILABLE,
         state: "unavailable",
+      });
+      return;
+    }
+
+    if (this.isReceiving && this.isTransmitting) {
+      this.setImage(this.blockedCommsImagePath, {
+        ...replacements,
+        stateColor: StateColor.BLOCKING,
+        state: "blocking",
       });
       return;
     }
