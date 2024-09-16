@@ -32,7 +32,7 @@ class SvgTemplateManager extends EventEmitter {
 
     this.templates = new Map<string, TemplateInfo>();
     this.watcher = chokidar.watch([]);
-    this.watcher.on("change", (filePath) => {
+    this.watcher.on("change", (filePath: string) => {
       this.handleFileChange(filePath);
     });
   }
