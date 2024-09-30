@@ -10,7 +10,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "@elgato/cli": "^0.3.0",
+    "@elgato/cli": "^1.0.0",
     "@eslint/js": "^9.2.0",
     "@rollup/plugin-commonjs": "^26.0.0",
     "@rollup/plugin-json": "^6.1.0",
