@@ -1,6 +1,7 @@
 import {
   action,
   DidReceiveSettingsEvent,
+  JsonValue,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
@@ -20,6 +21,12 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<AtisLetterSettings>): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.addAtisLetter(ev.action, ev.payload.settings);
   }
 
@@ -35,6 +42,12 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<AtisLetterSettings>
   ): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.updateAtisLetter(ev.action, ev.payload.settings);
   }
 
@@ -62,4 +75,5 @@ export interface AtisLetterSettings {
   title?: string;
   unavailableImagePath?: string;
   updatedImagePath?: string;
+  [key: string]: JsonValue;
 }

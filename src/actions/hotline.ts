@@ -1,6 +1,7 @@
 import {
   action,
   DidReceiveSettingsEvent,
+  JsonValue,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
@@ -20,6 +21,12 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<HotlineSettings>): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.addHotline(ev.action, ev.payload.settings);
   }
 
@@ -35,6 +42,12 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<HotlineSettings>
   ): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.updateHotline(ev.action, ev.payload.settings);
   }
 
@@ -66,4 +79,5 @@ export interface HotlineSettings {
   showTitle?: boolean;
   showHotlineCallsign?: boolean;
   showPrimaryCallsign?: boolean;
+  [key: string]: JsonValue;
 }

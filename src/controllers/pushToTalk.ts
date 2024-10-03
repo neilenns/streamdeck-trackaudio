@@ -1,4 +1,4 @@
-import { Action } from "@elgato/streamdeck";
+import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { BaseController } from "./baseController";
 import { PushToTalkSettings } from "@actions/pushToTalk";
@@ -29,7 +29,7 @@ export class PushToTalkController extends BaseController {
    * Creates a new PushToTalkController object.
    * @param action The callsign for the action
    */
-  constructor(action: Action, settings: PushToTalkSettings) {
+  constructor(action: KeyAction, settings: PushToTalkSettings) {
     super(action);
     this.settings = settings;
   }

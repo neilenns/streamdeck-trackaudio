@@ -20,7 +20,7 @@ import {
   TrackAudioStatusController,
   isTrackAudioStatusController,
 } from "@controllers/trackAudioStatus";
-import { Action } from "@elgato/streamdeck";
+import { ActionContext, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import {
   StationStateUpdate,
@@ -69,7 +69,7 @@ class ActionManager extends EventEmitter {
    * after the action is added.
    * @param action The action
    */
-  public addPushToTalk(action: Action, settings: PushToTalkSettings): void {
+  public addPushToTalk(action: KeyAction, settings: PushToTalkSettings): void {
     const controller = new PushToTalkController(action, settings);
     this.actions.push(controller);
 
@@ -82,7 +82,7 @@ class ActionManager extends EventEmitter {
    * after the action is added.
    * @param action The action to add
    */
-  public addTrackAudio(action: Action, settings: TrackAudioStatusSettings) {
+  public addTrackAudio(action: KeyAction, settings: TrackAudioStatusSettings) {
     const controller = new TrackAudioStatusController(action, settings);
 
     this.actions.push(controller);
@@ -96,7 +96,7 @@ class ActionManager extends EventEmitter {
    * @param action The action to add
    * @param settings The settings for the action
    */
-  public addHotline(action: Action, settings: HotlineSettings) {
+  public addHotline(action: KeyAction, settings: HotlineSettings) {
     const controller = new HotlineController(action, settings);
 
     // Force buttons to refresh so the newly added button shows the correct state.
@@ -111,7 +111,7 @@ class ActionManager extends EventEmitter {
    * @param action The action
    * @param settings The settings for the action
    */
-  public addStation(action: Action, settings: StationSettings): void {
+  public addStation(action: KeyAction, settings: StationSettings): void {
     const controller = new StationStatusController(action, settings);
 
     this.actions.push(controller);
@@ -125,7 +125,7 @@ class ActionManager extends EventEmitter {
    * @param action The action
    * @param settings The settings for the action
    */
-  public addAtisLetter(action: Action, settings: AtisLetterSettings): void {
+  public addAtisLetter(action: KeyAction, settings: AtisLetterSettings): void {
     const controller = new AtisLetterController(action, settings);
 
     this.actions.push(controller);
@@ -138,7 +138,7 @@ class ActionManager extends EventEmitter {
    * Forces a refresh of the TrackAudio status.
    * @param action The action
    */
-  public trackAudioStatusLongPress(action: Action) {
+  public trackAudioStatusLongPress(action: KeyAction) {
     this.resetAll();
     trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
 
@@ -154,7 +154,7 @@ class ActionManager extends EventEmitter {
    * Called when an ATIS letter action has a short press. Clears the state.
    * @param actionId The ID of the action that had the short press
    */
-  public atisLetterShortPress(action: Action) {
+  public atisLetterShortPress(action: KeyAction) {
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -170,7 +170,7 @@ class ActionManager extends EventEmitter {
    * Called when an ATIS letter action has a long press. Refreshses the ATIS.
    * @param actionId The ID of the action that had the long press
    */
-  public atisLetterLongPress(action: Action) {
+  public atisLetterLongPress(action: KeyAction) {
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -202,7 +202,7 @@ class ActionManager extends EventEmitter {
    * @param action The action to update
    * @param settings The new settings to use
    */
-  public updateStation(action: Action, settings: StationSettings) {
+  public updateStation(action: KeyAction, settings: StationSettings) {
     const savedAction = this.getStationStatusControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -230,7 +230,7 @@ class ActionManager extends EventEmitter {
    * @param settings The new settings to use
    */
   public updateTrackAudioStatus(
-    action: Action,
+    action: KeyAction,
     settings: TrackAudioStatusSettings
   ) {
     const savedAction = this.getTrackAudioStatusControllers().find(
@@ -251,7 +251,7 @@ class ActionManager extends EventEmitter {
    * @param action The action to update
    * @param settings The new settings to use
    */
-  public updateHotline(action: Action, settings: HotlineSettings) {
+  public updateHotline(action: KeyAction, settings: HotlineSettings) {
     const savedAction = this.getHotlineControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -280,7 +280,7 @@ class ActionManager extends EventEmitter {
    * @param action The action to update
    * @param settings The new settings to use
    */
-  public updateAtisLetter(action: Action, settings: AtisLetterSettings) {
+  public updateAtisLetter(action: KeyAction, settings: AtisLetterSettings) {
     const savedAction = this.getAtisLetterControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -304,7 +304,7 @@ class ActionManager extends EventEmitter {
    * @param action The action to update
    * @param settings The new settings to use
    */
-  public updatePushToTalk(action: Action, settings: PushToTalkSettings) {
+  public updatePushToTalk(action: KeyAction, settings: PushToTalkSettings) {
     const savedAction = this.getPushToTalkControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -544,7 +544,7 @@ class ActionManager extends EventEmitter {
    * Removes an action from the list.
    * @param action The action to remove
    */
-  public remove(action: Action): void {
+  public remove(action: ActionContext): void {
     this.actions = this.actions.filter(
       (entry) => entry.action.id !== action.id
     );
@@ -556,7 +556,7 @@ class ActionManager extends EventEmitter {
    * Handles the short press of a hotline action. Toggles the tx on both the primary and hotline frequency.
    * @param actionId The action id to toggle the state of
    */
-  public hotlineShortPress(action: Action): void {
+  public hotlineShortPress(action: KeyAction): void {
     const foundAction = this.getHotlineControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -600,7 +600,7 @@ class ActionManager extends EventEmitter {
     });
   }
 
-  public hotlineLongPress(action: Action) {
+  public hotlineLongPress(action: KeyAction) {
     const foundAction = this.getHotlineControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -626,7 +626,7 @@ class ActionManager extends EventEmitter {
    * the tx, rx, xc, or spkr state of a frequency bound to a StreamDeck action.
    * @param actionId The action id to toggle the state of
    */
-  public stationStatusShortPress(action: Action): void {
+  public stationStatusShortPress(action: KeyAction): void {
     const foundAction = this.actions.find(
       (entry) => entry.action.id === action.id
     );
@@ -658,7 +658,7 @@ class ActionManager extends EventEmitter {
    * station status and refreshses its state.
    * @param actionId The ID of the action that had the long press
    */
-  public stationStatusLongPress(action: Action) {
+  public stationStatusLongPress(action: KeyAction) {
     const savedAction = this.getStationStatusControllers().find(
       (entry) => entry.action.id === action.id
     );
@@ -670,12 +670,14 @@ class ActionManager extends EventEmitter {
     savedAction.reset();
     trackAudioManager.refreshStationState(savedAction.callsign);
 
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK on station status button:",
-        error
-      );
-    });
+    if (action.isKey()) {
+      action.showOk().catch((error: unknown) => {
+        handleAsyncException(
+          "Unable to show OK on station status button:",
+          error
+        );
+      });
+    }
   }
 
   /**

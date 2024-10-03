@@ -1,5 +1,5 @@
 import { AtisLetterSettings } from "@actions/atisLetter";
-import { Action } from "@elgato/streamdeck";
+import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { BaseController } from "./baseController";
@@ -37,7 +37,7 @@ export class AtisLetterController extends BaseController {
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
-  constructor(action: Action, settings: AtisLetterSettings) {
+  constructor(action: KeyAction, settings: AtisLetterSettings) {
     super(action);
     this.settings = settings;
   }

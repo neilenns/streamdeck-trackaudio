@@ -1,4 +1,4 @@
-import { Action } from "@elgato/streamdeck";
+import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import svgManager from "@managers/svg";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
@@ -16,13 +16,13 @@ export abstract class BaseController implements Controller {
   /**
    * The StreamDeck action this controller manages.
    */
-  action: Action;
+  action: KeyAction;
 
   /**
    * Initializes the BaseController.
    * @param action The StreamDeck icon this wraps
    */
-  constructor(action: Action) {
+  constructor(action: KeyAction) {
     this.action = action;
   }
 
@@ -61,7 +61,6 @@ export abstract class BaseController implements Controller {
    */
   setImage(imagePath: string, replacements: object) {
     const generatedSvg = svgManager.renderSvg(imagePath, replacements);
-
     if (generatedSvg) {
       this.action.setImage(generatedSvg).catch((error: unknown) => {
         handleAsyncException("Unable to set state image: ", error);

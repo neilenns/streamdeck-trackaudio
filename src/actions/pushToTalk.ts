@@ -1,6 +1,7 @@
 import {
   action,
   DidReceiveSettingsEvent,
+  JsonValue,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
@@ -17,6 +18,12 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<PushToTalkSettings>): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.addPushToTalk(ev.action, ev.payload.settings);
   }
 
@@ -40,6 +47,12 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<PushToTalkSettings>
   ): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.updatePushToTalk(ev.action, ev.payload.settings);
   }
 }
@@ -50,4 +63,5 @@ export interface PushToTalkSettings {
   notTransmittingImagePath?: string;
   transmittingImagePath?: string;
   showTitle?: boolean;
+  [key: string]: JsonValue;
 }

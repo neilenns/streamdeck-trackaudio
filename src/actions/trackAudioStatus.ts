@@ -1,6 +1,7 @@
 import {
   action,
   DidReceiveSettingsEvent,
+  JsonValue,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
@@ -21,6 +22,12 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   onWillAppear(
     ev: WillAppearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.addTrackAudio(ev.action, ev.payload.settings);
   }
 
@@ -34,6 +41,12 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<TrackAudioStatusSettings>
   ): Promise<void> | void {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.updateTrackAudioStatus(ev.action, ev.payload.settings);
   }
 
@@ -57,4 +70,5 @@ export interface TrackAudioStatusSettings {
   connectedImagePath?: string;
   voiceConnectedImagePath?: string;
   showTitle?: boolean;
+  [key: string]: JsonValue;
 }
