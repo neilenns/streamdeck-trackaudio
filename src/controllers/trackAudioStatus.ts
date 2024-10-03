@@ -1,5 +1,5 @@
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
-import { Action, KeyAction } from "@elgato/streamdeck";
+import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { BaseController } from "./baseController";
 import TitleBuilder from "@root/utils/titleBuilder";
