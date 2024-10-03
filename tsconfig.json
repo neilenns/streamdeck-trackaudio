@@ -4,6 +4,7 @@
     "customConditions": ["node"],
     "module": "ES2022",
     "moduleResolution": "Bundler",
+    "noImplicitOverride": true,
     "paths": {
       "@actions/*": ["./src/actions/*"],
       "@controllers/*": ["./src/controllers/*"],
@@ -11,8 +12,8 @@
       "@helpers/*": ["./src/helpers/*"],
       "@interfaces/*": ["./src/interfaces/*"],
       "@managers/*": ["./src/managers/*"],
-			"@utils/*": ["./src/utils/*"],
-      "@root/*": ["./src/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@root/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts"],
