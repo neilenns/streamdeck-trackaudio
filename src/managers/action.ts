@@ -670,14 +670,12 @@ class ActionManager extends EventEmitter {
     savedAction.reset();
     trackAudioManager.refreshStationState(savedAction.callsign);
 
-    if (action.isKey()) {
-      action.showOk().catch((error: unknown) => {
-        handleAsyncException(
-          "Unable to show OK on station status button:",
-          error
-        );
-      });
-    }
+    action.showOk().catch((error: unknown) => {
+      handleAsyncException(
+        "Unable to show OK on station status button:",
+        error
+      );
+    });
   }
 
   /**
