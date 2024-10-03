@@ -1,5 +1,5 @@
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
-import { Action } from "@elgato/streamdeck";
+import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { BaseController } from "./baseController";
 import TitleBuilder from "@root/utils/titleBuilder";
@@ -32,7 +32,7 @@ export class TrackAudioStatusController extends BaseController {
    * Creates a new TrackAudioStatusController.
    * @param action The StreamDeck action object
    */
-  constructor(action: Action, settings: TrackAudioStatusSettings) {
+  constructor(action: KeyAction, settings: TrackAudioStatusSettings) {
     super(action);
     this.settings = settings;
   }

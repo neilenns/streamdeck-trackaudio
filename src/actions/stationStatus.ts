@@ -2,6 +2,7 @@ import { ListenTo } from "@controllers/stationStatus";
 import {
   action,
   DidReceiveSettingsEvent,
+  JsonValue,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
@@ -21,6 +22,12 @@ export class StationStatus extends SingletonAction<StationSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   onWillAppear(ev: WillAppearEvent<StationSettings>): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.addStation(ev.action, ev.payload.settings);
   }
 
@@ -36,6 +43,12 @@ export class StationStatus extends SingletonAction<StationSettings> {
   onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<StationSettings>
   ): void | Promise<void> {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // KeyAction.
+    if (!ev.action.isKey()) {
+      return;
+    }
+
     actionManager.updateStation(ev.action, ev.payload.settings);
   }
 
@@ -69,4 +82,5 @@ export interface StationSettings {
   showTitle?: boolean;
   title?: string;
   unavailableImagePath?: string;
+  [key: string]: JsonValue;
 }

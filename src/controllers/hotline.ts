@@ -1,5 +1,5 @@
 import { HotlineSettings } from "@actions/hotline";
-import { Action } from "@elgato/streamdeck";
+import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
@@ -46,7 +46,7 @@ export class HotlineController extends BaseController {
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
-  constructor(action: Action, settings: HotlineSettings) {
+  constructor(action: KeyAction, settings: HotlineSettings) {
     super(action);
     this.settings = settings;
   }
