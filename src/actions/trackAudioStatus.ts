@@ -19,7 +19,7 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
 
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code.
-  onWillAppear(
+  override onWillAppear(
     ev: WillAppearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
@@ -32,13 +32,13 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
-  onWillDisappear(
+  override onWillDisappear(
     ev: WillDisappearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
     actionManager.remove(ev.action);
   }
 
-  onDidReceiveSettings(
+  override onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<TrackAudioStatusSettings>
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
@@ -50,11 +50,13 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
     actionManager.updateTrackAudioStatus(ev.action, ev.payload.settings);
   }
 
-  onKeyDown(): Promise<void> | void {
+  override onKeyDown(): Promise<void> | void {
     this._keyDownStart = Date.now();
   }
 
-  onKeyUp(ev: KeyUpEvent<TrackAudioStatusSettings>): Promise<void> | void {
+  override onKeyUp(
+    ev: KeyUpEvent<TrackAudioStatusSettings>
+  ): Promise<void> | void {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {
