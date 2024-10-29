@@ -20,7 +20,9 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
-  onWillAppear(ev: WillAppearEvent<AtisLetterSettings>): void | Promise<void> {
+  override onWillAppear(
+    ev: WillAppearEvent<AtisLetterSettings>
+  ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
     if (!ev.action.isKey()) {
@@ -31,7 +33,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
-  onWillDisappear(
+  override onWillDisappear(
     ev: WillDisappearEvent<AtisLetterSettings>
   ): void | Promise<void> {
     actionManager.remove(ev.action);
@@ -39,7 +41,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
 
   // When settings are received the ActionManager is called to update the existing
   // settings on the saved action.
-  onDidReceiveSettings(
+  override onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<AtisLetterSettings>
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
@@ -51,11 +53,11 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
     actionManager.updateAtisLetter(ev.action, ev.payload.settings);
   }
 
-  onKeyDown(): Promise<void> | void {
+  override onKeyDown(): Promise<void> | void {
     this._keyDownStart = Date.now();
   }
 
-  onKeyUp(ev: KeyUpEvent<AtisLetterSettings>): Promise<void> | void {
+  override onKeyUp(ev: KeyUpEvent<AtisLetterSettings>): Promise<void> | void {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {

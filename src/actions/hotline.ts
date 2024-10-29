@@ -20,7 +20,9 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
-  onWillAppear(ev: WillAppearEvent<HotlineSettings>): void | Promise<void> {
+  override onWillAppear(
+    ev: WillAppearEvent<HotlineSettings>
+  ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
     if (!ev.action.isKey()) {
@@ -31,7 +33,7 @@ export class Hotline extends SingletonAction<HotlineSettings> {
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
-  onWillDisappear(
+  override onWillDisappear(
     ev: WillDisappearEvent<HotlineSettings>
   ): void | Promise<void> {
     actionManager.remove(ev.action);
@@ -39,7 +41,7 @@ export class Hotline extends SingletonAction<HotlineSettings> {
 
   // When settings are received the ActionManager is called to update the existing
   // settings on the saved action.
-  onDidReceiveSettings(
+  override onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<HotlineSettings>
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
@@ -51,11 +53,11 @@ export class Hotline extends SingletonAction<HotlineSettings> {
     actionManager.updateHotline(ev.action, ev.payload.settings);
   }
 
-  onKeyDown(): void | Promise<void> {
+  override onKeyDown(): void | Promise<void> {
     this._keyDownStart = Date.now();
   }
 
-  onKeyUp(ev: KeyUpEvent<HotlineSettings>): Promise<void> | void {
+  override onKeyUp(ev: KeyUpEvent<HotlineSettings>): Promise<void> | void {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {

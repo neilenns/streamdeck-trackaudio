@@ -17,7 +17,9 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
-  onWillAppear(ev: WillAppearEvent<PushToTalkSettings>): void | Promise<void> {
+  override onWillAppear(
+    ev: WillAppearEvent<PushToTalkSettings>
+  ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
     if (!ev.action.isKey()) {
@@ -28,23 +30,23 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
-  onWillDisappear(
+  override onWillDisappear(
     ev: WillDisappearEvent<PushToTalkSettings>
   ): void | Promise<void> {
     actionManager.remove(ev.action);
   }
 
-  onKeyDown(): void | Promise<void> {
+  override onKeyDown(): void | Promise<void> {
     actionManager.pttPressed();
   }
 
-  onKeyUp(): void | Promise<void> {
+  override onKeyUp(): void | Promise<void> {
     actionManager.pttReleased();
   }
 
   // When settings are received the ActionManager is called to update the existing
   // settings on the saved action.
-  onDidReceiveSettings(
+  override onDidReceiveSettings(
     ev: DidReceiveSettingsEvent<PushToTalkSettings>
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
