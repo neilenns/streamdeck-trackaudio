@@ -1,5 +1,5 @@
 /**
- * Helper for building StreamDeck action titles.
+ * Helper for building Stream Deck action titles.
  */
 export default class TitleBuilder {
   private parts: string[] = [];

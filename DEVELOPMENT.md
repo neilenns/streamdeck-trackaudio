@@ -19,7 +19,7 @@ A launch profile for VSCode is included. Simply press `F5` to start debugging. S
 
 ## About the code
 
-This code my first attempt at writing a StreamDeck plugin using the (as of this writing) [beta node.js SDK](https://github.com/elgatosf/streamdeck)
+This code my first attempt at writing a Stream Deck plugin using the (as of this writing) [beta node.js SDK](https://github.com/elgatosf/streamdeck)
 in conjunction with websockets to read and display data from another app.
 
 Here is how the code is structured:
@@ -28,9 +28,9 @@ Here is how the code is structured:
 
 - `com.neil-enns.trackaudio.sdPlugin/pi`: The property inspectors for the actions. They are written using [sdpi-components](https://sdpi-components.dev/docs/components), which automatically handles sending the property values to the plugin.
 
-- `src/actions`: These are all the StreamDeck SingletonAction classes. They do very little except responding to StreamDeck events then firing off their own events that get handled in `src/plugin.ts`.
+- `src/actions`: These are all the Stream Deck SingletonAction classes. They do very little except responding to Stream Deck events then firing off their own events that get handled in `src/plugin.ts`.
 
-- `src/controllers`: These classes manage individual instances of an action on a profile. They track the action object provided by StreamDeck as well as the settings and other associated properties. The `BaseController` class provides common methods for setting action titles and images.
+- `src/controllers`: These classes manage individual instances of an action on a profile. They track the action object provided by Stream Deck as well as the settings and other associated properties. The `BaseController` class provides common methods for setting action titles and images.
 
 - `src/eventHandlers`: These functions manage all the events fired by the controllers or managers.
 
@@ -42,7 +42,7 @@ Here is how the code is structured:
 
 Here are some bits and pieces that might be interesting:
 
-- `src/managers/action.ts` is a singleton class that keeps track of the plugin's actions as they are added to a StreamDeck profile. It exposes methods that are called to set the state, image, or display text in response to websocket messages.
+- `src/managers/action.ts` is a singleton class that keeps track of the plugin's actions as they are added to a Stream Deck profile. It exposes methods that are called to set the state, image, or display text in response to websocket messages.
 
 - `src/managers/trackAudio.ts` is a singleton class that manages the websocket connection with TrackAudio. It listens to various messages from TrackAudio then fires its own events that are handled by the plugin to update the buttons. The connection to TrackAudio is only opened if the profile has at least one button from this plugin in it, and it disconnects from TrackAudio if all plugin buttons are removed.
 
@@ -50,7 +50,7 @@ Here are some bits and pieces that might be interesting:
 
 - `src/managers/vatsim.ts` is a singleton class that manages data retrieval from VATSIM. At the moment this is only used to retrieve the ATIS letters.
 
-- `src/plugin.ts` does nothing more than register the actions with StreamDeck and a bunch of event handlers.
+- `src/plugin.ts` does nothing more than register the actions with Stream Deck and a bunch of event handlers.
 
 - `eslint` is used with strict TypeScript rules to validate the code.
 

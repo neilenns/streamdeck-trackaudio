@@ -2,8 +2,8 @@ import { AtisLetterSettings } from "@actions/atisLetter";
 import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
-import { BaseController } from "./baseController";
 import { stringOrUndefined } from "@root/utils/utils";
+import { BaseController } from "./baseController";
 
 const StateColor = {
   CURRENT: "black",
@@ -17,7 +17,7 @@ const defaultUnavailableTemplatePath =
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
- * state and StreamDeck action for an individual action in a profile.
+ * state and Stream Deck action for an individual action in a profile.
  */
 export class AtisLetterController extends BaseController {
   type = "AtisLetterController";

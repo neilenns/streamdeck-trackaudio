@@ -3,8 +3,8 @@ import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
-import { BaseController } from "./baseController";
 import { LRUCache } from "lru-cache";
+import { BaseController } from "./baseController";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -26,7 +26,7 @@ const defaultBlockedCommsImagePath = "images/actions/stationStatus/blocked.svg";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
- * state and StreamDeck action for an individual action in a profile.
+ * state and Stream Deck action for an individual action in a profile.
  */
 export class StationStatusController extends BaseController {
   type = "StationStatusController";

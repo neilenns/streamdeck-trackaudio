@@ -1,9 +1,9 @@
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { BaseController } from "./baseController";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
+import { BaseController } from "./baseController";
 
 const StateColor = {
   NOT_CONNECTED: "white",
@@ -15,7 +15,7 @@ const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
 /**
  * A TrackAudioStatusController action, for use with ActionManager. Tracks the
- * state and StreamDeck action for an individual action in a profile.
+ * state and Stream Deck action for an individual action in a profile.
  */
 export class TrackAudioStatusController extends BaseController {
   type = "TrackAudioStatusController";
@@ -30,7 +30,7 @@ export class TrackAudioStatusController extends BaseController {
 
   /**
    * Creates a new TrackAudioStatusController.
-   * @param action The StreamDeck action object
+   * @param action The Stream Deck action object
    */
   constructor(action: KeyAction, settings: TrackAudioStatusSettings) {
     super(action);

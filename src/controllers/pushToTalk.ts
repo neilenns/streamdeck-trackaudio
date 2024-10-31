@@ -1,9 +1,9 @@
+import { PushToTalkSettings } from "@actions/pushToTalk";
 import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { BaseController } from "./baseController";
-import { PushToTalkSettings } from "@actions/pushToTalk";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
+import { BaseController } from "./baseController";
 
 const StateColor = {
   NOT_TRANSMITTING: "black",
@@ -14,7 +14,7 @@ const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 
 /**
  * A PushToTalkController action, for use with ActionManager. Tracks the
- * state and StreamDeck action for an individual action in a profile.
+ * state and Stream Deck action for an individual action in a profile.
  */
 export class PushToTalkController extends BaseController {
   type = "PushToTalkController";
