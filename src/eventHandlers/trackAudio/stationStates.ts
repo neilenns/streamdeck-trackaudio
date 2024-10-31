@@ -3,7 +3,7 @@ import actionManager from "@managers/action";
 
 /**
  * Receives the state of all active stations from TrackAudio and updates the appropriate
- * StreamDeck actions with the new data.
+ * Stream Deck actions with the new data.
  */
 export const handleStationStates = (data: StationStates) => {
   // Update the states for all the received data

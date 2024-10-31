@@ -5,7 +5,7 @@ import { handleAsyncException } from "@root/utils/handleAsyncException";
 
 /**
  * Base implementation for a Controller that includes methods for
- * managing the title and image display on a StreamDeck action.
+ * managing the title and image display on a Stream Deck action.
  */
 export abstract class BaseController implements Controller {
   /**
@@ -14,13 +14,13 @@ export abstract class BaseController implements Controller {
   abstract type: string;
 
   /**
-   * The StreamDeck action this controller manages.
+   * The Stream Deck action this controller manages.
    */
   action: KeyAction;
 
   /**
    * Initializes the BaseController.
-   * @param action The StreamDeck icon this wraps
+   * @param action The Stream Deck icon this wraps
    */
   constructor(action: KeyAction) {
     this.action = action;

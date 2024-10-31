@@ -1,11 +1,11 @@
-# TrackAudio buttons for StreamDeck <!-- omit from toc -->
+# TrackAudio buttons for Stream Deck <!-- omit from toc -->
 
 > [!IMPORTANT]
 > This plugin requires [TrackAudio beta 1.3.0-beta.1](https://github.com/pierr3/TrackAudio/releases/tag/1.3.0-beta.1) or later. It will not work with earlier versions of TrackAudio.
 
-This StreamDeck plugin provides actions to interact with TrackAudio. [Download the plugin](https://github.com/neilenns/streamdeck-trackaudio/releases/latest) from the releases page. Need inspiration for how to use these actions? Check out the [examples](#examples) section.
+This Stream Deck plugin provides actions to interact with TrackAudio. [Download the plugin](https://github.com/neilenns/streamdeck-trackaudio/releases/latest) from the releases page. Need inspiration for how to use these actions? Check out the [examples](#examples) section.
 
-![Screenshot a StreamDeck profile with buttons for stations, current AITS letter, a hotline, and a push-to-talk button](docs/images/button-example.png)
+![Screenshot a Stream Deck profile with buttons for stations, current AITS letter, a hotline, and a push-to-talk button](docs/images/button-example.png)
 
 - [Action descriptions](#action-descriptions)
 - [Configuring a station status action](#configuring-a-station-status-action)
@@ -26,11 +26,11 @@ This StreamDeck plugin provides actions to interact with TrackAudio. [Download t
 | Hotline           | Switches active TX between two stations, typically a primary controlling position and a secondary hotline position.                                                          |
 | Push to talk      | Triggers TX on all TX frequencies, as if pressing the push to talk key configured in TrackAudio.                                                                             |
 | Station status    | Shows the current RX, TX, or XCA for a specific station. Pressing the action toggles specified state for that station. Also shows the last received callsign by the station. |
-| TrackAudio status | Shows the current state of the connection to TrackAudio from StreamDeck and whether TrackAudio is voice connected to VATSIM.                                                 |
+| TrackAudio status | Shows the current state of the connection to TrackAudio from Stream Deck and whether TrackAudio is voice connected to VATSIM.                                                |
 
 After installation the plugin actions are available under the TrackAudio category:
 
-![Screenshot of the StreamDeck profile UI with the categories filtered to "track"](docs/images/streamdeck-category.png)
+![Screenshot of the Stream Deck profile UI with the categories filtered to "track"](docs/images/streamdeck-category.png)
 
 ## Configuring a station status action
 
@@ -99,8 +99,8 @@ A long press of the action will refresh the action's state.
 
 ## Configuring a TrackAudio status action
 
-The TrackAudio status action shows the status of the connection between StreamDeck and TrackAudio, and whether
-the voice connection in TrackAudio is up. A long press of the action will force a refresh of all the StreamDeck
+The TrackAudio status action shows the status of the connection between Stream Deck and TrackAudio, and whether
+the voice connection in TrackAudio is up. A long press of the action will force a refresh of all the Stream Deck
 TrackAudio actions.
 
 ### TrackAudio status action settings <!-- omit from toc -->

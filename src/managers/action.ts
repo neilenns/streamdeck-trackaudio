@@ -36,7 +36,7 @@ import vatsimManager from "./vatsim";
 const logger = mainLogger.child({ service: "action" });
 
 /**
- * Singleton class that manages StreamDeck actions
+ * Singleton class that manages Stream Deck actions
  */
 class ActionManager extends EventEmitter {
   private static instance: ActionManager | null = null;
@@ -623,7 +623,7 @@ class ActionManager extends EventEmitter {
 
   /**
    * Handles a short press of a station status action. Toggles the
-   * the tx, rx, xc, or spkr state of a frequency bound to a StreamDeck action.
+   * the tx, rx, xc, or spkr state of a frequency bound to a Stream Deck action.
    * @param actionId The action id to toggle the state of
    */
   public stationStatusShortPress(action: KeyAction): void {
