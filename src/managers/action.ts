@@ -69,18 +69,24 @@ class ActionManager extends EventEmitter {
    */
   public async autoAddStations() {
     // Collect all the status action callsigns. Exclude GUARD and UNICOM since those are always
-    // automatically present in TrackAudio.
-    const trackedCallsigns = this.getStationStatusControllers()
-      .map((controller) => controller.callsign ?? "")
-      .filter((callsign) => callsign !== "GUARD" && callsign !== "UNICOM");
+    // automatically present in TrackAudio. A Set is used to ensure unique entries in the list.
+    const trackedCallsignsSet = new Set(
+      this.getStationStatusControllers()
+        .map((controller) => controller.callsign ?? "")
+        .filter((callsign) => callsign !== "GUARD" && callsign !== "UNICOM")
+    );
 
     // Add on all the hotline action callsigns
     this.getHotlineControllers().forEach((hotline) => {
-      trackedCallsigns.push(hotline.primaryCallsign, hotline.hotlineCallsign);
+      trackedCallsignsSet.add(hotline.primaryCallsign);
+      trackedCallsignsSet.add(hotline.hotlineCallsign);
     });
 
     // Auto-add all tracked callsigns with a 250ms delay between each message
-    await trackAudioManager.addStationsWithDelay(trackedCallsigns, 250);
+    await trackAudioManager.addStationsWithDelay(
+      Array.from(trackedCallsignsSet),
+      250
+    );
   }
 
   /**
