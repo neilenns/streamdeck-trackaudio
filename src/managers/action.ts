@@ -65,6 +65,25 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Automatically sends add requests to TrackAudio for tracked stations
+   */
+  public async autoAddStations() {
+    // Collect all the status action callsigns. Exclude GUARD and UNICOM since those are always
+    // automatically present in TrackAudio.
+    const trackedCallsigns = this.getStationStatusControllers()
+      .map((controller) => controller.callsign ?? "")
+      .filter((callsign) => callsign !== "GUARD" && callsign !== "UNICOM");
+
+    // Add on all the hotline action callsigns
+    this.getHotlineControllers().forEach((hotline) => {
+      trackedCallsigns.push(hotline.primaryCallsign, hotline.hotlineCallsign);
+    });
+
+    // Auto-add all tracked callsigns with a 250ms delay between each message
+    await trackAudioManager.addStationsWithDelay(trackedCallsigns, 250);
+  }
+
+  /**
    * Adds a push-to-talk action to the action list. Emits a pushToTalkAdded event
    * after the action is added.
    * @param action The action

@@ -14,11 +14,8 @@ export const handleVoiceConnectedState = async (data: VoiceConnectedState) => {
       vatsimManager.start();
     }
 
-    // Auto-add all tracked callsigns with a 250ms delay between each message
-    const trackedCallsigns = actionManager
-      .getStationStatusControllers()
-      .map((controller) => controller.callsign ?? "");
-    await trackAudioManager.addStationWithDelay(trackedCallsigns, 250);
+    // Auto-add all tracked stations
+    await actionManager.autoAddStations();
   } else {
     actionManager.resetAllButTrackAudio();
     vatsimManager.stop();
