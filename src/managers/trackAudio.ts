@@ -186,6 +186,18 @@ class TrackAudioManager extends EventEmitter {
   }
 
   /**
+   * Sends kAddStation messages to TrackAudio with a delay between each message.
+   * @param callsigns The list of callsigns to add
+   * @param delay The delay in milliseconds between each message
+   */
+  public async addStationWithDelay(callsigns: string[], delay: number) {
+    for (const callsign of callsigns) {
+      this.sendMessage({ type: "kAddStation", value: { callsign } });
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+
+  /**
    * Sets up a timer to attempt to reconnect to the websocket.
    */
   private reconnect(): void {
