@@ -154,6 +154,17 @@ export interface GetVoiceConnectedState {
 }
 
 /**
+ * Represents the kAddStation message to TrackAudio.
+ */
+export interface AddStation {
+  type: "kAddStation";
+  value: {
+    callsign?: string;
+    frequency?: string;
+  };
+}
+
+/**
  * Type union for all possible incoming websocket messages from TrackAudio
  */
 export type IncomingMessage =
@@ -176,7 +187,8 @@ export type OutgoingMessage =
   | GetStationState
   | PttPressed
   | PttReleased
-  | GetVoiceConnectedState;
+  | GetVoiceConnectedState
+  | AddStation;
 
 /**
  * Typeguard for VoiceConnected.

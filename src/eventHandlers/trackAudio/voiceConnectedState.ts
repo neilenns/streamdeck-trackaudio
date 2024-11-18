@@ -3,7 +3,7 @@ import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
 import vatsimManager from "@managers/vatsim";
 
-export const handleVoiceConnectedState = async (data: VoiceConnectedState) => {
+export const handleVoiceConnectedState = (data: VoiceConnectedState) => {
   actionManager.updateTrackAudioConnectionState();
 
   if (data.value.connected) {
@@ -15,8 +15,10 @@ export const handleVoiceConnectedState = async (data: VoiceConnectedState) => {
     }
 
     // Auto-add all tracked callsigns with a 250ms delay between each message
-    const trackedCallsigns = actionManager.getStationStatusControllers().map(controller => controller.callsign);
-    await trackAudioManager.addStationWithDelay(trackedCallsigns, 250);
+    const trackedCallsigns = actionManager
+      .getStationStatusControllers()
+      .map((controller) => controller.callsign ?? "");
+    trackAudioManager.addStationWithDelay(trackedCallsigns);
   } else {
     actionManager.resetAllButTrackAudio();
     vatsimManager.stop();
