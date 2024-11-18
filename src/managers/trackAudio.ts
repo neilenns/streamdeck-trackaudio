@@ -190,9 +190,10 @@ class TrackAudioManager extends EventEmitter {
    * @param callsigns The list of callsigns to add
    * @param delay The delay in milliseconds between each message
    */
-  public addStationWithDelay(callsigns: string[]) {
+  public async addStationWithDelay(callsigns: string[], delay: number) {
     for (const callsign of callsigns) {
       this.sendMessage({ type: "kAddStation", value: { callsign } });
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 
