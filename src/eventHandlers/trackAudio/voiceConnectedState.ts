@@ -3,7 +3,7 @@ import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
 import vatsimManager from "@managers/vatsim";
 
-export const handleVoiceConnectedState = (data: VoiceConnectedState) => {
+export const handleVoiceConnectedState = async (data: VoiceConnectedState) => {
   actionManager.updateTrackAudioConnectionState();
 
   if (data.value.connected) {
@@ -13,6 +13,9 @@ export const handleVoiceConnectedState = (data: VoiceConnectedState) => {
     if (actionManager.getAtisLetterControllers().length > 0) {
       vatsimManager.start();
     }
+
+    // Auto-add all tracked stations
+    await actionManager.autoAddStations();
   } else {
     actionManager.resetAllButTrackAudio();
     vatsimManager.stop();

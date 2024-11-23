@@ -32,6 +32,7 @@ import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnec
 import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
 import { handleActionAdded } from "@eventHandlers/action/actionAdded";
 import mainLogger from "@utils/logger";
+import { VoiceConnectedState } from "@interfaces/messages";
 
 const logger = mainLogger.child({ service: "plugin" });
 
@@ -68,7 +69,11 @@ trackAudioManager.on("stationStates", handleStationStates);
 trackAudioManager.on("stationStateUpdate", handleStationStateUpdate);
 trackAudioManager.on("txBegin", handleTxBegin);
 trackAudioManager.on("txEnd", handleTxEnd);
-trackAudioManager.on("voiceConnectedState", handleVoiceConnectedState);
+trackAudioManager.on("voiceConnectedState", (data: VoiceConnectedState) => {
+  handleVoiceConnectedState(data).catch((error: unknown) => {
+    logger.error(error);
+  });
+});
 
 actionManager.on("hotlineSettingsUpdated", handleHotlineSettingsUpdated);
 actionManager.on("removed", handleRemoved);
