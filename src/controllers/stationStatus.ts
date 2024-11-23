@@ -220,8 +220,15 @@ export class StationStatusController extends BaseController {
   /**
    * Returns the autoSetSpk setting, or false if undefined.
    */
-  get autoAddSpk() {
+  get autoSetSpk() {
     return this.settings.autoSetSpk ?? false;
+  }
+
+  /**
+   * Returns the autoSetRx setting, or false if undefined.
+   */
+  get autoSetRx() {
+    return this.settings.autoSetRx ?? false;
   }
 
   /**
