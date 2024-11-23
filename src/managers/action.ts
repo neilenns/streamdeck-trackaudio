@@ -23,6 +23,7 @@ import {
 import { ActionContext, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import {
+  SetStationState,
   StationStateUpdate,
   StationStateUpdateAvailable,
 } from "@interfaces/messages";
@@ -85,7 +86,7 @@ class ActionManager extends EventEmitter {
     // Auto-add all tracked callsigns with a 250ms delay between each message
     await trackAudioManager.addStationsWithDelay(
       Array.from(trackedCallsignsSet),
-      250
+      350
     );
   }
 
@@ -490,6 +491,29 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Auto sets the spk mode on the specified frequency, if that setting is enabled on the
+   * action.
+   * @param frequency The frequency to run the auto set actions on.
+   */
+  public autoSet(frequency: number) {
+    this.getStationStatusControllers()
+      .filter((entry) => entry.frequency === frequency)
+      .forEach((entry) => {
+        const update = {
+          type: "kSetStationState",
+          value: {
+            frequency: entry.frequency,
+            headset: !entry.autoAddSpk, // Headset is the opposite of speaker, so invert the value
+          },
+        } as SetStationState;
+
+        if (entry.settings.autoSetSpk) {
+          trackAudioManager.sendMessage(update);
+        }
+      });
+  }
+
+  /**
    * Updates all actions that match the frequency to show the transmission in progress state.
    * @param frequency The callsign of the actions to update
    */
@@ -609,6 +633,7 @@ class ActionManager extends EventEmitter {
         rx: undefined,
         xc: !foundAction.isTxPrimary,
         xca: undefined,
+        headset: undefined,
       },
     });
 
@@ -621,6 +646,7 @@ class ActionManager extends EventEmitter {
         rx: undefined,
         xc: undefined,
         xca: undefined,
+        headset: undefined,
       },
     });
   }
@@ -674,6 +700,7 @@ class ActionManager extends EventEmitter {
         tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
         xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
         xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
+        headset: undefined,
       },
     });
   }

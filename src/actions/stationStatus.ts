@@ -70,6 +70,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
 }
 
 export interface StationSettings {
+  autoSetSpk?: boolean;
   blockedCommsImagePath?: string;
   activeCommsImagePath?: string;
   callsign?: string;

@@ -218,6 +218,13 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Returns the autoSetSpk setting, or false if undefined.
+   */
+  get autoAddSpk() {
+    return this.settings.autoSetSpk ?? false;
+  }
+
+  /**
    * Returns the showTitle setting, or true if undefined.
    */
   get showTitle() {
