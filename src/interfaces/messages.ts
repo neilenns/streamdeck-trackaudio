@@ -126,6 +126,7 @@ export interface SetStationState {
     rx: boolean | "toggle" | undefined;
     xc: boolean | "toggle" | undefined;
     xca: boolean | "toggle" | undefined;
+    headset: boolean | "toggle" | undefined;
   };
 }
 
