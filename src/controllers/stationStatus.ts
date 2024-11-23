@@ -381,7 +381,7 @@ export class StationStatusController extends BaseController {
   /**
    * Sets the isAvailable property and updates the action image accordingly.
    */
-  set isAvailable(newValue: boolean) {
+  set isAvailable(newValue: boolean | undefined) {
     if (this._isAvailable === newValue) {
       return;
     }
