@@ -35,7 +35,10 @@ After installation the plugin actions are available under the TrackAudio categor
 ## Configuring a station status action
 
 The station status action displays the current status of a single station's button in TrackAudio, including
-whether communication is currently active. Pressing the action will toggle the equivalent button in TrackAudio,
+whether communication is currently active. It also automatically adds the station to TrackAudio after
+a voice connection is established.
+
+Pressing the action will toggle the equivalent button in TrackAudio,
 convenient for listening to other frequencies while controlling with the ability to quickly turn off listening
 to those frequencies when things get busy. A long press of the action will refresh the action's state.
 
@@ -75,6 +78,7 @@ configure the station status action like this to show that RX is enabled and the
 
 The hotline action provides a quick way to toggle between two stations for voice transmissions. This is typically
 used by center controllers who have a hotline frequency established with neighbouring sectors.
+It also automatically adds the primary and hotline stations to TrackAudio after a voice connection is established.
 
 To use the hotline action start by adding the appropriate stations to TrackAudio. Your primary station should
 be added with `XCA` enabled and the hotline station should be added with `RX` enabled. Then configure the
