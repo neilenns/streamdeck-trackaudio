@@ -499,15 +499,17 @@ class ActionManager extends EventEmitter {
     this.getStationStatusControllers()
       .filter((entry) => entry.frequency === frequency)
       .forEach((entry) => {
+        // Set up the base message to send.
         const update = {
           type: "kSetStationState",
           value: {
             frequency: entry.frequency,
-            headset: !entry.autoAddSpk, // Headset is the opposite of speaker, so invert the value
+            headset: entry.autoSetSpk ? false : undefined, // Headset is the opposite of speaker, so use false to turn on speaker.
+            rx: entry.autoSetRx ? true : undefined,
           },
         } as SetStationState;
 
-        if (entry.settings.autoSetSpk) {
+        if (entry.autoSetSpk || entry.autoSetRx) {
           trackAudioManager.sendMessage(update);
         }
       });
