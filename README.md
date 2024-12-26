@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > This plugin requires [TrackAudio beta 1.3.0-beta.1](https://github.com/pierr3/TrackAudio/releases/tag/1.3.0-beta.1) or later. It will not work with earlier versions of TrackAudio.
 
-This Stream Deck plugin provides actions to interact with TrackAudio. [Download the plugin](https://github.com/neilenns/streamdeck-trackaudio/releases/latest) from the releases page. Need inspiration for how to use these actions? Check out the [examples](#examples) section.
+This Stream Deck plugin provides actions to interact with TrackAudio. [Get the plugin from the Elgato marketplace](https://marketplace.elgato.com/product/trackaudio-e913a0ca-4c12-411d-a5a6-acf5f6c4bdea). Need inspiration for how to use these actions? Check out the [examples](#examples) section.
 
 ![Screenshot a Stream Deck profile with buttons for stations, current AITS letter, a hotline, and a push-to-talk button](docs/images/button-example.png)
 
