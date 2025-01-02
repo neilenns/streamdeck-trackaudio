@@ -5,11 +5,27 @@
   "Author": "Neil Enns",
   "Actions": [
     {
+      "Name": "Station volume",
+      "UUID": "com.neil-enns.trackaudio.stationvolume",
+      "Icon": "images/plugin/volume",
+      "Controllers": ["Encoder"],
+      "Encoder": {
+        "layout": "$B1"
+      },
+      "DisableAutomaticStates": true,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
       "Name": "ATIS letter",
       "UUID": "com.neil-enns.trackaudio.atisletter",
       "Icon": "images/actions/atisLetter/cloud-white",
       "PropertyInspectorPath": "pi/atisLetter.html",
-      "Tooltip": "Shows the current ATIS letter for the specified.",
+      "Tooltip": "Shows the current ATIS letter for the specified station.",
       "Controllers": ["Keypad"],
       "DisableAutomaticStates": true,
       "UserTitleEnabled": false,

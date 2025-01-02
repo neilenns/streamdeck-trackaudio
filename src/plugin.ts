@@ -33,6 +33,8 @@ import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceiv
 import { handleActionAdded } from "@eventHandlers/action/actionAdded";
 import mainLogger from "@utils/logger";
 import { VoiceConnectedState } from "@interfaces/messages";
+import { handleStationVolumeAdded } from "@eventHandlers/action/stationVolumeAdded";
+import { StationVolume } from "@actions/stationVolume";
 
 const logger = mainLogger.child({ service: "plugin" });
 
@@ -50,6 +52,7 @@ streamDeck.actions.registerAction(new Hotline());
 streamDeck.actions.registerAction(new PushToTalk());
 streamDeck.actions.registerAction(new StationStatus());
 streamDeck.actions.registerAction(new TrackAudioStatus());
+streamDeck.actions.registerAction(new StationVolume());
 
 trackAudioManager.on("connected", () => {
   disconnectHandled = false;
@@ -87,6 +90,7 @@ actionManager.on("trackAudioStatusUpdated", handleTrackAudioStatusAdded);
 actionManager.on("atisLetterAdded", handleAtisLetterAdded);
 actionManager.on("atisLetterUpdated", handleAtisLetterUpdated);
 actionManager.on("actionAdded", handleActionAdded);
+actionManager.on("stationVolumeAdded", handleStationVolumeAdded);
 
 vatsimManager.on("vatsimDataReceived", handleVatsimDataReceived);
 

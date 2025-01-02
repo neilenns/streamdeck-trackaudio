@@ -20,7 +20,7 @@ import {
   TrackAudioStatusController,
   isTrackAudioStatusController,
 } from "@controllers/trackAudioStatus";
-import { ActionContext, KeyAction } from "@elgato/streamdeck";
+import { ActionContext, DialAction, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import {
   SetStationState,
@@ -33,6 +33,11 @@ import mainLogger from "@utils/logger";
 import debounce from "debounce";
 import { EventEmitter } from "events";
 import vatsimManager from "./vatsim";
+import {
+  isStationVolumeController,
+  StationVolumeController,
+} from "@controllers/stationVolume";
+import { StationVolumeSettings } from "@actions/stationVolume";
 
 const logger = mainLogger.child({ service: "action" });
 
@@ -146,6 +151,23 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Adds a station volume action to the action list. Emits a stationVolumeAdded
+   * event after the action is added.
+   * @param action The action
+   * @param settings The settings for the action
+   */
+  public addStationVolume(
+    action: DialAction,
+    settings: StationVolumeSettings
+  ): void {
+    const controller = new StationVolumeController(action, settings);
+
+    this.actions.push(controller);
+    this.emit("stationVolumeAdded", controller);
+    this.emit("actionAdded", controller);
+  }
+
+  /**
    * Adds a station status action to the action list. Emits a stationStatusAdded
    * event after the action is added.
    * @param action The action
@@ -212,6 +234,7 @@ class ActionManager extends EventEmitter {
       handleAsyncException("Unable to show OK on ATIS button:", error);
     });
   }
+
   /**
    * Resets the ATIS letter on all ATIS letter actions to undefined.
    */
@@ -219,6 +242,26 @@ class ActionManager extends EventEmitter {
     this.getAtisLetterControllers().forEach((action) => {
       action.letter = undefined;
     });
+  }
+
+  /**
+   * Updates the settings associated with a station volume action.
+   * @param action The action to update
+   * @param settings The new settings to use
+   */
+  public updateStationVolumeSettings(
+    action: DialAction,
+    settings: StationVolumeSettings
+  ) {
+    const savedAction = this.getStationVolumeControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    savedAction.settings = settings;
   }
 
   /**
@@ -469,6 +512,12 @@ class ActionManager extends EventEmitter {
         entry.hotlineFrequency = frequency;
       }
     });
+
+    this.getStationVolumeControllers()
+      .filter((entry) => entry.callsign === callsign)
+      .forEach((entry) => {
+        entry.frequency = frequency;
+      });
   }
 
   /**
@@ -592,6 +641,56 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Changes the station volume by the number of ticks times the change amount.
+   * @param action The action that triggered the volume change
+   * @param ticks The number of ticks the dial was rotated
+   */
+  public changeStationVolume(action: DialAction, ticks: number) {
+    const savedAction = this.getStationVolumeControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    // Calculate the new volume level
+    const newGain = savedAction.changeAmount ?? 0.1 * ticks;
+
+    // Send the message to TrackAudio
+    trackAudioManager.sendMessage({
+      type: ticks < 0 ? "kDecrementStationGain" : "kIncrementStationGain",
+      value: {
+        frequency: savedAction.frequency,
+        amount: newGain,
+      },
+    });
+  }
+
+  public toggleStationMute(action: DialAction) {
+    const savedAction = this.getStationVolumeControllers().find(
+      (entry) => entry.action.id === action.id
+    );
+
+    if (!savedAction) {
+      return;
+    }
+
+    trackAudioManager.sendMessage({
+      type: "kSetStationState",
+      value: {
+        frequency: savedAction.frequency,
+        isOutputMuted: "toggle",
+        rx: undefined,
+        xc: undefined,
+        xca: undefined,
+        headset: undefined,
+        tx: undefined,
+      },
+    });
+  }
+
+  /**
    * Removes an action from the list.
    * @param action The action to remove
    */
@@ -636,6 +735,7 @@ class ActionManager extends EventEmitter {
         xc: !foundAction.isTxPrimary,
         xca: undefined,
         headset: undefined,
+        isOutputMuted: undefined,
       },
     });
 
@@ -649,6 +749,7 @@ class ActionManager extends EventEmitter {
         xc: undefined,
         xca: undefined,
         headset: undefined,
+        isOutputMuted: undefined,
       },
     });
   }
@@ -703,6 +804,7 @@ class ActionManager extends EventEmitter {
         xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
         xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
         headset: undefined,
+        isOutputMuted: undefined,
       },
     });
   }
@@ -815,6 +917,14 @@ class ActionManager extends EventEmitter {
    */
   public getTrackAudioStatusControllers(): TrackAudioStatusController[] {
     return this.getControllers(isTrackAudioStatusController);
+  }
+
+  /**
+   * Retrieves the list of all tracked StationVolumeControllers.
+   * @returns An array of StationVolumeControllers
+   */
+  public getStationVolumeControllers(): StationVolumeController[] {
+    return this.getControllers(isStationVolumeController);
   }
 
   /**

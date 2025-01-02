@@ -1,4 +1,4 @@
-import { KeyAction } from "@elgato/streamdeck";
+import { DialAction, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import svgManager from "@managers/svg";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
@@ -16,13 +16,13 @@ export abstract class BaseController implements Controller {
   /**
    * The Stream Deck action this controller manages.
    */
-  action: KeyAction;
+  action: KeyAction | DialAction;
 
   /**
    * Initializes the BaseController.
    * @param action The Stream Deck icon this wraps
    */
-  constructor(action: KeyAction) {
+  constructor(action: KeyAction | DialAction) {
     this.action = action;
   }
 

@@ -36,6 +36,8 @@ export interface StationStateUpdateAvailable {
     xca: boolean;
     headset: boolean;
     isAvailable?: true;
+    isOutputMuted?: boolean;
+    outputGain?: number;
   };
 }
 
@@ -116,6 +118,28 @@ export interface RxEnd {
 }
 
 /**
+ * Represents the kIncrementStationGain message to TrackAudio.
+ */
+export interface IncrementStationGain {
+  type: "kIncrementStationGain";
+  value: {
+    frequency: number;
+    amount: number;
+  };
+}
+
+/**
+ * Represents the kDecrementStationGain message to TrackAudio.
+ */
+export interface DecrementStationGain {
+  type: "kDecrementStationGain";
+  value: {
+    frequency: number;
+    amount: number;
+  };
+}
+
+/**
  * Represents the kSetStationState message to TrackAudio.
  */
 export interface SetStationState {
@@ -127,6 +151,7 @@ export interface SetStationState {
     xc: boolean | "toggle" | undefined;
     xca: boolean | "toggle" | undefined;
     headset: boolean | "toggle" | undefined;
+    isOutputMuted: boolean | "toggle" | undefined;
   };
 }
 
@@ -189,7 +214,9 @@ export type OutgoingMessage =
   | PttPressed
   | PttReleased
   | GetVoiceConnectedState
-  | AddStation;
+  | AddStation
+  | IncrementStationGain
+  | DecrementStationGain;
 
 /**
  * Typeguard for VoiceConnected.
