@@ -208,12 +208,18 @@ export class StationVolumeController extends BaseController {
     if (generatedSvg) {
       action
         .setFeedback({
-          title: this.callsign ?? "",
+          title: {
+            value: this.callsign ?? "",
+            color: this.isOutputMuted ? "grey" : "#FFFFFF",
+          },
           indicator: {
             value: this.outputVolume,
-            bar_fill_c: this.isOutputMuted ? "#FF0000" : "#FFFFFF",
+            bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
           },
-          value: `${this.outputVolume.toString()}%`,
+          value: {
+            value: `${this.outputVolume.toString()}%`,
+            color: this.isOutputMuted ? "grey" : "#FFFFFF",
+          },
           icon: generatedSvg,
         })
         .catch((error: unknown) => {
