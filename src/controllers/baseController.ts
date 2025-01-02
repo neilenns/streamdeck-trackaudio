@@ -1,4 +1,4 @@
-import { DialAction, FeedbackPayload, KeyAction } from "@elgato/streamdeck";
+import { DialAction, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import svgManager from "@managers/svg";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
@@ -72,11 +72,7 @@ export abstract class BaseController implements Controller {
     }
   }
 
-  setFeedback(
-    imagePath: string,
-    replacements: object,
-    feedback: FeedbackPayload
-  ) {
+  setFeedbackImage(imagePath: string, replacements: object) {
     if (!this.action.isDial()) {
       return;
     }
@@ -86,7 +82,6 @@ export abstract class BaseController implements Controller {
     if (generatedSvg) {
       this.action
         .setFeedback({
-          ...feedback,
           icon: generatedSvg,
         })
         .catch((error: unknown) => {
@@ -95,7 +90,6 @@ export abstract class BaseController implements Controller {
     } else {
       this.action
         .setFeedback({
-          ...feedback,
           icon: imagePath,
         })
         .catch((error: unknown) => {
