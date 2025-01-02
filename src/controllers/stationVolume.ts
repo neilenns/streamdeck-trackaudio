@@ -152,6 +152,7 @@ export class StationVolumeController extends BaseController {
 
   override refreshImage(): void {
     const action = this.action as DialAction;
+    const value = Math.round(this.outputGain * 100);
 
     logger.info("Refreshing image for StationVolumeController");
 
@@ -159,9 +160,9 @@ export class StationVolumeController extends BaseController {
       .setFeedback({
         title: this.callsign ?? "",
         indicator: {
-          value: this.outputGain * 100,
+          value,
         },
-        value: this.outputGain * 100,
+        value,
       })
       .catch((error: unknown) => {
         handleAsyncException("Unable to set dial feedback: ", error);
