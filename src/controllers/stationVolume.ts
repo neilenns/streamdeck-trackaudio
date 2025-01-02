@@ -201,15 +201,15 @@ export class StationVolumeController extends BaseController {
       this.setFeedback(this.notMutedTemplatePath, replacements, {
         title: {
           value: this.callsign ?? "",
-          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+          color: "grey",
         },
         indicator: {
           value: 0,
-          bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
+          bar_fill_c: "grey",
         },
         value: {
           value: "",
-          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+          color: "grey",
         },
       });
       return;
