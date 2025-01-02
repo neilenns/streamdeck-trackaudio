@@ -20,7 +20,7 @@ export class StationVolumeController extends BaseController {
   private _isOutputMuted? = false;
   private _mutedTemplatePath?: string;
   private _notMutedTemplatePath?: string;
-  private _outputGain? = 0.5;
+  private _outputVolume? = 50;
   private _settings: StationVolumeSettings | null = null;
 
   /**
@@ -64,21 +64,21 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets the output gain. Returns 0.5 if undefined.
+   * Gets the output volume. Returns 50 if undefined.
    **/
-  get outputGain(): number {
-    return this._outputGain ?? 0.5;
+  get outputVolume(): number {
+    return this._outputVolume ?? 50;
   }
 
   /**
    * Sets the output gain.
    **/
-  set outputGain(newValue: number | undefined) {
-    if (this._outputGain === newValue) {
+  set outputVolume(newValue: number | undefined) {
+    if (this._outputVolume === newValue) {
       return;
     }
 
-    this._outputGain = newValue;
+    this._outputVolume = newValue;
     this.refreshImage();
   }
 
@@ -179,7 +179,7 @@ export class StationVolumeController extends BaseController {
    * Convenience property to get the changeAmount value of settings.
    */
   get changeAmount() {
-    return (this.settings.changeAmount ?? 1) / 10;
+    return this.settings.changeAmount ?? 1;
   }
 
   override reset(): void {
@@ -187,22 +187,20 @@ export class StationVolumeController extends BaseController {
     this._isAvailable = undefined;
     this._isOutputMuted = false;
     this._frequency = 0;
-    this._outputGain = 0.5;
+    this._outputVolume = 0.5;
 
     this.refreshImage();
   }
 
   override refreshImage(): void {
     const action = this.action as DialAction;
-    const value = Math.round(this.outputGain * 100);
     const imagePath = this.isOutputMuted
       ? this.mutedTemplatePath
       : this.notMutedTemplatePath;
 
     const replacements = {
-      gain: this.outputGain,
       isOutputMuted: this.isOutputMuted,
-      volume: value,
+      volume: this.outputVolume,
     };
 
     const generatedSvg = svgManager.renderSvg(imagePath, replacements);
@@ -212,10 +210,10 @@ export class StationVolumeController extends BaseController {
         .setFeedback({
           title: this.callsign ?? "",
           indicator: {
-            value,
+            value: this.outputVolume,
             bar_fill_c: this.isOutputMuted ? "pink" : "white",
           },
-          value: `${value.toString()}%`,
+          value: `${this.outputVolume.toString()}%`,
           icon: generatedSvg,
         })
         .catch((error: unknown) => {
