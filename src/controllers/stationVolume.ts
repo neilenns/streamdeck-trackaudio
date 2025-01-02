@@ -137,7 +137,7 @@ export class StationVolumeController extends BaseController {
    * Convenience property to get the changeAmount value of settings.
    */
   get changeAmount() {
-    return this.settings.changeAmount;
+    return this.settings.changeAmount ?? 1;
   }
 
   override reset(): void {

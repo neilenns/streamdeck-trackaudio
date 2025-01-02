@@ -8,9 +8,14 @@
       "Name": "Station volume",
       "UUID": "com.neil-enns.trackaudio.stationvolume",
       "Icon": "images/plugin/volume",
+      "PropertyInspectorPath": "pi/stationVolume.html",
       "Controllers": ["Encoder"],
       "Encoder": {
-        "layout": "$B1"
+        "layout": "$B1",
+        "TriggerDescription": {
+          "Push": "Toggle mute",
+          "Rotate": "Adjust volume"
+        }
       },
       "DisableAutomaticStates": true,
       "States": [

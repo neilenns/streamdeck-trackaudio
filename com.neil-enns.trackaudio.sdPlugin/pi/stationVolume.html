@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
+  </head>
+  <body>
+    <sdpi-item label="Callsign">
+      <sdpi-textfield
+        setting="callsign"
+        placeholder="Station callsign, e.g. SEA_TWR"
+        required
+      ></sdpi-textfield>
+    </sdpi-item>
+
+		<sdpi-item label="Change amount">
+			<sdpi-range
+				setting="changeAmount"
+				min="0"
+				max="10"
+				default="1"
+				showlabels
+				required
+			></sdpi-range>
+  </body>
+</html>
