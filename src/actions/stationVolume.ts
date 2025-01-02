@@ -61,6 +61,8 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
 }
 
 export interface StationVolumeSettings {
+  mutedImagePath?: string;
+  notMutedImagePath?: string;
   callsign?: string;
   changeAmount?: number;
   [key: string]: JsonValue;
