@@ -7,6 +7,9 @@ import { handleAsyncException } from "@utils/handleAsyncException";
 
 const logger = mainLogger.child({ service: "plugin" });
 
+const defaultVolumeTemplatePath = "images/actions/stationVolume/volume.svg";
+const defaultMutedTemplatePath = "images/actions/stationStatus/muted.svg";
+
 export class StationVolumeController extends BaseController {
   type = "StationVolumeController";
 
@@ -26,6 +29,20 @@ export class StationVolumeController extends BaseController {
 
     this.action = action;
     this.settings = settings;
+  }
+
+  /**
+   * Gets the volume SVG template path.
+   */
+  get volumeTemplatePath(): string {
+    return defaultVolumeTemplatePath;
+  }
+
+  /**
+   * Gets the muted SVG template path.
+   */
+  get mutedTemplatePath(): string {
+    return defaultMutedTemplatePath;
   }
 
   /**
@@ -163,6 +180,9 @@ export class StationVolumeController extends BaseController {
           value,
         },
         value: `${value.toString()}%`,
+        icon: this.isOutputMuted
+          ? this.mutedTemplatePath
+          : this.volumeTemplatePath,
       })
       .catch((error: unknown) => {
         handleAsyncException("Unable to set dial feedback: ", error);
