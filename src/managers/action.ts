@@ -454,7 +454,7 @@ class ActionManager extends EventEmitter {
     this.getStationVolumeControllers().forEach((entry) => {
       if (entry.frequency === data.value.frequency) {
         entry.isOutputMuted = data.value.isOutputMuted;
-        entry.outputGain = data.value.outputGain;
+        entry.outputVolume = data.value.outputVolume;
       }
     });
   }
