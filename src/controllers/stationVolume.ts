@@ -4,6 +4,7 @@ import { DialAction } from "@elgato/streamdeck";
 import mainLogger from "@utils/logger";
 import { Controller } from "@interfaces/controller";
 import { handleAsyncException } from "@utils/handleAsyncException";
+import svgManager from "@managers/svg";
 
 const logger = mainLogger.child({ service: "plugin" });
 
@@ -170,23 +171,35 @@ export class StationVolumeController extends BaseController {
   override refreshImage(): void {
     const action = this.action as DialAction;
     const value = Math.round(this.outputGain * 100);
+    const imagePath = this.isOutputMuted
+      ? this.mutedTemplatePath
+      : this.volumeTemplatePath;
 
-    logger.info("Refreshing image for StationVolumeController");
+    const replacements = {
+      gain: this.outputGain,
+      isOutputMuted: this.isOutputMuted,
+      volume: value,
+    };
 
-    action
-      .setFeedback({
-        title: this.callsign ?? "",
-        indicator: {
-          value,
-        },
-        value: `${value.toString()}%`,
-        icon: this.isOutputMuted
-          ? this.mutedTemplatePath
-          : this.volumeTemplatePath,
-      })
-      .catch((error: unknown) => {
-        handleAsyncException("Unable to set dial feedback: ", error);
+    const generatedSvg = svgManager.renderSvg(imagePath, replacements);
+
+    if (generatedSvg) {
+      action
+        .setFeedback({
+          title: this.callsign ?? "",
+          indicator: {
+            value,
+          },
+          value: `${value.toString()}%`,
+        })
+        .catch((error: unknown) => {
+          handleAsyncException("Unable to set dial feedback: ", error);
+        });
+    } else {
+      this.action.setImage(imagePath).catch((error: unknown) => {
+        handleAsyncException("Unable to set state image: ", error);
       });
+    }
   }
 
   override refreshTitle(): void {
