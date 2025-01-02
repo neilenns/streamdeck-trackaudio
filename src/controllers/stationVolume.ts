@@ -71,7 +71,7 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Sets the output gain.
+   * Sets the output volume.
    **/
   set outputVolume(newValue: number | undefined) {
     if (this._outputVolume === newValue) {

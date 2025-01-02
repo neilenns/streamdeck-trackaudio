@@ -662,14 +662,14 @@ class ActionManager extends EventEmitter {
     }
 
     // Calculate the new volume level
-    const newGain = savedAction.changeAmount * ticks;
+    const newVolume = savedAction.changeAmount * ticks;
 
     // Send the message to TrackAudio
     trackAudioManager.sendMessage({
-      type: "kChangeStationGain",
+      type: "kChangeStationVolume",
       value: {
         frequency: savedAction.frequency,
-        amount: newGain,
+        amount: newVolume,
       },
     });
   }
