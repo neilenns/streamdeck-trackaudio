@@ -13,8 +13,8 @@ export class StationVolumeController extends BaseController {
   private _settings: StationVolumeSettings | null = null;
   private _frequency = 0;
   private _isAvailable: boolean | undefined = undefined;
-  private _outputGain = 0.5;
-  private _isOutputMuted = false;
+  private _outputGain? = 0.5;
+  private _isOutputMuted? = false;
 
   /**
    * Creates a new StationStatusController object.
@@ -29,16 +29,16 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets the output gain.
+   * Gets the output gain. Returns 0.5 if undefined.
    **/
   get outputGain(): number {
-    return this._outputGain;
+    return this._outputGain ?? 0.5;
   }
 
   /**
    * Sets the output gain.
    **/
-  set outputGain(newValue: number) {
+  set outputGain(newValue: number | undefined) {
     if (this._outputGain === newValue) {
       return;
     }
@@ -48,16 +48,16 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets whether the output is muted.
+   * Gets whether the output is muted. Returns false if undefined.
    */
   get isOutputMuted(): boolean {
-    return this._isOutputMuted;
+    return this._isOutputMuted ?? false;
   }
 
   /**
    * Sets whether the output is muted.
    */
-  set isOutputMuted(newValue: boolean) {
+  set isOutputMuted(newValue: boolean | undefined) {
     if (this._isOutputMuted === newValue) {
       return;
     }

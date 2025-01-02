@@ -450,6 +450,13 @@ class ActionManager extends EventEmitter {
 
       entry.refreshImage();
     });
+
+    this.getStationVolumeControllers().forEach((entry) => {
+      if (entry.frequency === data.value.frequency) {
+        entry.isOutputMuted = data.value.isOutputMuted;
+        entry.outputGain = data.value.outputGain;
+      }
+    });
   }
 
   /**
