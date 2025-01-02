@@ -211,7 +211,7 @@ export class StationVolumeController extends BaseController {
           title: this.callsign ?? "",
           indicator: {
             value: this.outputVolume,
-            bar_fill_c: this.isOutputMuted ? "pink" : "white",
+            bar_fill_c: this.isOutputMuted ? "#FF0000" : "#FFFFFF",
           },
           value: `${this.outputVolume.toString()}%`,
           icon: generatedSvg,
