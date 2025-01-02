@@ -8,7 +8,7 @@ import svgManager from "@managers/svg";
 
 const logger = mainLogger.child({ service: "plugin" });
 
-const defaultVolumeTemplatePath = "images/actions/stationVolume/volume.svg";
+const defaultVolumeTemplatePath = "images/actions/stationVolume/notMuted.svg";
 const defaultMutedTemplatePath = "images/actions/stationStatus/muted.svg";
 
 export class StationVolumeController extends BaseController {
@@ -191,6 +191,7 @@ export class StationVolumeController extends BaseController {
             value,
           },
           value: `${value.toString()}%`,
+          icon: generatedSvg,
         })
         .catch((error: unknown) => {
           handleAsyncException("Unable to set dial feedback: ", error);
