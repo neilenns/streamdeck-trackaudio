@@ -116,6 +116,11 @@ export class StationVolumeController extends BaseController {
    * Sets the settings.
    */
   set settings(newValue: StationVolumeSettings) {
+    // Clear the frequency if the callsign changes.
+    if (this._settings && this._settings.callsign !== newValue.callsign) {
+      this.frequency = 0;
+    }
+
     this._settings = newValue;
     this.mutedTemplatePath = newValue.mutedImagePath;
     this.notMutedTemplatePath = newValue.notMutedImagePath;
