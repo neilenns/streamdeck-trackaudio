@@ -655,7 +655,7 @@ class ActionManager extends EventEmitter {
     }
 
     // Calculate the new volume level
-    const newGain = savedAction.changeAmount ?? 0.1 * ticks;
+    const newGain = savedAction.changeAmount * ticks;
 
     // Send the message to TrackAudio
     trackAudioManager.sendMessage({
