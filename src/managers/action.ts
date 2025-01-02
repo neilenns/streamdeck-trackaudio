@@ -666,7 +666,7 @@ class ActionManager extends EventEmitter {
 
     // Send the message to TrackAudio
     trackAudioManager.sendMessage({
-      type: ticks < 0 ? "kDecrementStationGain" : "kIncrementStationGain",
+      type: "kChangeStationGain",
       value: {
         frequency: savedAction.frequency,
         amount: newGain,

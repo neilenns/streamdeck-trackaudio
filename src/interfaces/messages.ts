@@ -118,21 +118,10 @@ export interface RxEnd {
 }
 
 /**
- * Represents the kIncrementStationGain message to TrackAudio.
+ * Represents the kChangeStationGain message to TrackAudio.
  */
-export interface IncrementStationGain {
-  type: "kIncrementStationGain";
-  value: {
-    frequency: number;
-    amount: number;
-  };
-}
-
-/**
- * Represents the kDecrementStationGain message to TrackAudio.
- */
-export interface DecrementStationGain {
-  type: "kDecrementStationGain";
+export interface ChangeStationGain {
+  type: "kChangeStationGain";
   value: {
     frequency: number;
     amount: number;
@@ -215,8 +204,7 @@ export type OutgoingMessage =
   | PttReleased
   | GetVoiceConnectedState
   | AddStation
-  | IncrementStationGain
-  | DecrementStationGain;
+  | ChangeStationGain;
 
 /**
  * Typeguard for VoiceConnected.
