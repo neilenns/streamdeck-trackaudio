@@ -398,7 +398,14 @@ class ActionManager extends EventEmitter {
         entry.frequency = 0;
       });
 
-    // Do all the hotlines
+    // Do all the station volume controllers
+    this.getStationVolumeControllers()
+      .filter((entry) => entry.callsign === callsign)
+      .forEach((entry) => {
+        entry.frequency = 0;
+      });
+
+    // Do all the hotline controllers
     this.getHotlineControllers().forEach((entry) => {
       if (entry.primaryCallsign === callsign) {
         entry.primaryFrequency = 0;

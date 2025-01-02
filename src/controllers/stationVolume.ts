@@ -4,6 +4,7 @@ import { DialAction } from "@elgato/streamdeck";
 import mainLogger from "@utils/logger";
 import { Controller } from "@interfaces/controller";
 import { stringOrUndefined } from "@utils/utils";
+import { handleAsyncException } from "@utils/handleAsyncException";
 
 const logger = mainLogger.child({ service: "plugin" });
 
@@ -20,6 +21,7 @@ export class StationVolumeController extends BaseController {
   private _notMutedTemplatePath?: string;
   private _outputVolume? = 100;
   private _settings: StationVolumeSettings | null = null;
+  declare action: DialAction; // This ensures action from the base class is always a DialAction
 
   /**
    * Creates a new StationStatusController object.
@@ -77,6 +79,7 @@ export class StationVolumeController extends BaseController {
     }
 
     this._outputVolume = newValue;
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -96,6 +99,7 @@ export class StationVolumeController extends BaseController {
     }
 
     this._isOutputMuted = newValue;
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -123,6 +127,7 @@ export class StationVolumeController extends BaseController {
     this.mutedTemplatePath = newValue.mutedImagePath;
     this.notMutedTemplatePath = newValue.notMutedImagePath;
 
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -151,6 +156,7 @@ export class StationVolumeController extends BaseController {
 
     // The frequency doesn't come from settings like the other displayed properties and could cause a
     // change in the display of the action.
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -170,6 +176,7 @@ export class StationVolumeController extends BaseController {
     }
 
     this._isAvailable = newValue;
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -187,6 +194,7 @@ export class StationVolumeController extends BaseController {
     this._frequency = 0;
     this._outputVolume = 100;
 
+    this.refreshTitle();
     this.refreshImage();
   }
 
@@ -198,46 +206,61 @@ export class StationVolumeController extends BaseController {
 
     // Set the unavilable state if the station is not available.
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.setFeedback(this.notMutedTemplatePath, replacements, {
-        title: {
-          value: this.callsign ?? "",
-          color: "grey",
-        },
-        indicator: {
-          value: 0,
-          bar_fill_c: "grey",
-        },
-        value: {
-          value: "",
-          color: "grey",
-        },
-      });
+      this.setFeedbackImage(this.notMutedTemplatePath, replacements);
       return;
     }
 
-    // Set the muted/unmuted state
-    const imagePath = this.isOutputMuted
-      ? this.mutedTemplatePath
-      : this.notMutedTemplatePath;
+    if (this.isOutputMuted) {
+      this.setFeedbackImage(this.mutedTemplatePath, replacements);
+      return;
+    }
 
-    this.setFeedback(imagePath, replacements, {
-      title: {
-        value: this.callsign ?? "",
-        color: this.isOutputMuted ? "grey" : "#FFFFFF",
-      },
-      indicator: {
-        value: this.outputVolume,
-        bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
-      },
-      value: {
-        value: `${this.outputVolume.toString()}%`,
-        color: this.isOutputMuted ? "grey" : "#FFFFFF",
-      },
-    });
+    this.setFeedbackImage(this.notMutedTemplatePath, replacements);
   }
 
   override refreshTitle(): void {
-    logger.info("Refreshing title for StationVolumeController");
+    // Set the unavilable state if the station is not available.
+    if (this.isAvailable !== undefined && !this.isAvailable) {
+      this.action
+        .setFeedback({
+          title: {
+            value: this.callsign ?? "",
+            color: "grey",
+          },
+          indicator: {
+            value: 0,
+            bar_fill_c: "grey",
+          },
+          value: {
+            value: "",
+            color: "grey",
+          },
+        })
+        .catch((error: unknown) => {
+          handleAsyncException("Unable to set dial feedback: ", error);
+        });
+      return;
+    }
+
+    // Nomral connected state.
+    this.action
+      .setFeedback({
+        title: {
+          value: this.callsign ?? "",
+          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+        },
+        indicator: {
+          value: this.outputVolume,
+          bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
+        },
+        value: {
+          value: `${this.outputVolume.toString()}%`,
+          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+        },
+      })
+      .catch((error: unknown) => {
+        handleAsyncException("Unable to set dial feedback: ", error);
+      });
   }
 }
 
