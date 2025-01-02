@@ -9,7 +9,7 @@ import svgManager from "@managers/svg";
 const logger = mainLogger.child({ service: "plugin" });
 
 const defaultVolumeTemplatePath = "images/actions/stationVolume/notMuted.svg";
-const defaultMutedTemplatePath = "images/actions/stationStatus/muted.svg";
+const defaultMutedTemplatePath = "images/actions/stationVolume/muted.svg";
 
 export class StationVolumeController extends BaseController {
   type = "StationVolumeController";
