@@ -162,7 +162,7 @@ export class StationVolumeController extends BaseController {
         indicator: {
           value,
         },
-        value,
+        value: `${value.toString()}%`,
       })
       .catch((error: unknown) => {
         handleAsyncException("Unable to set dial feedback: ", error);
