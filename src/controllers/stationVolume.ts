@@ -3,8 +3,6 @@ import { BaseController } from "./baseController";
 import { DialAction } from "@elgato/streamdeck";
 import mainLogger from "@utils/logger";
 import { Controller } from "@interfaces/controller";
-import { handleAsyncException } from "@utils/handleAsyncException";
-import svgManager from "@managers/svg";
 import { stringOrUndefined } from "@utils/utils";
 
 const logger = mainLogger.child({ service: "plugin" });
@@ -193,75 +191,49 @@ export class StationVolumeController extends BaseController {
   }
 
   override refreshImage(): void {
-    const action = this.action as DialAction;
-    const imagePath = this.isOutputMuted
-      ? this.mutedTemplatePath
-      : this.notMutedTemplatePath;
-
     const replacements = {
       isOutputMuted: this.isOutputMuted,
       volume: this.outputVolume,
     };
 
+    // Set the unavilable state if the station is not available.
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      const generatedSvg = svgManager.renderSvg(imagePath, replacements);
-
-      if (generatedSvg) {
-        action
-          .setFeedback({
-            title: {
-              value: this.callsign ?? "",
-              color: this.isOutputMuted ? "grey" : "#FFFFFF",
-            },
-            indicator: {
-              value: 0,
-              bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
-            },
-            value: {
-              value: "",
-              color: this.isOutputMuted ? "grey" : "#FFFFFF",
-            },
-            icon: generatedSvg,
-          })
-          .catch((error: unknown) => {
-            handleAsyncException("Unable to set dial feedback: ", error);
-          });
-      } else {
-        this.action.setImage(imagePath).catch((error: unknown) => {
-          handleAsyncException("Unable to set state image: ", error);
-        });
-      }
-
+      this.setFeedback(this.notMutedTemplatePath, replacements, {
+        title: {
+          value: this.callsign ?? "",
+          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+        },
+        indicator: {
+          value: 0,
+          bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
+        },
+        value: {
+          value: "",
+          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+        },
+      });
       return;
     }
 
-    const generatedSvg = svgManager.renderSvg(imagePath, replacements);
+    // Set the muted/unmuted state
+    const imagePath = this.isOutputMuted
+      ? this.mutedTemplatePath
+      : this.notMutedTemplatePath;
 
-    if (generatedSvg) {
-      action
-        .setFeedback({
-          title: {
-            value: this.callsign ?? "",
-            color: this.isOutputMuted ? "grey" : "#FFFFFF",
-          },
-          indicator: {
-            value: this.outputVolume,
-            bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
-          },
-          value: {
-            value: `${this.outputVolume.toString()}%`,
-            color: this.isOutputMuted ? "grey" : "#FFFFFF",
-          },
-          icon: generatedSvg,
-        })
-        .catch((error: unknown) => {
-          handleAsyncException("Unable to set dial feedback: ", error);
-        });
-    } else {
-      this.action.setImage(imagePath).catch((error: unknown) => {
-        handleAsyncException("Unable to set state image: ", error);
-      });
-    }
+    this.setFeedback(imagePath, replacements, {
+      title: {
+        value: this.callsign ?? "",
+        color: this.isOutputMuted ? "grey" : "#FFFFFF",
+      },
+      indicator: {
+        value: this.outputVolume,
+        bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
+      },
+      value: {
+        value: `${this.outputVolume.toString()}%`,
+        color: this.isOutputMuted ? "grey" : "#FFFFFF",
+      },
+    });
   }
 
   override refreshTitle(): void {
