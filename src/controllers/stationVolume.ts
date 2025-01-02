@@ -20,7 +20,7 @@ export class StationVolumeController extends BaseController {
   private _isOutputMuted? = false;
   private _mutedTemplatePath?: string;
   private _notMutedTemplatePath?: string;
-  private _outputVolume? = 50;
+  private _outputVolume? = 100;
   private _settings: StationVolumeSettings | null = null;
 
   /**
@@ -64,10 +64,10 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets the output volume. Returns 50 if undefined.
+   * Gets the output volume. Returns 100 if undefined.
    **/
   get outputVolume(): number {
-    return this._outputVolume ?? 50;
+    return this._outputVolume ?? 100;
   }
 
   /**
@@ -187,7 +187,7 @@ export class StationVolumeController extends BaseController {
     this._isAvailable = undefined;
     this._isOutputMuted = false;
     this._frequency = 0;
-    this._outputVolume = 0.5;
+    this._outputVolume = 100;
 
     this.refreshImage();
   }
