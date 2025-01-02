@@ -142,6 +142,12 @@ export class StationVolumeController extends BaseController {
 
   override reset(): void {
     logger.info("Resetting StationVolumeController");
+    this._isAvailable = undefined;
+    this._isOutputMuted = false;
+    this._frequency = 0;
+    this._outputGain = 0.5;
+
+    this.refreshImage();
   }
 
   override refreshImage(): void {
