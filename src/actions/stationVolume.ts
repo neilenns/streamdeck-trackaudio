@@ -10,7 +10,7 @@ import {
 } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
 
-@action({ UUID: "com.neil-enns.trackaudio.stationVolume" })
+@action({ UUID: "com.neil-enns.trackaudio.stationvolume" })
 /**
  * Represents the volume of a TrackAudio station
  */
