@@ -664,7 +664,21 @@ class ActionManager extends EventEmitter {
     // Calculate the new volume level
     const newVolume = savedAction.changeAmount * ticks;
 
-    // Send the message to TrackAudio
+    // Unmute the station since the knob was turned
+    trackAudioManager.sendMessage({
+      type: "kSetStationState",
+      value: {
+        frequency: savedAction.frequency,
+        isOutputMuted: false,
+        rx: undefined,
+        xc: undefined,
+        xca: undefined,
+        headset: undefined,
+        tx: undefined,
+      },
+    });
+
+    // Set the volume
     trackAudioManager.sendMessage({
       type: "kChangeStationVolume",
       value: {
