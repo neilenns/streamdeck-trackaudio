@@ -1,4 +1,4 @@
-import { DialAction, KeyAction } from "@elgato/streamdeck";
+import { DialAction, FeedbackPayload, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import svgManager from "@managers/svg";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
@@ -69,6 +69,38 @@ export abstract class BaseController implements Controller {
       this.action.setImage(imagePath).catch((error: unknown) => {
         handleAsyncException("Unable to set state image: ", error);
       });
+    }
+  }
+
+  setFeedback(
+    imagePath: string,
+    replacements: object,
+    feedback: FeedbackPayload
+  ) {
+    if (!this.action.isDial()) {
+      return;
+    }
+
+    const generatedSvg = svgManager.renderSvg(imagePath, replacements);
+
+    if (generatedSvg) {
+      this.action
+        .setFeedback({
+          ...feedback,
+          icon: generatedSvg,
+        })
+        .catch((error: unknown) => {
+          handleAsyncException("Unable to set dial feedback: ", error);
+        });
+    } else {
+      this.action
+        .setFeedback({
+          ...feedback,
+          icon: imagePath,
+        })
+        .catch((error: unknown) => {
+          handleAsyncException("Unable to set dial feedback: ", error);
+        });
     }
   }
 }
