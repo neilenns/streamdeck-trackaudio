@@ -1,29 +1,25 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Debug property inspectors",
-			"request": "launch",
-			"type": "msedge",
-			"url": "http://localhost:23654",
-			"webRoot": "${workspaceFolder}"
-		},
-		{
-			"name": "Debug plugin",
-			"type": "node",
-			"request": "attach",
-			"port": 54545,
-			"restart": true,
-			"outFiles": [
-				"${workspaceFolder}/bin/**/*.js"
-			],
-			"resolveSourceMapLocations": [
-				"${workspaceFolder}/**"
-			],
-			"preLaunchTask": "npm: watch"
-		}
-	]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug plugin",
+      "type": "node",
+      "request": "attach",
+      "port": 54545,
+      "restart": true,
+      "outFiles": ["${workspaceFolder}/bin/**/*.js"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**"],
+      "preLaunchTask": "npm: watch"
+    },
+    {
+      "name": "Debug property inspectors",
+      "request": "launch",
+      "type": "msedge",
+      "url": "http://localhost:23654",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
 }
