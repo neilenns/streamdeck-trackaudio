@@ -203,6 +203,38 @@ export class StationVolumeController extends BaseController {
       volume: this.outputVolume,
     };
 
+    if (this.isAvailable !== undefined && !this.isAvailable) {
+      const generatedSvg = svgManager.renderSvg(imagePath, replacements);
+
+      if (generatedSvg) {
+        action
+          .setFeedback({
+            title: {
+              value: this.callsign ?? "",
+              color: this.isOutputMuted ? "grey" : "#FFFFFF",
+            },
+            indicator: {
+              value: 0,
+              bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
+            },
+            value: {
+              value: "",
+              color: this.isOutputMuted ? "grey" : "#FFFFFF",
+            },
+            icon: generatedSvg,
+          })
+          .catch((error: unknown) => {
+            handleAsyncException("Unable to set dial feedback: ", error);
+          });
+      } else {
+        this.action.setImage(imagePath).catch((error: unknown) => {
+          handleAsyncException("Unable to set state image: ", error);
+        });
+      }
+
+      return;
+    }
+
     const generatedSvg = svgManager.renderSvg(imagePath, replacements);
 
     if (generatedSvg) {
