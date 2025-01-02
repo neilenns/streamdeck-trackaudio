@@ -5,20 +5,23 @@ import mainLogger from "@utils/logger";
 import { Controller } from "@interfaces/controller";
 import { handleAsyncException } from "@utils/handleAsyncException";
 import svgManager from "@managers/svg";
+import { stringOrUndefined } from "@utils/utils";
 
 const logger = mainLogger.child({ service: "plugin" });
 
-const defaultVolumeTemplatePath = "images/actions/stationVolume/notMuted.svg";
+const defaultNotMutedTemplatePath = "images/actions/stationVolume/notMuted.svg";
 const defaultMutedTemplatePath = "images/actions/stationVolume/muted.svg";
 
 export class StationVolumeController extends BaseController {
   type = "StationVolumeController";
 
-  private _settings: StationVolumeSettings | null = null;
   private _frequency = 0;
   private _isAvailable: boolean | undefined = undefined;
-  private _outputGain? = 0.5;
   private _isOutputMuted? = false;
+  private _mutedTemplatePath?: string;
+  private _notMutedTemplatePath?: string;
+  private _outputGain? = 0.5;
+  private _settings: StationVolumeSettings | null = null;
 
   /**
    * Creates a new StationStatusController object.
@@ -33,17 +36,31 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets the volume SVG template path.
+   * Gets the not muted SVG template path.
    */
-  get volumeTemplatePath(): string {
-    return defaultVolumeTemplatePath;
+  get notMutedTemplatePath(): string {
+    return this._notMutedTemplatePath ?? defaultNotMutedTemplatePath;
+  }
+
+  /**
+   * Sets the not muted SVG template path.
+   */
+  set notMutedTemplatePath(newValue: string | undefined) {
+    this._notMutedTemplatePath = stringOrUndefined(newValue);
   }
 
   /**
    * Gets the muted SVG template path.
    */
   get mutedTemplatePath(): string {
-    return defaultMutedTemplatePath;
+    return this._mutedTemplatePath ?? defaultMutedTemplatePath;
+  }
+
+  /**
+   * Sets the muted SVG template path.
+   */
+  set mutedTemplatePath(newValue: string | undefined) {
+    this._mutedTemplatePath = stringOrUndefined(newValue);
   }
 
   /**
@@ -100,6 +117,8 @@ export class StationVolumeController extends BaseController {
    */
   set settings(newValue: StationVolumeSettings) {
     this._settings = newValue;
+    this.mutedTemplatePath = newValue.mutedImagePath;
+    this.notMutedTemplatePath = newValue.notMutedImagePath;
 
     this.refreshImage();
   }
@@ -173,7 +192,7 @@ export class StationVolumeController extends BaseController {
     const value = Math.round(this.outputGain * 100);
     const imagePath = this.isOutputMuted
       ? this.mutedTemplatePath
-      : this.volumeTemplatePath;
+      : this.notMutedTemplatePath;
 
     const replacements = {
       gain: this.outputGain,
