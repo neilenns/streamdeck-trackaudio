@@ -15,5 +15,6 @@
     "com.neil-enns.trackaudio.streamDeckPlugin": true
   },
   "eslint.experimental.useFlatConfig": true,
-  "git.enableSmartCommit": true
+  "git.enableSmartCommit": true,
+  "markdown.extension.list.indentationSize": "inherit"
 }
