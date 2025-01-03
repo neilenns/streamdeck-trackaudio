@@ -16,7 +16,7 @@ import {
   TrackAudioStatusController,
   isTrackAudioStatusController,
 } from "@controllers/trackAudioStatus";
-import { ActionContext, DialAction, KeyAction } from "@elgato/streamdeck";
+import { ActionContext, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import {
   SetStationState,
@@ -30,7 +30,6 @@ import {
   isStationVolumeController,
   StationVolumeController,
 } from "@controllers/stationVolume";
-import { StationVolumeSettings } from "@actions/stationVolume";
 
 const logger = mainLogger.child({ service: "action" });
 
@@ -104,49 +103,12 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Adds a station volume action to the action list. Emits a stationVolumeAdded
-   * event after the action is added.
-   * @param action The action
-   * @param settings The settings for the action
-   */
-  public addStationVolume(
-    action: DialAction,
-    settings: StationVolumeSettings
-  ): void {
-    const controller = new StationVolumeController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("stationVolumeAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
    * Resets the ATIS letter on all ATIS letter actions to undefined.
    */
   public resetAtisLetterOnAll() {
     this.getAtisLetterControllers().forEach((action) => {
       action.letter = undefined;
     });
-  }
-
-  /**
-   * Updates the settings associated with a station volume action.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateStationVolumeSettings(
-    action: DialAction,
-    settings: StationVolumeSettings
-  ) {
-    const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.settings = settings;
   }
 
   /**
@@ -351,73 +313,6 @@ class ActionManager extends EventEmitter {
           trackAudioManager.sendMessage(update);
         }
       });
-  }
-
-  /**
-   * Changes the station volume by the number of ticks times the change amount.
-   * @param action The action that triggered the volume change
-   * @param ticks The number of ticks the dial was rotated
-   */
-  public changeStationVolume(action: DialAction, ticks: number) {
-    const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    // Calculate the new volume level
-    const newVolume = Math.min(
-      100,
-      Math.max(0, savedAction.changeAmount * ticks)
-    );
-
-    // Unmute the station since the knob was turned
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: savedAction.frequency,
-        isOutputMuted: false,
-        rx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-        tx: undefined,
-      },
-    });
-
-    // Set the volume
-    trackAudioManager.sendMessage({
-      type: "kChangeStationVolume",
-      value: {
-        frequency: savedAction.frequency,
-        amount: newVolume,
-      },
-    });
-  }
-
-  public toggleStationMute(action: DialAction) {
-    const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: savedAction.frequency,
-        isOutputMuted: "toggle",
-        rx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-        tx: undefined,
-      },
-    });
   }
 
   /**
