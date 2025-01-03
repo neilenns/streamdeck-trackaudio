@@ -1,3 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" width="144" height="144">
-	<rect width="144" height="144" fill="{{stateColor}}" />
+<defs>
+		<style>
+			.background {
+				{{#if (eq state "blocking")}}
+					fill: yellow;
+				{{else if (eq state "activeComms")}}
+					fill: #f60;
+				{{else if (eq state "listening")}}
+					fill: #060;
+				{{else if (eq state "notListening")}}
+					fill: black;
+				{{else if (eq state "unavailable")}}
+					fill: black;
+				{{else if (eq state "muted")}}
+					fill: darkgrey;
+				{{else}}
+					fill: black;
+				{{/if}}
+			}
+		</style>
+	</defs>
+	<rect class="background" width="144" height="144" fill="{{stateColor}}" />
 </svg>

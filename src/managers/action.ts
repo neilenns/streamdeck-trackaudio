@@ -820,8 +820,25 @@ class ActionManager extends EventEmitter {
       return;
     }
 
-    // Don't try and toggle a station that doesn't have a frequency (typically this means it doesn't exist)
+    // Don't try and do anything on a station that doesn't have a frequency (typically this means it doesn't exist)
     if (foundAction.frequency === 0) {
+      return;
+    }
+
+    // Mute if that's the requested action.
+    if (foundAction.toggleMuteIfPressed) {
+      trackAudioManager.sendMessage({
+        type: "kSetStationState",
+        value: {
+          frequency: foundAction.frequency,
+          isOutputMuted: "toggle",
+          rx: undefined,
+          tx: undefined,
+          xc: undefined,
+          xca: undefined,
+          headset: undefined,
+        },
+      });
       return;
     }
 

@@ -40,6 +40,13 @@
       ></sdpi-range>
     </sdpi-item>
 
+    <sdpi-item>
+      <sdpi-checkbox
+        setting="toggleMuteOnPress"
+        label="Toggle mute when pressed"
+      ></sdpi-checkbox>
+    </sdpi-item>
+
     <sdpi-item label="Active comms">
       <sdpi-file
         setting="activeCommsImagePath"
@@ -57,6 +64,13 @@
     <sdpi-item label="Listening">
       <sdpi-file
         setting="listeningImagePath"
+        accept="image/png, image/jpeg, image/svg+xml"
+      ></sdpi-file>
+    </sdpi-item>
+
+    <sdpi-item label="Muted">
+      <sdpi-file
+        setting="mutedImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>

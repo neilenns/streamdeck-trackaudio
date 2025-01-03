@@ -14,7 +14,10 @@
     "node_modules": true,
     "com.neil-enns.trackaudio.streamDeckPlugin": true
   },
-  "eslint.experimental.useFlatConfig": true,
+  "eslint.useFlatConfig": true,
   "git.enableSmartCommit": true,
-  "markdown.extension.list.indentationSize": "inherit"
+  "markdown.extension.list.indentationSize": "inherit",
+  "[svg]": {
+    "editor.formatOnSave": false
+  }
 }
