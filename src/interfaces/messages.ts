@@ -36,6 +36,8 @@ export interface StationStateUpdateAvailable {
     xca: boolean;
     headset: boolean;
     isAvailable?: true;
+    isOutputMuted?: boolean;
+    outputVolume?: number;
   };
 }
 
@@ -116,6 +118,17 @@ export interface RxEnd {
 }
 
 /**
+ * Represents the kChangeStationVolume message to TrackAudio.
+ */
+export interface ChangeStationVolume {
+  type: "kChangeStationVolume";
+  value: {
+    frequency: number;
+    amount: number;
+  };
+}
+
+/**
  * Represents the kSetStationState message to TrackAudio.
  */
 export interface SetStationState {
@@ -127,6 +140,7 @@ export interface SetStationState {
     xc: boolean | "toggle" | undefined;
     xca: boolean | "toggle" | undefined;
     headset: boolean | "toggle" | undefined;
+    isOutputMuted: boolean | "toggle" | undefined;
   };
 }
 
@@ -189,7 +203,8 @@ export type OutgoingMessage =
   | PttPressed
   | PttReleased
   | GetVoiceConnectedState
-  | AddStation;
+  | AddStation
+  | ChangeStationVolume;
 
 /**
  * Typeguard for VoiceConnected.
