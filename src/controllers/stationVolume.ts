@@ -28,7 +28,7 @@ export class StationVolumeController extends BaseController {
   private _unavilableTemplatePath?: string;
 
   /**
-   * Creates a new StationStatusController object.
+   * Creates a new StationVolumeController object.
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
@@ -291,9 +291,9 @@ export class StationVolumeController extends BaseController {
 }
 
 /**
- * Typeguard for StationStatusController.
+ * Typeguard for StationVolumeController.
  * @param action The action
- * @returns True if the action is a StationStatusController
+ * @returns True if the action is a StationVolumeController
  */
 export function isStationVolumeController(
   action: Controller
