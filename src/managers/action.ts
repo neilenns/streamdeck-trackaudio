@@ -1,4 +1,3 @@
-import { HotlineSettings } from "@actions/hotline";
 import {
   AtisLetterController,
   isAtisLetterController,
@@ -16,13 +15,9 @@ import {
   TrackAudioStatusController,
   isTrackAudioStatusController,
 } from "@controllers/trackAudioStatus";
-import { ActionContext, KeyAction } from "@elgato/streamdeck";
+import { ActionContext } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import {
-  SetStationState,
-  StationStateUpdate,
-  StationStateUpdateAvailable,
-} from "@interfaces/messages";
+import { SetStationState, StationStateUpdate } from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
 import mainLogger from "@utils/logger";
 import { EventEmitter } from "events";
@@ -42,13 +37,6 @@ class ActionManager extends EventEmitter {
 
   private constructor() {
     super();
-
-    // Debounce the update methods to avoid rapid pinging of TrackAudio or
-    // title redraws while typing
-    //this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
-    // this.updateHotline = debounce(this.updateHotline.bind(this), 500);
-    // this.updateHotline = debounce(this.updateHotline.bind(this), 500);
-    //this.updateStation = debounce(this.updateStation.bind(this), 500);
   }
 
   /**
@@ -86,22 +74,6 @@ class ActionManager extends EventEmitter {
       350
     );
   }
-
-  /**
-   * Adds a hotline action to the action list. Emits a trackAudioStatusAdded event
-   * after the action is added.
-   * @param action The action to add
-   * @param settings The settings for the action
-   */
-  public addHotline(action: KeyAction, settings: HotlineSettings) {
-    const controller = new HotlineController(action, settings);
-
-    // Force buttons to refresh so the newly added button shows the correct state.
-    this.actions.push(controller);
-    this.emit("hotlineAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
   /**
    * Resets the ATIS letter on all ATIS letter actions to undefined.
    */
@@ -139,55 +111,6 @@ class ActionManager extends EventEmitter {
 
       if (entry.hotlineCallsign === callsign) {
         entry.hotlineFrequency = 0;
-      }
-    });
-  }
-
-  /**
-   * Updates stations to match the provided station state update.
-   * If a callsign is provided in the update then all stations with that callsign
-   * have their frequency set.
-   * @param data The StationStateUpdate message from TrackAudio
-   */
-  public updateStationState(data: StationStateUpdateAvailable) {
-    // First set the frequency if one was provided. This usually comes in the first
-    // station state update message from TrackAudio. Setting the frequency also
-    // updates the isAvailable state since any station with a frequency is available.
-    if (data.value.callsign) {
-      this.setStationFrequency(data.value.callsign, data.value.frequency);
-    }
-
-    // Set the listen state for all stations using the frequency and refresh the
-    // state image.
-    this.getStationStatusControllers()
-      .filter((entry) => entry.frequency === data.value.frequency)
-      .forEach((entry) => {
-        entry.isListening =
-          (data.value.rx && entry.listenTo === "rx") ||
-          (data.value.tx && entry.listenTo === "tx") ||
-          (data.value.xc && entry.listenTo === "xc") ||
-          (data.value.xca && entry.listenTo === "xca");
-
-        entry.refreshImage();
-      });
-
-    // Do the same for hotline actions
-    this.getHotlineControllers().forEach((entry) => {
-      if (entry.primaryFrequency === data.value.frequency) {
-        entry.isTxPrimary = data.value.tx;
-      }
-      if (entry.hotlineFrequency === data.value.frequency) {
-        entry.isTxHotline = data.value.tx;
-        entry.isRxHotline = data.value.rx;
-      }
-
-      entry.refreshImage();
-    });
-
-    this.getStationVolumeControllers().forEach((entry) => {
-      if (entry.frequency === data.value.frequency) {
-        entry.isOutputMuted = data.value.isOutputMuted;
-        entry.outputVolume = data.value.outputVolume;
       }
     });
   }
