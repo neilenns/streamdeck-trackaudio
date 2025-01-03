@@ -28,7 +28,6 @@ import { handleAsyncException } from "@root/utils/handleAsyncException";
 import mainLogger from "@utils/logger";
 import debounce from "debounce";
 import { EventEmitter } from "events";
-import vatsimManager from "./vatsim";
 import {
   isStationVolumeController,
   StationVolumeController,
@@ -121,27 +120,6 @@ class ActionManager extends EventEmitter {
     this.actions.push(controller);
     this.emit("stationVolumeAdded", controller);
     this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Called when an ATIS letter action has a long press. Refreshses the ATIS.
-   * @param actionId The ID of the action that had the long press
-   */
-  public atisLetterLongPress(action: KeyAction) {
-    const savedAction = this.getAtisLetterControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.reset();
-    vatsimManager.refresh();
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException("Unable to show OK on ATIS button:", error);
-    });
   }
 
   /**
@@ -407,82 +385,6 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Updates all actions that match the frequency to show the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public rxBegin(frequency: number, callsign: string) {
-    this.getStationStatusControllers()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.isListeningForReceive
-      )
-      .forEach((entry) => {
-        entry.isReceiving = true;
-        entry.lastReceivedCallsign = callsign;
-      });
-
-    // Hotline actions that have a hotline frequency matching the rxBegin frequency
-    // also update to show a transmission is occurring.
-    this.getHotlineControllers()
-      .filter((entry) => entry.hotlineFrequency === frequency)
-      .forEach((entry) => {
-        entry.isReceiving = true;
-      });
-  }
-
-  /**
-   * Updates all actions that match the callsign to clear the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public rxEnd(frequency: number) {
-    this.getStationStatusControllers()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.isListeningForReceive
-      )
-      .forEach((entry) => {
-        entry.isReceiving = false;
-      });
-
-    // Hotline actions that have a hotline frequency matching the rxBegin frequency
-    // also update to show a transmission is occurring.
-    this.getHotlineControllers()
-      .filter((entry) => entry.hotlineFrequency === frequency)
-      .forEach((entry) => {
-        entry.isReceiving = false;
-      });
-  }
-
-  /**
-   * Updates all actions that are listening to tx to show the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public txBegin() {
-    this.getStationStatusControllers()
-      .filter((entry) => entry.isListeningForTransmit)
-      .forEach((entry) => {
-        entry.isTransmitting = true;
-      });
-
-    this.getPushToTalkControllers().forEach((entry) => {
-      entry.isTransmitting = true;
-    });
-  }
-
-  /**
-   * Updates all actions that are listening to tx to clear the transmission in progress state.
-   */
-  public txEnd() {
-    this.getStationStatusControllers()
-      .filter((entry) => entry.isListeningForTransmit)
-      .forEach((entry) => {
-        entry.isTransmitting = false;
-      });
-
-    this.getPushToTalkControllers().forEach((entry) => {
-      entry.isTransmitting = false;
-    });
-  }
-
-  /**
    * Changes the station volume by the number of ticks times the change amount.
    * @param action The action that triggered the volume change
    * @param ticks The number of ticks the dial was rotated
@@ -547,36 +449,6 @@ class ActionManager extends EventEmitter {
         tx: undefined,
       },
     });
-  }
-
-  /**
-   * Adds a controller to the list of tracked actions.
-   * @param controller The controller to add
-   */
-  public add(controller: Controller): void {
-    this.actions.push(controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Finds controllers based on the predicate.
-   */
-  public find(
-    predicate: (entry: Controller) => boolean
-  ): Controller | undefined {
-    return this.actions.find(predicate);
-  }
-
-  /**
-   * Removes an action from the list.
-   * @param action The action to remove
-   */
-  public remove(action: ActionContext): void {
-    this.actions = this.actions.filter(
-      (entry) => entry.action.id !== action.id
-    );
-
-    this.emit("removed", this.actions.length);
   }
 
   /**
@@ -681,6 +553,36 @@ class ActionManager extends EventEmitter {
     typeGuard: (action: Controller) => action is T
   ): T[] {
     return this.actions.filter(typeGuard);
+  }
+
+  /**
+   * Adds a controller to the list of tracked actions.
+   * @param controller The controller to add
+   */
+  public add(controller: Controller): void {
+    this.actions.push(controller);
+    this.emit("actionAdded", controller);
+  }
+
+  /**
+   * Finds controllers based on the predicate.
+   */
+  public find(
+    predicate: (entry: Controller) => boolean
+  ): Controller | undefined {
+    return this.actions.find(predicate);
+  }
+
+  /**
+   * Removes an action from the list.
+   * @param action The action to remove
+   */
+  public remove(action: ActionContext): void {
+    this.actions = this.actions.filter(
+      (entry) => entry.action.id !== action.id
+    );
+
+    this.emit("removed", this.actions.length);
   }
 
   /**
