@@ -506,6 +506,17 @@ class ActionManager extends EventEmitter {
         entry.hotlineFrequency = 0;
       }
     });
+
+    // Do the same for the station volume actions. If the callsign isn't there, set the frequency to 0.
+    this.getStationVolumeControllers().forEach((entry) => {
+      if (!entry.callsign) {
+        return;
+      }
+
+      if (!callsigns.includes(entry.callsign)) {
+        entry.frequency = 0;
+      }
+    });
   }
 
   /**
