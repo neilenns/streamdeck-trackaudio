@@ -442,6 +442,9 @@ class ActionManager extends EventEmitter {
           (data.value.xc && entry.listenTo === "xc") ||
           (data.value.xca && entry.listenTo === "xca");
 
+        entry.isOutputMuted = data.value.isOutputMuted;
+        entry.outputVolume = data.value.outputVolume;
+
         entry.refreshImage();
       });
 
@@ -826,7 +829,7 @@ class ActionManager extends EventEmitter {
     }
 
     // Mute if that's the requested action.
-    if (foundAction.toggleMuteIfPressed) {
+    if (foundAction.toggleMuteOnPress) {
       trackAudioManager.sendMessage({
         type: "kSetStationState",
         value: {

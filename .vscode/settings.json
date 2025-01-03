@@ -19,5 +19,6 @@
   "markdown.extension.list.indentationSize": "inherit",
   "[svg]": {
     "editor.formatOnSave": false
-  }
+  },
+  "svg.preview.background": "editor"
 }

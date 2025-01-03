@@ -17,7 +17,7 @@ const StateColor = {
   NOT_LISTENING: "black",
   UNAVAILABLE: "black",
   BLOCKING: "yellow",
-  MUTED: "#060",
+  MUTED: "#a71d2a",
 };
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
@@ -235,8 +235,8 @@ export class StationStatusController extends BaseController {
   /**
    * Convenience property to get the toggleMuteIfPressed value of settings. Defaults to false.
    */
-  get toggleMuteIfPressed() {
-    return this.settings.toggleMuteIfPressed ?? false;
+  get toggleMuteOnPress() {
+    return this.settings.toggleMuteOnPress ?? false;
   }
 
   /**
