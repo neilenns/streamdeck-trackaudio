@@ -2,7 +2,6 @@ import { AtisLetterSettings } from "@actions/atisLetter";
 import { HotlineSettings } from "@actions/hotline";
 import { PushToTalkSettings } from "@actions/pushToTalk";
 import { StationSettings } from "@actions/stationStatus";
-import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import {
   AtisLetterController,
   isAtisLetterController,
@@ -105,19 +104,6 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Adds a TrackAudio status action to the action list. Emits a trackAudioStatusAdded event
-   * after the action is added.
-   * @param action The action to add
-   */
-  public addTrackAudio(action: KeyAction, settings: TrackAudioStatusSettings) {
-    const controller = new TrackAudioStatusController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("trackAudioStatusAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
    * Adds a hotline actiont to the action list. Emits a trackAudioStatusAdded event
    * after the action is added.
    * @param action The action to add
@@ -178,23 +164,6 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Called when a TrackAudio status action keydown event is triggered.
-   * Forces a refresh of the TrackAudio status.
-   * @param action The action
-   */
-  public trackAudioStatusLongPress(action: KeyAction) {
-    this.resetAll();
-    trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK status on TrackAudio action: ",
-        error
-      );
-    });
-  }
-
-  /**
    * Called when an ATIS letter action has a short press. Clears the state.
    * @param actionId The ID of the action that had the short press
    */
@@ -250,26 +219,6 @@ class ActionManager extends EventEmitter {
     settings: StationVolumeSettings
   ) {
     const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.settings = settings;
-  }
-
-  /**
-   * Updates the settings associated with a TrackAudio status action.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateTrackAudioStatus(
-    action: KeyAction,
-    settings: TrackAudioStatusSettings
-  ) {
-    const savedAction = this.getTrackAudioStatusControllers().find(
       (entry) => entry.action.id === action.id
     );
 
