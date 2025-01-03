@@ -1,9 +1,11 @@
-# TrackAudio buttons for Stream Deck <!-- omit from toc -->
+# TrackAudio actions for Stream Deck <!-- omit from toc -->
 
 > [!IMPORTANT]
 > This plugin requires [TrackAudio beta 1.3.0-beta.1](https://github.com/pierr3/TrackAudio/releases/tag/1.3.0-beta.1) or later. It will not work with earlier versions of TrackAudio.
 
-This Stream Deck plugin provides actions to interact with TrackAudio. [Download the plugin](https://github.com/neilenns/streamdeck-trackaudio/releases/latest) from the releases page. Need inspiration for how to use these actions? Check out the [examples](#examples) section.
+This Stream Deck plugin provides actions to interact with TrackAudio. [Get the plugin from the Elgato marketplace](https://marketplace.elgato.com/product/trackaudio-e913a0ca-4c12-411d-a5a6-acf5f6c4bdea). Need inspiration for how to use these actions? Check out the [examples](#examples) section.
+
+Do you use [vATIS](https://vatis.app/) when controlling? Check out the [vATIS actions for Stream Deck plugin](https://github.com/neilenns/streamdeck-vatis).
 
 ![Screenshot a Stream Deck profile with buttons for stations, current AITS letter, a hotline, and a push-to-talk button](docs/images/button-example.png)
 
@@ -20,13 +22,13 @@ This Stream Deck plugin provides actions to interact with TrackAudio. [Download 
 
 ## Action descriptions
 
-| Action            | Description                                                                                                                                                                  |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ATIS letter       | Shows the current ATIS letter for a specific station.                                                                                                                        |
-| Hotline           | Switches active TX between two stations, typically a primary controlling position and a secondary hotline position.                                                          |
-| Push to talk      | Triggers TX on all TX frequencies, as if pressing the push to talk key configured in TrackAudio.                                                                             |
-| Station status    | Shows the current RX, TX, or XCA for a specific station. Pressing the action toggles specified state for that station. Also shows the last received callsign by the station. |
-| TrackAudio status | Shows the current state of the connection to TrackAudio from Stream Deck and whether TrackAudio is voice connected to VATSIM.                                                |
+| Action            | Description                                                                                                                                                                                                                        |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ATIS letter       | Shows the current ATIS letter for a specific station. If you are controlling with [vATIS](https://vatis.app/) use the [vATIS actions for Stream Deck plugin](https://github.com/neilenns/streamdeck-vatis) instead of this action. |
+| Hotline           | Switches active TX between two stations, typically a primary controlling position and a secondary hotline position.                                                                                                                |
+| Push to talk      | Triggers TX on all TX frequencies, as if pressing the push to talk key configured in TrackAudio.                                                                                                                                   |
+| Station status    | Shows the current RX, TX, or XCA for a specific station. Pressing the action toggles specified state for that station. Also shows the last received callsign by the station.                                                       |
+| TrackAudio status | Shows the current state of the connection to TrackAudio from Stream Deck and whether TrackAudio is voice connected to VATSIM.                                                                                                      |
 
 After installation the plugin actions are available under the TrackAudio category:
 
@@ -121,8 +123,11 @@ TrackAudio actions.
 ## Configuring an ATIS letter action
 
 > [!IMPORTANT]
-> TrackAudio must be running and you must be connected for the ATIS letter to update. It can take five minutes or
-> longer for the VATSIM data source to refresh and reflect the latest ATIS letter.
+> If you are actively controlling with [vATIS](https://vatis.app/) use the [vATIS actions for Stream Deck plugin](https://github.com/neilenns/streamdeck-vatis) instead to get
+> real-time ATIS updates on your Stream Deck.
+>
+> For this action to work TrackAudio must be running and you must be connected for the ATIS letter to update.
+> It can take five minutes or longer for the VATSIM data source to refresh and reflect the latest ATIS letter.
 
 The ATIS letter action shows the current AITS letter for a station, refreshed automatically every minute.
 When the ATIS letter updates the action will show an orange background until the action is pressed to reset the

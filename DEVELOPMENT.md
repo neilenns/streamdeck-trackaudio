@@ -19,7 +19,7 @@ A launch profile for VSCode is included. Simply press `F5` to start debugging. S
 
 ## About the code
 
-This code my first attempt at writing a Stream Deck plugin using the (as of this writing) [beta node.js SDK](https://github.com/elgatosf/streamdeck)
+This code my first attempt at writing a Stream Deck plugin using the [node.js SDK](https://github.com/elgatosf/streamdeck)
 in conjunction with websockets to read and display data from another app.
 
 Here is how the code is structured:
