@@ -8,11 +8,15 @@ import { handleAsyncException } from "@utils/handleAsyncException";
 
 const logger = mainLogger.child({ service: "plugin" });
 
-const defaultNotMutedTemplatePath = "images/actions/stationVolume/notMuted.svg";
 const defaultMutedTemplatePath = "images/actions/stationVolume/muted.svg";
+const defaultNotMutedTemplatePath = "images/actions/stationVolume/notMuted.svg";
+const defaultUnavailableTemplatePath =
+  "images/actions/stationVolume/unavailable.svg";
 
 export class StationVolumeController extends BaseController {
   type = "StationVolumeController";
+
+  declare action: DialAction; // This ensures action from the base class is always a DialAction
 
   private _frequency = 0;
   private _isAvailable: boolean | undefined = undefined;
@@ -21,7 +25,7 @@ export class StationVolumeController extends BaseController {
   private _notMutedTemplatePath?: string;
   private _outputVolume? = 100;
   private _settings: StationVolumeSettings | null = null;
-  declare action: DialAction; // This ensures action from the base class is always a DialAction
+  private _unavilableTemplatePath?: string;
 
   /**
    * Creates a new StationStatusController object.
@@ -61,6 +65,20 @@ export class StationVolumeController extends BaseController {
    */
   set mutedTemplatePath(newValue: string | undefined) {
     this._mutedTemplatePath = stringOrUndefined(newValue);
+  }
+
+  /**
+   * Gets the unavailable SVG template path.
+   */
+  get unavailableTemplatePath(): string {
+    return this._unavilableTemplatePath ?? defaultUnavailableTemplatePath;
+  }
+
+  /**
+   * Sets the unavailable SVG template path.
+   */
+  set unavailableTemplatePath(newValue: string | undefined) {
+    this._unavilableTemplatePath = stringOrUndefined(newValue);
   }
 
   /**
@@ -126,6 +144,7 @@ export class StationVolumeController extends BaseController {
     this._settings = newValue;
     this.mutedTemplatePath = newValue.mutedImagePath;
     this.notMutedTemplatePath = newValue.notMutedImagePath;
+    this.unavailableTemplatePath = newValue.unavailableImagePath;
 
     this.refreshTitle();
     this.refreshImage();
@@ -206,7 +225,7 @@ export class StationVolumeController extends BaseController {
 
     // Set the unavilable state if the station is not available.
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.setFeedbackImage(this.notMutedTemplatePath, replacements);
+      this.setFeedbackImage(this.unavailableTemplatePath, replacements);
       return;
     }
 
