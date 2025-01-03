@@ -24,9 +24,7 @@ import {
   StationStateUpdateAvailable,
 } from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
-import { handleAsyncException } from "@root/utils/handleAsyncException";
 import mainLogger from "@utils/logger";
-import debounce from "debounce";
 import { EventEmitter } from "events";
 import {
   isStationVolumeController,
@@ -49,8 +47,8 @@ class ActionManager extends EventEmitter {
     // Debounce the update methods to avoid rapid pinging of TrackAudio or
     // title redraws while typing
     //this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
-    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
-    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    // this.updateHotline = debounce(this.updateHotline.bind(this), 500);
+    // this.updateHotline = debounce(this.updateHotline.bind(this), 500);
     //this.updateStation = debounce(this.updateStation.bind(this), 500);
   }
 
@@ -149,35 +147,6 @@ class ActionManager extends EventEmitter {
     }
 
     savedAction.settings = settings;
-  }
-
-  /**
-   * Updates the settings associated with a hotline status action.
-   * Emits a hotlineSettingsUpdated event if the settings require
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateHotline(action: KeyAction, settings: HotlineSettings) {
-    const savedAction = this.getHotlineControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    // This avoids unnecessary calls to TrackAudio when the callsigns aren't the settings
-    // that changed.
-    const requiresStationRefresh =
-      savedAction.primaryCallsign !== settings.primaryCallsign ||
-      savedAction.hotlineCallsign !== settings.hotlineCallsign;
-
-    savedAction.settings = settings;
-
-    if (requiresStationRefresh) {
-      this.emit("hotlineSettingsUpdated", savedAction);
-    }
   }
 
   /**
@@ -448,79 +417,6 @@ class ActionManager extends EventEmitter {
         headset: undefined,
         tx: undefined,
       },
-    });
-  }
-
-  /**
-   * Handles the short press of a hotline action. Toggles the tx on both the primary and hotline frequency.
-   * @param actionId The action id to toggle the state of
-   */
-  public hotlineShortPress(action: KeyAction): void {
-    const foundAction = this.getHotlineControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!foundAction) {
-      return;
-    }
-
-    // Catches the case where for some reason both primary and hotline are both
-    // set to tx, which should never happen. In that situation pretend the primary
-    // is off and hotline is on, which will mean the button push causes the primary
-    // to turn on and the hotline to turn off.
-    if (foundAction.isTxPrimary === foundAction.isTxHotline) {
-      foundAction.isTxPrimary = false;
-      foundAction.isTxHotline = true;
-    }
-
-    // The primary frequency always gets its xc state toggled to match the tx state,
-    // ensuring xc is re-enabled when tx turns on.
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.primaryFrequency,
-        tx: !foundAction.isTxPrimary,
-        rx: undefined,
-        xc: !foundAction.isTxPrimary,
-        xca: undefined,
-        headset: undefined,
-        isOutputMuted: undefined,
-      },
-    });
-
-    // The hotline frequency gets its tx state toggled
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.hotlineFrequency,
-        tx: !foundAction.isTxHotline,
-        rx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-        isOutputMuted: undefined,
-      },
-    });
-  }
-
-  public hotlineLongPress(action: KeyAction) {
-    const foundAction = this.getHotlineControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!foundAction) {
-      return;
-    }
-
-    foundAction.reset();
-    trackAudioManager.refreshStationState(foundAction.primaryCallsign);
-    trackAudioManager.refreshStationState(foundAction.hotlineCallsign);
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK status on TrackAudio action: ",
-        error
-      );
     });
   }
 
