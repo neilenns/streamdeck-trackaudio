@@ -9,6 +9,7 @@
       "UUID": "com.neil-enns.trackaudio.stationvolume",
       "Icon": "images/plugin/volume",
       "PropertyInspectorPath": "pi/stationVolume.html",
+      "Tooltip": "Controlls the volume for the specified station.",
       "Controllers": ["Encoder"],
       "Encoder": {
         "layout": "$B1",
