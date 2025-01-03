@@ -1,4 +1,3 @@
-import { AtisLetterSettings } from "@actions/atisLetter";
 import { HotlineSettings } from "@actions/hotline";
 import { PushToTalkSettings } from "@actions/pushToTalk";
 import {
@@ -51,7 +50,7 @@ class ActionManager extends EventEmitter {
 
     // Debounce the update methods to avoid rapid pinging of TrackAudio or
     // title redraws while typing
-    this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
+    //this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
     this.updateHotline = debounce(this.updateHotline.bind(this), 500);
     this.updateHotline = debounce(this.updateHotline.bind(this), 500);
     //this.updateStation = debounce(this.updateStation.bind(this), 500);
@@ -214,31 +213,6 @@ class ActionManager extends EventEmitter {
 
     if (requiresStationRefresh) {
       this.emit("hotlineSettingsUpdated", savedAction);
-    }
-  }
-
-  /**
-   * Updates the settings associated with an ATIS letter status action.
-   * Emits a atisLetterUpdated event if the settings require
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateAtisLetter(action: KeyAction, settings: AtisLetterSettings) {
-    const savedAction = this.getAtisLetterControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    const requiresRefresh = savedAction.settings.callsign !== settings.callsign;
-
-    savedAction.settings = settings;
-
-    if (requiresRefresh) {
-      this.emit("atisLetterUpdated", savedAction);
     }
   }
 

@@ -12,7 +12,6 @@ import { handleAtisLetterLongPress } from "@events/streamDeck/atisLetter/atisLet
 import { handleAtisLetterShortPress } from "@events/streamDeck/atisLetter/atisLetterShortPress";
 import { handleUpdateAtisLetter } from "@events/streamDeck/atisLetter/updateAtisLetter";
 import { handleRemove } from "@events/streamDeck/remove";
-import actionManager from "@managers/action";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
 
 @action({ UUID: "com.neil-enns.trackaudio.atisletter" })
