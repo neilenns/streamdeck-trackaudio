@@ -18,8 +18,8 @@ Do you use [vATIS](https://vatis.app/) when controlling? Check out the [vATIS ac
 - [Configuring a push to talk action](#configuring-a-push-to-talk-action)
 - [SVG templates](#svg-templates)
 - [Examples](#examples)
-	- [Seattle tower](#seattle-tower)
-	- [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
+  - [Seattle tower](#seattle-tower)
+  - [Seattle final approach - ATIS letters](#seattle-final-approach---atis-letters)
 
 ## Action descriptions
 
