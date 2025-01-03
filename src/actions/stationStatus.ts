@@ -8,7 +8,11 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import actionManager from "@managers/action";
+import { handleAddStation } from "@events/streamDeck/stationStatus/addStation";
+import { handleRemove } from "@events/streamDeck/remove";
+import { handleStationStatusLongPress } from "@events/streamDeck/stationStatus/stationStatusLongPress";
+import { handleStationStatusShortPress } from "@events/streamDeck/stationStatus/stationStatusShortPress";
+import { handleUpdateStation } from "@events/streamDeck/stationStatus/updateStation";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
@@ -30,14 +34,14 @@ export class StationStatus extends SingletonAction<StationSettings> {
       return;
     }
 
-    actionManager.addStation(ev.action, ev.payload.settings);
+    handleAddStation(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
     ev: WillDisappearEvent<StationSettings>
   ): void | Promise<void> {
-    actionManager.remove(ev.action);
+    handleRemove(ev.action);
   }
 
   // When settings are received the ActionManager is called to update the existing
@@ -51,7 +55,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
       return;
     }
 
-    actionManager.updateStation(ev.action, ev.payload.settings);
+    handleUpdateStation(ev.action, ev.payload.settings);
   }
 
   override onKeyDown(): void | Promise<void> {
@@ -62,9 +66,9 @@ export class StationStatus extends SingletonAction<StationSettings> {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {
-      actionManager.stationStatusLongPress(ev.action);
+      handleStationStatusLongPress(ev.action);
     } else {
-      actionManager.stationStatusShortPress(ev.action);
+      handleStationStatusShortPress(ev.action);
     }
   }
 }

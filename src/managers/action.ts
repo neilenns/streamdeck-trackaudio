@@ -52,7 +52,7 @@ class ActionManager extends EventEmitter {
     this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
     this.updateHotline = debounce(this.updateHotline.bind(this), 500);
     this.updateHotline = debounce(this.updateHotline.bind(this), 500);
-    this.updateStation = debounce(this.updateStation.bind(this), 500);
+    // this.updateStation = debounce(this.updateStation.bind(this), 500);
   }
 
   /**
@@ -258,35 +258,6 @@ class ActionManager extends EventEmitter {
     }
 
     savedAction.settings = settings;
-  }
-
-  /**
-   * Updates the settings associated with a station status action.
-   * Emits a stationStatusSettingsUpdated event if the settings require
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateStation(action: KeyAction, settings: StationSettings) {
-    const savedAction = this.getStationStatusControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    // This avoids unnecessary calls to TrackAudio when the callsign or listenTo settings
-    // didn't change.
-    const requiresStationRefresh =
-      savedAction.callsign !== settings.callsign ||
-      savedAction.listenTo !== (settings.listenTo ?? "rx");
-
-    savedAction.settings = settings;
-
-    if (requiresStationRefresh) {
-      this.emit("stationStatusSettingsUpdated", savedAction);
-    }
   }
 
   /**
@@ -542,6 +513,23 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Adds a controller to the list of actions.
+   * @param controller The controller to add
+   */
+  public add(controller: Controller) {
+    this.actions.push(controller);
+  }
+
+  /**
+   * Finds matching entries in the list of tracked controllers.
+   */
+  public find(
+    predicate: (entry: Controller) => boolean
+  ): Controller | undefined {
+    return this.actions.find(predicate);
+  }
+
+  /**
    * Removes an action from the list.
    * @param action The action to remove
    */
@@ -623,57 +611,6 @@ class ActionManager extends EventEmitter {
         "Unable to show OK status on TrackAudio action: ",
         error
       );
-    });
-  }
-
-  /**
-   * Handles a short press of a station status action. Toggles the
-   * the tx, rx, xc, or spkr state of a frequency bound to a Stream Deck action.
-   * @param actionId The action id to toggle the state of
-   */
-  public stationStatusShortPress(action: KeyAction): void {
-    const foundAction = this.actions.find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!foundAction || !isStationStatusController(foundAction)) {
-      return;
-    }
-
-    // Don't try and do anything on a station that doesn't have a frequency (typically this means it doesn't exist)
-    if (foundAction.frequency === 0) {
-      return;
-    }
-
-    // Mute if that's the requested action.
-    if (foundAction.toggleMuteOnPress) {
-      trackAudioManager.sendMessage({
-        type: "kSetStationState",
-        value: {
-          frequency: foundAction.frequency,
-          isOutputMuted: "toggle",
-          rx: undefined,
-          tx: undefined,
-          xc: undefined,
-          xca: undefined,
-          headset: undefined,
-        },
-      });
-      return;
-    }
-
-    // Send the message to TrackAudio.
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.frequency,
-        rx: foundAction.listenTo === "rx" ? "toggle" : undefined,
-        tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
-        xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
-        xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
-        headset: undefined,
-        isOutputMuted: undefined,
-      },
     });
   }
 
