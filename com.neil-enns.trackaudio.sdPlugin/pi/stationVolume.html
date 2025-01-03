@@ -5,7 +5,7 @@
     <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
   </head>
   <body>
-		<sdpi-item label="Title">
+    <sdpi-item label="Title">
       <sdpi-textarea
         setting="title"
         placeholder="Optional title"
@@ -21,35 +21,35 @@
       ></sdpi-textfield>
     </sdpi-item>
 
-		<sdpi-item label="Change amount">
-			<sdpi-range
-				setting="changeAmount"
-				min="0"
-				max="10"
-				default="1"
-				showlabels
-				required
-			></sdpi-range>
+    <sdpi-item label="Change amount">
+      <sdpi-range
+        setting="changeAmount"
+        min="0"
+        max="10"
+        default="1"
+        showlabels
+        required
+      ></sdpi-range>
 
-			<sdpi-item label="Muted">
-				<sdpi-file
-					setting="mutedImagePath"
-					accept="image/png, image/jpeg, image/svg+xml"
-				></sdpi-file>
-			</sdpi-item>
-	
-			<sdpi-item label="Not muted">
-				<sdpi-file
-					setting="notMutedImagePath"
-					accept="image/png, image/jpeg, image/svg+xml"
-				></sdpi-file>
-			</sdpi-item>
+      <sdpi-item label="Muted">
+        <sdpi-file
+          setting="mutedImagePath"
+          accept="image/png, image/jpeg, image/svg+xml"
+        ></sdpi-file>
+      </sdpi-item>
+  
+      <sdpi-item label="Not muted">
+        <sdpi-file
+          setting="notMutedImagePath"
+          accept="image/png, image/jpeg, image/svg+xml"
+        ></sdpi-file>
+      </sdpi-item>
 
-			<sdpi-item label="Unavailable">
-				<sdpi-file
-					setting="unavailableImagePath"
-					accept="image/png, image/jpeg, image/svg+xml"
-				></sdpi-file>
-			</sdpi-item>
-		</body>
+      <sdpi-item label="Unavailable">
+        <sdpi-file
+          setting="unavailableImagePath"
+          accept="image/png, image/jpeg, image/svg+xml"
+        ></sdpi-file>
+      </sdpi-item>
+    </body>
 </html>
