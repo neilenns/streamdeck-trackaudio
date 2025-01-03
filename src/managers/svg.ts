@@ -35,6 +35,8 @@ class SvgTemplateManager extends EventEmitter {
     this.watcher.on("change", (filePath: string) => {
       this.handleFileChange(filePath);
     });
+
+    this.registerHandlebarHelpers();
   }
 
   /**
@@ -47,6 +49,39 @@ class SvgTemplateManager extends EventEmitter {
     }
 
     return SvgTemplateManager.instance;
+  }
+
+  // From https://gist.github.com/tracend/7522125?permalink_comment_id=2392996#gistcomment-2392996
+  private registerHandlebarHelpers() {
+    // Equal
+    Handlebars.registerHelper("eq", function (a, b) {
+      return a === b;
+    });
+
+    // Not equal
+    Handlebars.registerHelper("ne", function (a, b) {
+      return a !== b;
+    });
+
+    // Greater than
+    Handlebars.registerHelper("gt", function (a, b) {
+      return a > b;
+    });
+
+    // Greater than or equal
+    Handlebars.registerHelper("gte", function (a, b) {
+      return a >= b;
+    });
+
+    // Less than
+    Handlebars.registerHelper("lt", function (a, b) {
+      return a < b;
+    });
+
+    // Less than or equal
+    Handlebars.registerHelper("lte", function (a, b) {
+      return a <= b;
+    });
   }
 
   private handleFileChange(filePath: string) {

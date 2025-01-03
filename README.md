@@ -41,9 +41,8 @@ The station status action displays the current status of a single station's butt
 whether communication is currently active. It also automatically adds the station to TrackAudio after
 a voice connection is established.
 
-Pressing the action will toggle the equivalent button in TrackAudio,
-convenient for listening to other frequencies while controlling with the ability to quickly turn off listening
-to those frequencies when things get busy. A long press of the action will refresh the action's state.
+Pressing the action will either toggle the equivalent button in TrackAudio or mute the station's audio.
+A long press of the action will refresh the action's state.
 
 For example, if you are controlling `LMT_TWR` and have TrackAudio set up like this:
 
@@ -64,9 +63,11 @@ configure the station status action like this to show that RX is enabled and the
 | Callsign                          | The callsign for the station you want to display status for. Required.                                                                                                                                                       |                                                                            |
 | Listen to                         | What status to display on the button, either RX, TX, or XCA. Required.                                                                                                                                                       | RX                                                                         |
 | Last received callsigns           | Sets the number of last received callsigns to display, newest to oldest, and will age off after five minutes. Only supported when listen to is set to `RX` or `XCA`. If set to `0` no last received callsigns will be shown. | `0`                                                                        |
+| Toggle mute when pressed          | Toggles mute for the station when the action is pressed instead of toggling the configured listen to button.                                                                                                                 | false                                                                      |
 | Active comms                      | The image to display when a transmission is actively taking place. Optional.                                                                                                                                                 | ![Orange background](docs/images/stationstatus-receiving.png)              |
 | Blocked                           | The image to display when both an aircraft and the ATC position are transmitting at the same time. Optional.                                                                                                                 | ![Green/orange gradient background](docs/images/stationstatus-blocked.png) |
 | Listening                         | The image to display when the station is active. Optional.                                                                                                                                                                   | ![Green background](docs/images/stationstatus-listening.png)               |
+| Muted                             | The iamge to display when the station is muted. Optional.                                                                                                                                                                    | ![Red background with mute icon](docs/images/stationstatus-muted.png)      |
 | Not listening                     | The image to display when the station is not currently active. Optional.                                                                                                                                                     | ![Black background](docs/images/stationstatus-notlistening.png)            |
 | Unavailable                       | The image to display when the station is not added in TrackAudio. Optional, defaults to a warning icon.                                                                                                                      | ![Warning icon](docs/images/stationstatus-unavailable.png)                 |
 | Automatically enable speaker mode | Enables speaker mode on the station after a TrackAudio voice connection is established                                                                                                                                       | false                                                                      |

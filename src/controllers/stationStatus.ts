@@ -17,12 +17,14 @@ const StateColor = {
   NOT_LISTENING: "black",
   UNAVAILABLE: "black",
   BLOCKING: "yellow",
+  MUTED: "#a71d2a",
 };
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
 const defaultUnavailableTemplatePath =
   "images/actions/stationStatus/unavailable.svg";
 const defaultBlockedCommsImagePath = "images/actions/stationStatus/blocked.svg";
+const defaultMutedImagePath = "images/actions/stationStatus/template.svg";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -31,19 +33,23 @@ const defaultBlockedCommsImagePath = "images/actions/stationStatus/blocked.svg";
 export class StationStatusController extends BaseController {
   type = "StationStatusController";
 
-  private _settings: StationSettings | null = null;
   private _frequency = 0;
+  private _isAvailable: boolean | undefined = undefined;
+  private _isListening = false;
+  private _isOutputMuted? = false;
   private _isReceiving = false;
   private _isTransmitting = false;
-  private _isListening = false;
-  private _isAvailable: boolean | undefined = undefined;
+  private _outputVolume? = 100;
+  private _settings: StationSettings | null = null;
+
   // This gets initialized in the settings setter so it can be re-created if the
   // number of callsigns to track changes.
   private _lastReceivedCallsignHistory: LRUCache<string, string> | undefined;
   private _lastReceivedCallsign: string | undefined = undefined;
 
-  private _blockedCommsImagePath?: string;
+  private _mutedImagePath?: string;
   private _activeCommsImagePath?: string;
+  private _blockedCommsImagePath?: string;
   private _listeningImagePath?: string;
   private _notListeningImagePath?: string;
   private _unavailableImagePath?: string;
@@ -61,6 +67,14 @@ export class StationStatusController extends BaseController {
   }
 
   //#region Getters and setters
+  /**
+   * Returns the mutedImagePath or the default template path if the if
+   * the user didn't specify a custom icon.
+   */
+  get mutedImagePath(): string {
+    return this._mutedImagePath ?? defaultMutedImagePath;
+  }
+
   /**
    * Returns the notListeningImagePath or the default template path if the
    * user didn't specify a custom icon.
@@ -137,6 +151,46 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Gets whether the output is muted. Returns false if undefined.
+   */
+  get isOutputMuted(): boolean {
+    return this._isOutputMuted ?? false;
+  }
+
+  /**
+   * Sets whether the output is muted.
+   */
+  set isOutputMuted(newValue: boolean | undefined) {
+    if (this._isOutputMuted === newValue) {
+      return;
+    }
+
+    this._isOutputMuted = newValue;
+    this.refreshTitle();
+    this.refreshImage();
+  }
+
+  /**
+   * Gets the output volume. Returns 100 if undefined.
+   **/
+  get outputVolume(): number {
+    return this._outputVolume ?? 100;
+  }
+
+  /**
+   * Sets the output volume.
+   **/
+  set outputVolume(newValue: number | undefined) {
+    if (this._outputVolume === newValue) {
+      return;
+    }
+
+    this._outputVolume = newValue;
+    this.refreshTitle();
+    this.refreshImage();
+  }
+
+  /**
    * Gets the frequency.
    */
   get frequency() {
@@ -176,6 +230,13 @@ export class StationStatusController extends BaseController {
    */
   get listenTo() {
     return this.settings.listenTo ?? "rx";
+  }
+
+  /**
+   * Convenience property to get the toggleMuteIfPressed value of settings. Defaults to false.
+   */
+  get toggleMuteOnPress() {
+    return this.settings.toggleMuteOnPress ?? false;
   }
 
   /**
@@ -507,6 +568,8 @@ export class StationStatusController extends BaseController {
         this.lastReceivedCallsignHistory.join("\n"),
       listenTo: this.listenTo.toUpperCase(),
       title: this.title,
+      isOutputMuted: this.isOutputMuted,
+      outputVolume: this.outputVolume,
     };
 
     if (this.isAvailable !== undefined && !this.isAvailable) {
@@ -514,6 +577,15 @@ export class StationStatusController extends BaseController {
         ...replacements,
         stateColor: StateColor.UNAVAILABLE,
         state: "unavailable",
+      });
+      return;
+    }
+
+    if (this.isOutputMuted) {
+      this.setImage(this.mutedImagePath, {
+        ...replacements,
+        stateColor: StateColor.MUTED,
+        state: "muted",
       });
       return;
     }

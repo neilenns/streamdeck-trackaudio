@@ -79,12 +79,14 @@ export interface StationSettings {
   lastReceivedCallsignCount?: number;
   listeningImagePath?: string;
   listenTo: ListenTo | null;
+  mutedImagePath?: string;
   notListeningImagePath?: string;
   showCallsign?: boolean;
   showFrequency?: boolean;
   showListenTo?: boolean;
   showTitle?: boolean;
   title?: string;
+  toggleMuteOnPress?: boolean;
   unavailableImagePath?: string;
   [key: string]: JsonValue;
 }
