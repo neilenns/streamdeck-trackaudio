@@ -1,5 +1,4 @@
 import { HotlineSettings } from "@actions/hotline";
-import { PushToTalkSettings } from "@actions/pushToTalk";
 import {
   AtisLetterController,
   isAtisLetterController,
@@ -93,20 +92,7 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Adds a push-to-talk action to the action list. Emits a pushToTalkAdded event
-   * after the action is added.
-   * @param action The action
-   */
-  public addPushToTalk(action: KeyAction, settings: PushToTalkSettings): void {
-    const controller = new PushToTalkController(action, settings);
-    this.actions.push(controller);
-
-    this.emit("pushToTalkAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a hotline actiont to the action list. Emits a trackAudioStatusAdded event
+   * Adds a hotline action to the action list. Emits a trackAudioStatusAdded event
    * after the action is added.
    * @param action The action to add
    * @param settings The settings for the action
@@ -214,24 +200,6 @@ class ActionManager extends EventEmitter {
     if (requiresStationRefresh) {
       this.emit("hotlineSettingsUpdated", savedAction);
     }
-  }
-
-  /**
-   * Updates the settings associated with a push to talk action.
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updatePushToTalk(action: KeyAction, settings: PushToTalkSettings) {
-    const savedAction = this.getPushToTalkControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.settings = settings;
   }
 
   /**
@@ -694,20 +662,6 @@ class ActionManager extends EventEmitter {
       entry.isConnected = trackAudioManager.isConnected;
       entry.isVoiceConnected = trackAudioManager.isVoiceConnected;
     });
-  }
-
-  /**
-   * Sends a message via TrackAudioManager to indicate a PushToTalk action was pressed.
-   */
-  public pttPressed() {
-    trackAudioManager.sendMessage({ type: "kPttPressed" });
-  }
-
-  /**
-   * Sends a message via TrackAudioManager to indicate a PushToTalk action was released.
-   */
-  public pttReleased() {
-    trackAudioManager.sendMessage({ type: "kPttReleased" });
   }
 
   /**
