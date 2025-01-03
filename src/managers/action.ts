@@ -22,11 +22,7 @@ import {
 } from "@controllers/trackAudioStatus";
 import { ActionContext, DialAction, KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import {
-  SetStationState,
-  StationStateUpdate,
-  StationStateUpdateAvailable,
-} from "@interfaces/messages";
+import { SetStationState, StationStateUpdate } from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
 import mainLogger from "@utils/logger";
@@ -386,90 +382,6 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Updates all stations that match the callsign in the data so its
-   * state is unavailable.
-   * @param data The station that is not available
-   */
-  public setStationUnavailable(callsign: string) {
-    // Do all the station status controllers
-    this.getStationStatusControllers()
-      .filter((entry) => entry.callsign === callsign)
-      .forEach((entry) => {
-        entry.frequency = 0;
-      });
-
-    // Do all the station volume controllers
-    this.getStationVolumeControllers()
-      .filter((entry) => entry.callsign === callsign)
-      .forEach((entry) => {
-        entry.frequency = 0;
-      });
-
-    // Do all the hotline controllers
-    this.getHotlineControllers().forEach((entry) => {
-      if (entry.primaryCallsign === callsign) {
-        entry.primaryFrequency = 0;
-      }
-
-      if (entry.hotlineCallsign === callsign) {
-        entry.hotlineFrequency = 0;
-      }
-    });
-  }
-
-  /**
-   * Updates stations to match the provided station state update.
-   * If a callsign is provided in the update then all stations with that callsign
-   * have their frequency set.
-   * @param data The StationStateUpdate message from TrackAudio
-   */
-  public updateStationState(data: StationStateUpdateAvailable) {
-    // First set the frequency if one was provided. This usually comes in the first
-    // station state update message from TrackAudio. Setting the frequency also
-    // updates the isAvailable state since any station with a frequency is available.
-    if (data.value.callsign) {
-      this.setStationFrequency(data.value.callsign, data.value.frequency);
-    }
-
-    // Set the listen state for all stations using the frequency and refresh the
-    // state image.
-    this.getStationStatusControllers()
-      .filter((entry) => entry.frequency === data.value.frequency)
-      .forEach((entry) => {
-        entry.isListening =
-          (data.value.rx && entry.listenTo === "rx") ||
-          (data.value.tx && entry.listenTo === "tx") ||
-          (data.value.xc && entry.listenTo === "xc") ||
-          (data.value.xca && entry.listenTo === "xca");
-
-        entry.isOutputMuted = data.value.isOutputMuted;
-        entry.outputVolume = data.value.outputVolume;
-
-        entry.refreshImage();
-      });
-
-    // Do the same for hotline actions
-    this.getHotlineControllers().forEach((entry) => {
-      if (entry.primaryFrequency === data.value.frequency) {
-        entry.isTxPrimary = data.value.tx;
-      }
-      if (entry.hotlineFrequency === data.value.frequency) {
-        entry.isTxHotline = data.value.tx;
-        entry.isRxHotline = data.value.rx;
-      }
-
-      entry.refreshImage();
-    });
-
-    this.getStationVolumeControllers().forEach((entry) => {
-      if (entry.frequency === data.value.frequency) {
-        entry.isOutputMuted = data.value.isOutputMuted;
-        entry.outputVolume = data.value.outputVolume;
-      }
-    });
-  }
-
-  /**
    * Updates the isAvailable property on all tracked controllers based on
    * whether that station is present in the list of data from TrackAudio.
    * @param stations The list of station data received from TrackAudio.
@@ -538,25 +450,6 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Removes the frequency from all actions that depend on it.
-   * @param frequency The frequency to remove
-   */
-  public removeFrequency(frequency: number) {
-    this.getStationStatusControllers()
-      .filter((entry) => entry.frequency === frequency)
-      .forEach((entry) => (entry.frequency = 0));
-
-    this.getHotlineControllers().forEach((entry) => {
-      if (entry.primaryFrequency === frequency) {
-        entry.primaryFrequency = 0;
-      }
-      if (entry.hotlineFrequency === frequency) {
-        entry.hotlineFrequency = 0;
-      }
-    });
-  }
-
-  /**
    * Auto sets the spk mode on the specified frequency, if that setting is enabled on the
    * action.
    * @param frequency The frequency to run the auto set actions on.
@@ -579,82 +472,6 @@ class ActionManager extends EventEmitter {
           trackAudioManager.sendMessage(update);
         }
       });
-  }
-
-  /**
-   * Updates all actions that match the frequency to show the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public rxBegin(frequency: number, callsign: string) {
-    this.getStationStatusControllers()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.isListeningForReceive
-      )
-      .forEach((entry) => {
-        entry.isReceiving = true;
-        entry.lastReceivedCallsign = callsign;
-      });
-
-    // Hotline actions that have a hotline frequency matching the rxBegin frequency
-    // also update to show a transmission is occurring.
-    this.getHotlineControllers()
-      .filter((entry) => entry.hotlineFrequency === frequency)
-      .forEach((entry) => {
-        entry.isReceiving = true;
-      });
-  }
-
-  /**
-   * Updates all actions that match the callsign to clear the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public rxEnd(frequency: number) {
-    this.getStationStatusControllers()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.isListeningForReceive
-      )
-      .forEach((entry) => {
-        entry.isReceiving = false;
-      });
-
-    // Hotline actions that have a hotline frequency matching the rxBegin frequency
-    // also update to show a transmission is occurring.
-    this.getHotlineControllers()
-      .filter((entry) => entry.hotlineFrequency === frequency)
-      .forEach((entry) => {
-        entry.isReceiving = false;
-      });
-  }
-
-  /**
-   * Updates all actions that are listening to tx to show the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public txBegin() {
-    this.getStationStatusControllers()
-      .filter((entry) => entry.isListeningForTransmit)
-      .forEach((entry) => {
-        entry.isTransmitting = true;
-      });
-
-    this.getPushToTalkControllers().forEach((entry) => {
-      entry.isTransmitting = true;
-    });
-  }
-
-  /**
-   * Updates all actions that are listening to tx to clear the transmission in progress state.
-   */
-  public txEnd() {
-    this.getStationStatusControllers()
-      .filter((entry) => entry.isListeningForTransmit)
-      .forEach((entry) => {
-        entry.isTransmitting = false;
-      });
-
-    this.getPushToTalkControllers().forEach((entry) => {
-      entry.isTransmitting = false;
-    });
   }
 
   /**

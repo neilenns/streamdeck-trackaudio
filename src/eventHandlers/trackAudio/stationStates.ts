@@ -1,5 +1,6 @@
 import { StationStates } from "@interfaces/messages";
 import actionManager from "@managers/action";
+import { handleStationStateUpdate } from "./stationStateUpdate";
 
 /**
  * Receives the state of all active stations from TrackAudio and updates the appropriate
@@ -8,7 +9,7 @@ import actionManager from "@managers/action";
 export const handleStationStates = (data: StationStates) => {
   // Update the states for all the received data
   data.value.stations.forEach((station) => {
-    actionManager.updateStationState(station);
+    handleStationStateUpdate(station);
   });
 
   // Update the stations that aren't available
