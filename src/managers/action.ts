@@ -674,7 +674,7 @@ class ActionManager extends EventEmitter {
     // Calculate the new volume level
     const newVolume = Math.min(
       100,
-      Math.max(0, savedAction.changeAmount * ticks)
+      Math.max(-100, savedAction.changeAmount * ticks)
     );
 
     // Unmute the station since the knob was turned
