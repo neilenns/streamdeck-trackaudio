@@ -1,8 +1,6 @@
 import { AtisLetterSettings } from "@actions/atisLetter";
 import { HotlineSettings } from "@actions/hotline";
 import { PushToTalkSettings } from "@actions/pushToTalk";
-import { StationSettings } from "@actions/stationStatus";
-import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import {
   AtisLetterController,
   isAtisLetterController,
@@ -56,7 +54,7 @@ class ActionManager extends EventEmitter {
     this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
     this.updateHotline = debounce(this.updateHotline.bind(this), 500);
     this.updateHotline = debounce(this.updateHotline.bind(this), 500);
-    this.updateStation = debounce(this.updateStation.bind(this), 500);
+    //this.updateStation = debounce(this.updateStation.bind(this), 500);
   }
 
   /**
@@ -109,19 +107,6 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Adds a TrackAudio status action to the action list. Emits a trackAudioStatusAdded event
-   * after the action is added.
-   * @param action The action to add
-   */
-  public addTrackAudio(action: KeyAction, settings: TrackAudioStatusSettings) {
-    const controller = new TrackAudioStatusController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("trackAudioStatusAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
    * Adds a hotline actiont to the action list. Emits a trackAudioStatusAdded event
    * after the action is added.
    * @param action The action to add
@@ -133,20 +118,6 @@ class ActionManager extends EventEmitter {
     // Force buttons to refresh so the newly added button shows the correct state.
     this.actions.push(controller);
     this.emit("hotlineAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a station status action to the action list. Emits a stationStatusAdded
-   * event after the action is added.
-   * @param action The action
-   * @param settings The settings for the action
-   */
-  public addStation(action: KeyAction, settings: StationSettings): void {
-    const controller = new StationStatusController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("stationStatusAdded", controller);
     this.emit("actionAdded", controller);
   }
 
@@ -165,53 +136,6 @@ class ActionManager extends EventEmitter {
     this.actions.push(controller);
     this.emit("stationVolumeAdded", controller);
     this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a station status action to the action list. Emits a stationStatusAdded
-   * event after the action is added.
-   * @param action The action
-   * @param settings The settings for the action
-   */
-  public addAtisLetter(action: KeyAction, settings: AtisLetterSettings): void {
-    const controller = new AtisLetterController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("atisLetterAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Called when a TrackAudio status action keydown event is triggered.
-   * Forces a refresh of the TrackAudio status.
-   * @param action The action
-   */
-  public trackAudioStatusLongPress(action: KeyAction) {
-    this.resetAll();
-    trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK status on TrackAudio action: ",
-        error
-      );
-    });
-  }
-
-  /**
-   * Called when an ATIS letter action has a short press. Clears the state.
-   * @param actionId The ID of the action that had the short press
-   */
-  public atisLetterShortPress(action: KeyAction) {
-    const savedAction = this.getAtisLetterControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.isUpdated = false;
   }
 
   /**
@@ -254,55 +178,6 @@ class ActionManager extends EventEmitter {
     settings: StationVolumeSettings
   ) {
     const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.settings = settings;
-  }
-
-  /**
-   * Updates the settings associated with a station status action.
-   * Emits a stationStatusSettingsUpdated event if the settings require
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateStation(action: KeyAction, settings: StationSettings) {
-    const savedAction = this.getStationStatusControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    // This avoids unnecessary calls to TrackAudio when the callsign or listenTo settings
-    // didn't change.
-    const requiresStationRefresh =
-      savedAction.callsign !== settings.callsign ||
-      savedAction.listenTo !== (settings.listenTo ?? "rx");
-
-    savedAction.settings = settings;
-
-    if (requiresStationRefresh) {
-      this.emit("stationStatusSettingsUpdated", savedAction);
-    }
-  }
-
-  /**
-   * Updates the settings associated with a TrackAudio status action.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateTrackAudioStatus(
-    action: KeyAction,
-    settings: TrackAudioStatusSettings
-  ) {
-    const savedAction = this.getTrackAudioStatusControllers().find(
       (entry) => entry.action.id === action.id
     );
 
@@ -733,6 +608,24 @@ class ActionManager extends EventEmitter {
   }
 
   /**
+   * Adds a controller to the list of tracked actions.
+   * @param controller The controller to add
+   */
+  public add(controller: Controller): void {
+    this.actions.push(controller);
+    this.emit("actionAdded", controller);
+  }
+
+  /**
+   * Finds controllers based on the predicate.
+   */
+  public find(
+    predicate: (entry: Controller) => boolean
+  ): Controller | undefined {
+    return this.actions.find(predicate);
+  }
+
+  /**
    * Removes an action from the list.
    * @param action The action to remove
    */
@@ -812,65 +705,6 @@ class ActionManager extends EventEmitter {
     action.showOk().catch((error: unknown) => {
       handleAsyncException(
         "Unable to show OK status on TrackAudio action: ",
-        error
-      );
-    });
-  }
-
-  /**
-   * Handles a short press of a station status action. Toggles the
-   * the tx, rx, xc, or spkr state of a frequency bound to a Stream Deck action.
-   * @param actionId The action id to toggle the state of
-   */
-  public stationStatusShortPress(action: KeyAction): void {
-    const foundAction = this.actions.find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!foundAction || !isStationStatusController(foundAction)) {
-      return;
-    }
-
-    // Don't try and toggle a station that doesn't have a frequency (typically this means it doesn't exist)
-    if (foundAction.frequency === 0) {
-      return;
-    }
-
-    // Send the message to TrackAudio.
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.frequency,
-        rx: foundAction.listenTo === "rx" ? "toggle" : undefined,
-        tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
-        xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
-        xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
-        headset: undefined,
-        isOutputMuted: undefined,
-      },
-    });
-  }
-
-  /**
-   * Called when a station status action has a long press. Resets the
-   * station status and refreshses its state.
-   * @param actionId The ID of the action that had the long press
-   */
-  public stationStatusLongPress(action: KeyAction) {
-    const savedAction = this.getStationStatusControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.reset();
-    trackAudioManager.refreshStationState(savedAction.callsign);
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK on station status button:",
         error
       );
     });

@@ -7,6 +7,11 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
+import { handleAddAtisLetter } from "@events/streamDeck/atisLetter/addAtisLetter";
+import { handleAtisLetterLongPress } from "@events/streamDeck/atisLetter/atisLetterLongPress";
+import { handleAtisLetterShortPress } from "@events/streamDeck/atisLetter/atisLetterShortPress";
+import { handleUpdateAtisLetter } from "@events/streamDeck/atisLetter/updateAtisLetter";
+import { handleRemove } from "@events/streamDeck/remove";
 import actionManager from "@managers/action";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
 
@@ -29,14 +34,14 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
       return;
     }
 
-    actionManager.addAtisLetter(ev.action, ev.payload.settings);
+    handleAddAtisLetter(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
     ev: WillDisappearEvent<AtisLetterSettings>
   ): void | Promise<void> {
-    actionManager.remove(ev.action);
+    handleRemove(ev.action);
   }
 
   // When settings are received the ActionManager is called to update the existing
@@ -50,7 +55,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
       return;
     }
 
-    actionManager.updateAtisLetter(ev.action, ev.payload.settings);
+    handleUpdateAtisLetter(ev.action, ev.payload.settings);
   }
 
   override onKeyDown(): Promise<void> | void {
@@ -61,9 +66,9 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {
-      actionManager.atisLetterLongPress(ev.action);
+      handleAtisLetterLongPress(ev.action);
     } else {
-      actionManager.atisLetterShortPress(ev.action);
+      handleAtisLetterShortPress(ev.action);
     }
   }
 }
