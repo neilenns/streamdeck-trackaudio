@@ -33,7 +33,7 @@ import { handleImageChanged } from "@events/svg/imageChanged";
 import { handleConnected } from "@events/trackAudio/connected";
 import { handleDisconnected } from "@events/trackAudio/disconnected";
 import { handleFrequencyRemoved } from "@events/trackAudio/frequencyRemoved";
-import { handleMainVolumeChange } from "@events/trackAudio/mainOutputVolumeChange";
+import { handleMainVolumeChange } from "@events/trackAudio/mainVolumeChange";
 import { handleRxBegin } from "@events/trackAudio/rxBegin";
 import { handleRxEnd } from "@events/trackAudio/rxEnd";
 import { handleStationAdded } from "@events/trackAudio/stationAdded";
@@ -81,7 +81,7 @@ trackAudioManager.on("stationStates", handleStationStates);
 trackAudioManager.on("stationStateUpdate", handleStationStateUpdate);
 trackAudioManager.on("txBegin", handleTxBegin);
 trackAudioManager.on("txEnd", handleTxEnd);
-trackAudioManager.on("handleMainVolumeChange", handleMainVolumeChange);
+trackAudioManager.on("mainVolumeChange", handleMainVolumeChange);
 trackAudioManager.on("voiceConnectedState", (data: VoiceConnectedState) => {
   handleVoiceConnectedState(data).catch((error: unknown) => {
     logger.error(error);
