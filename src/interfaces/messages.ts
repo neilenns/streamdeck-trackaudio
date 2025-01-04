@@ -14,7 +14,7 @@ export interface VoiceConnectedState {
 export interface MainOutputVolumeChange {
   type: "kMainOutputVolumeChange";
   value: {
-    outputVolume: number;
+    volume: number;
   };
 }
 

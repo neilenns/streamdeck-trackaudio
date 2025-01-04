@@ -1,11 +1,11 @@
+import { MainVolumeSettings } from "@actions/mainVolume";
 import { StationVolumeSettings } from "@actions/stationVolume";
-import { BaseController } from "./baseController";
 import { DialAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { handleAsyncException } from "@utils/handleAsyncException";
-import debounce from "debounce";
-import { MainVolumeSettings } from "@actions/mainVolume";
 import { stringOrUndefined } from "@utils/utils";
+import debounce from "debounce";
+import { BaseController } from "./baseController";
 
 const defaultConnectedTemplatePath = "images/actions/mainVolume/template.svg";
 const defaultNotConnectedTemplatePath =
@@ -17,7 +17,7 @@ export class MainVolumeController extends BaseController {
   declare action: DialAction; // This ensures action from the base class is always a DialAction
 
   private _isConnected = false;
-  private _outputVolume? = 100;
+  private _volume? = 100;
   private _settings: StationVolumeSettings | null = null;
 
   private _connectedTemplatePath?: string;
@@ -74,19 +74,19 @@ export class MainVolumeController extends BaseController {
   /**
    * Gets the output volume. Returns 100 if undefined.
    **/
-  get outputVolume(): number {
-    return this._outputVolume ?? 100;
+  get volume(): number {
+    return this._volume ?? 100;
   }
 
   /**
    * Sets the output volume.
    **/
-  set outputVolume(newValue: number | undefined) {
-    if (this._outputVolume === newValue) {
+  set volume(newValue: number | undefined) {
+    if (this._volume === newValue) {
       return;
     }
 
-    this._outputVolume = newValue;
+    this._volume = newValue;
 
     // This isn't debounced to ensure speedy updates when the volume changes.
     this.refreshImage();
@@ -143,14 +143,14 @@ export class MainVolumeController extends BaseController {
 
   override reset(): void {
     this._isConnected = false;
-    this._outputVolume = 100;
+    this._volume = 100;
 
     this.refreshDisplay();
   }
 
   private refreshImage(): void {
     const replacements = {
-      volume: this.outputVolume,
+      volume: this.volume,
     };
 
     if (this.isConnected) {
@@ -174,11 +174,11 @@ export class MainVolumeController extends BaseController {
           color: "#FFFFFF",
         },
         indicator: {
-          value: this.outputVolume,
+          value: this.volume,
           bar_fill_c: "#FFFFFF",
         },
         value: {
-          value: `${this.outputVolume.toString()}%`,
+          value: `${this.volume.toString()}%`,
           color: "#FFFFFF",
         },
       })

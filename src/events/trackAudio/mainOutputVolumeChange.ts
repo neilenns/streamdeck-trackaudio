@@ -7,6 +7,6 @@ import actionManager from "@managers/action";
  */
 export const handleMainOutputVolumeChange = (data: MainOutputVolumeChange) => {
   actionManager.getMainVolumeControllers().forEach((entry) => {
-    entry.outputVolume = data.value.outputVolume;
+    entry.volume = data.value.volume;
   });
 };
