@@ -11,15 +11,6 @@ import { BaseController } from "./baseController";
 // in the kFrequenciesUpdate message.
 export type ListenTo = "rx" | "tx" | "xc" | "xca";
 
-const StateColor = {
-  ACTIVE_COMMS: "#f60",
-  LISTENING: "#060",
-  NOT_LISTENING: "black",
-  UNAVAILABLE: "black",
-  BLOCKING: "yellow",
-  MUTED: "#a71d2a",
-};
-
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
 const defaultUnavailableTemplatePath =
   "images/actions/stationStatus/unavailable.svg";
@@ -576,7 +567,6 @@ export class StationStatusController extends BaseController {
     if (this.isAvailable !== undefined && !this.isAvailable) {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
-        stateColor: StateColor.UNAVAILABLE,
         state: "unavailable",
       });
       return;
@@ -585,7 +575,6 @@ export class StationStatusController extends BaseController {
     if (this.isOutputMuted) {
       this.setImage(this.mutedImagePath, {
         ...replacements,
-        stateColor: StateColor.MUTED,
         state: "muted",
       });
       return;
@@ -594,7 +583,6 @@ export class StationStatusController extends BaseController {
     if (this.isReceiving && this.isTransmitting) {
       this.setImage(this.blockedCommsImagePath, {
         ...replacements,
-        stateColor: StateColor.BLOCKING,
         state: "blocking",
       });
       return;
@@ -603,7 +591,6 @@ export class StationStatusController extends BaseController {
     if (this.isReceiving || this.isTransmitting) {
       this.setImage(this.activeCommsImagePath, {
         ...replacements,
-        stateColor: StateColor.ACTIVE_COMMS,
         state: "activeComms",
       });
       return;
@@ -612,7 +599,6 @@ export class StationStatusController extends BaseController {
     if (this.isListening) {
       this.setImage(this.listeningImagePath, {
         ...replacements,
-        stateColor: StateColor.LISTENING,
         state: "listening",
       });
       return;
@@ -620,7 +606,6 @@ export class StationStatusController extends BaseController {
 
     this.setImage(this.notListeningImagePath, {
       ...replacements,
-      stateColor: StateColor.NOT_LISTENING,
       state: "notListening",
     });
   }

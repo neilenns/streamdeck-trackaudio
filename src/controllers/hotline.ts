@@ -5,15 +5,6 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 
-const StateColor = {
-  BOTH_ACTIVE: "#900",
-  HOTLINE_ACTIVE: "#c60",
-  LISTENING: "#009",
-  NEITHER_ACTIVE: "black",
-  RECEIVING: "#060",
-  UNAVAILABLE: "black",
-};
-
 const defaultTemplatePath = "images/actions/hotline/template.svg";
 const defaultUnavailableTemplatePath = "images/actions/hotline/unavailable.svg";
 
@@ -401,7 +392,6 @@ export class HotlineController extends BaseController {
     if (this.isAvailable !== undefined && !this.isAvailable) {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
-        stateColor: StateColor.UNAVAILABLE,
         state: "unavailable",
       });
       return;
@@ -412,7 +402,6 @@ export class HotlineController extends BaseController {
     if (this.isTxHotline && this.isTxPrimary) {
       this.setImage(this.bothActiveImagePath, {
         ...replacements,
-        stateColor: StateColor.BOTH_ACTIVE,
         state: "bothActive",
       });
       return;
@@ -422,7 +411,6 @@ export class HotlineController extends BaseController {
     if (this.isTxHotline) {
       this.setImage(this.hotlineActiveImagePath, {
         ...replacements,
-        stateColor: StateColor.HOTLINE_ACTIVE,
         state: "hotlineActive",
       });
       return;
@@ -431,7 +419,6 @@ export class HotlineController extends BaseController {
     if (this.isReceiving) {
       this.setImage(this.receivingImagePath, {
         ...replacements,
-        stateColor: StateColor.RECEIVING,
         state: "receiving",
       });
       return;
@@ -441,7 +428,6 @@ export class HotlineController extends BaseController {
     if (this.isRxHotline) {
       this.setImage(this.listeningImagePath, {
         ...replacements,
-        stateColor: StateColor.LISTENING,
         state: "listening",
       });
       return;
@@ -450,7 +436,6 @@ export class HotlineController extends BaseController {
     // Nothing is active.
     this.setImage(this.neitherActiveImagePath, {
       ...replacements,
-      stateColor: StateColor.NEITHER_ACTIVE,
       state: "neitherActive",
     });
   }

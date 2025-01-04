@@ -5,11 +5,6 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 
-const StateColor = {
-  NOT_TRANSMITTING: "black",
-  TRANSMITTING: "#f60",
-};
-
 const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 
 /**
@@ -153,7 +148,6 @@ export class PushToTalkController extends BaseController {
     if (this.isTransmitting) {
       this.setImage(this.transmittingImagePath, {
         ...replacements,
-        stateColor: StateColor.TRANSMITTING,
         state: "transmitting",
       });
       return;
@@ -161,7 +155,6 @@ export class PushToTalkController extends BaseController {
 
     this.setImage(this.notTransmittingImagePath, {
       ...replacements,
-      stateColor: StateColor.NOT_TRANSMITTING,
       state: "notTransmitting",
     });
   }

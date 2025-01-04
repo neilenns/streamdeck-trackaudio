@@ -3,6 +3,9 @@ changelog:
     labels:
       - ignore-for-release-notes
   categories:
+    - title: Breaking changes ⚠️
+      labels:
+        - breaking change
     - title: New features 🎉
       labels:
         - feature

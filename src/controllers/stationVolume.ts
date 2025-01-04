@@ -226,22 +226,30 @@ export class StationVolumeController extends BaseController {
 
   override refreshImage(): void {
     const replacements = {
-      isOutputMuted: this.isOutputMuted,
       volume: this.outputVolume,
     };
 
     // Set the unavilable state if the station is not available.
     if (this.isAvailable !== undefined && !this.isAvailable) {
-      this.setFeedbackImage(this.unavailableTemplatePath, replacements);
+      this.setFeedbackImage(this.unavailableTemplatePath, {
+        ...replacements,
+        state: "unavailable",
+      });
       return;
     }
 
     if (this.isOutputMuted) {
-      this.setFeedbackImage(this.mutedTemplatePath, replacements);
+      this.setFeedbackImage(this.mutedTemplatePath, {
+        ...replacements,
+        state: "muted",
+      });
       return;
     }
 
-    this.setFeedbackImage(this.notMutedTemplatePath, replacements);
+    this.setFeedbackImage(this.notMutedTemplatePath, {
+      ...replacements,
+      state: "notMuted",
+    });
   }
 
   override refreshTitle(): void {

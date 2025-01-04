@@ -5,7 +5,9 @@
 - [Hotline variables](#hotline-variables)
 - [Push to talk variables](#push-to-talk-variables)
 - [Station status variables](#station-status-variables)
+- [Station volume variables](#station-volume-variables)
 - [TrackAudio status variables](#trackaudio-status-variables)
+- [Additional Handlebars helpers](#additional-handlebars-helpers)
 
 ## Introduction
 
@@ -15,7 +17,20 @@ For example, the following SVG template renders an ATIS letter large with the ac
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" width="144" height="144">
-  <rect width="144" height="144" fill="{{stateColor}}" />
+  <style>
+    .background {
+      {{#if (eq state "updated")}}
+        fill: #f60;
+      {{else if (eq state "current")}}
+        fill: black;
+      {{else if (eq state "unavailable")}}
+        fill: black;
+      {{else}}
+        fill: black;
+      {{/if}}
+    }
+  </style>
+  <rect class="background" width="144" height="144" />
   <text x="72" y="36" font-family="Arial" font-weight="bold" font-size="22" text-anchor="middle"
     fill="white">{{title}}</text>
   <text x="72" y="92" fill="white" font-family="Arial" font-weight="bold" font-size="60" text-anchor="middle">{{#if
@@ -35,62 +50,53 @@ Results in an action displayed like this:
 
 The following variables are supported with the ATIS letter action:
 
-| Variable   | Description                                                     |
-| ---------- | --------------------------------------------------------------- |
-| callsign   | The callsign for the ATIS station                               |
-| letter     | The current ATIS letter, or undefined if no letter is available |
-| state      | The name for the action's current state                         |
-| stateColor | The default color for the action's current state                |
-| title      | The title specified by the user                                 |
+| Variable | Description                                                     |
+| -------- | --------------------------------------------------------------- |
+| callsign | The callsign for the ATIS station                               |
+| letter   | The current ATIS letter, or undefined if no letter is available |
+| state    | The action's current state                                      |
+| title    | The title specified by the user                                 |
 
-The state names and colors are:
+The states are:
 
-| stateName | stateColor |
-| --------- | ---------- |
-| current   | black      |
-| updated   | #f60       |
+- current
+- updated
 
 ## Hotline variables
 
 The following variables are supported with the hotline action:
 
-| Variable         | Description                                      |
-| ---------------- | ------------------------------------------------ |
-| hotlineCallsign  | The hotline callsign                             |
-| hotlineFrequency | The frequency for the hotline callsign           |
-| primaryCallsign  | The primary callsign                             |
-| primaryFrequency | The frequency for the primary callsign           |
-| state            | The name for the action's current state          |
-| stateColor       | The default color for the action's current state |
-| title            | The title specified by the user                  |
+| Variable         | Description                            |
+| ---------------- | -------------------------------------- |
+| hotlineCallsign  | The hotline callsign                   |
+| hotlineFrequency | The frequency for the hotline callsign |
+| primaryCallsign  | The primary callsign                   |
+| primaryFrequency | The frequency for the primary callsign |
+| state            | The action's current state             |
+| title            | The title specified by the user        |
 
-The state names and colors are:
+The states are:
 
-| stateName     | stateColor |
-| ------------- | ---------- |
-| bothActive    | #900       |
-| hotlineActive | #c60       |
-| listening     | #009       |
-| neitherActive | black      |
-| receiving     | #060       |
-| unavailable   | black      |
+- bothActive
+- hotlineActive
+- listening
+- neitherActive
+- receiving
+- unavailable
 
 ## Push to talk variables
 
 The following variables are supported with the push to talk action:
 
-| Variable   | Description                                      |
-| ---------- | ------------------------------------------------ |
-| state      | The name for the action's current state          |
-| stateColor | The default color for the action's current state |
-| title      | The title specified by the user                  |
+| Variable | Description                     |
+| -------- | ------------------------------- |
+| state    | The action's current state      |
+| title    | The title specified by the user |
 
-The state names and colors are:
+The states are:
 
-| stateName       | stateColor |
-| --------------- | ---------- |
-| notTransmitting | black      |
-| transmitting    | #f60       |
+- notTransmitting
+- transmitting
 
 ## Station status variables
 
@@ -103,33 +109,64 @@ The following variables are supported with the station status action:
 | formattedFrequency   | The frequency for the station formatted for display, e.g. 121.900 |
 | lastReceivedCallsign | The last received callsign                                        |
 | listenTo             | The value of the listen to setting                                |
-| state                | The name for the action's current state                           |
-| stateColor           | The default color for the action's current state                  |
+| state                | The action's current state                                        |
 | title                | The title specified by the user                                   |
 
-The state names and colors are:
+The states are:
 
-| stateName    | stateColor |
-| ------------ | ---------- |
-| activeComms  | #f60       |
-| listening    | #060       |
-| notListening | black      |
-| unavailable  | black      |
+- activeComs
+- listening
+- notListening
+- unavailable
+
+## Station volume variables
+
+The following variables are supported with the station volume action:
+
+| Variable     | Description                                         |
+| ------------ | --------------------------------------------------- |
+| state        | The action's current state                          |
+| outputVolume | The volume level for the station, between 0 and 100 |
+
+The states are:
+
+- muted
+- notMuted
+- unavailable
 
 ## TrackAudio status variables
 
 The following variables are supported with the TrackAudio status action:
 
-| Variable   | Description                                      |
-| ---------- | ------------------------------------------------ |
-| state      | The name for the action's current state          |
-| stateColor | The default color for the action's current state |
-| title      | The title specified by the user                  |
+| Variable | Description                             |
+| -------- | --------------------------------------- |
+| state    | The name for the action's current state |
+| title    | The title specified by the user         |
 
-The state names and colors are:
+The states are:
 
-| stateName      | stateColor |
-| -------------- | ---------- |
-| connected      | #5fcdfa    |
-| notConnected   | white      |
-| voiceConnected | #060       |
+- connected
+- notConnected
+- voiceConnected
+
+## Additional Handlebars helpers
+
+Logical comparison operators are available in addition to the standard helpers. The
+following operators are supported:
+
+| Operator | Description           |
+| -------- | --------------------- |
+| eq       | Equals                |
+| ne       | Not equals            |
+| gt       | Greater than          |
+| gte      | Greater than or equal |
+| lt       | Less than             |
+| lte      | Less than or equal    |
+
+Example:
+
+```xml
+{{#if (eq state "unavailable")}} {{else}} {{/if}}
+```
+
+A complete example is available in the [default station state template](https://github.com/neilenns/streamdeck-trackaudio/blob/main/com.neil-enns.trackaudio.sdPlugin/images/actions/stationStatus/template.svg?short_path=ca0646b).
