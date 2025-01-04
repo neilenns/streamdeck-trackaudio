@@ -19,6 +19,7 @@
         }
       },
       "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
       "States": [
         {
           "Image": "images/actions/default",
@@ -40,6 +41,7 @@
           "Rotate": "Adjust volume"
         }
       },
+      "UserTitleEnabled": false,
       "DisableAutomaticStates": true,
       "States": [
         {

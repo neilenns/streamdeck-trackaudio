@@ -9,7 +9,7 @@ import trackAudioManager from "@managers/trackAudio";
  */
 export const handleDialRotate = (action: DialAction, ticks: number) => {
   const savedAction = actionManager
-    .getStationVolumeControllers()
+    .getMainVolumeControllers()
     .find((entry) => entry.action.id === action.id);
 
   if (!savedAction) {
