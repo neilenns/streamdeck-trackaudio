@@ -40,6 +40,7 @@ import { handleTxBegin } from "@events/trackAudio/txBegin";
 import { handleTxEnd } from "@events/trackAudio/txEnd";
 import { handleVatsimDataReceived } from "@events/vatsim/vatsimDataReceived";
 import { handleVoiceConnectedState } from "@events/trackAudio/voiceConnectedState";
+import { handleMainVolumeAdded } from "@events/action/mainVolumeAdded";
 
 const logger = mainLogger.child({ service: "plugin" });
 
@@ -96,6 +97,7 @@ actionManager.on("atisLetterAdded", handleAtisLetterAdded);
 actionManager.on("atisLetterUpdated", handleAtisLetterUpdated);
 actionManager.on("actionAdded", handleActionAdded);
 actionManager.on("stationVolumeAdded", handleStationVolumeAdded);
+actionManager.on("mainVolumeAdded", handleMainVolumeAdded);
 
 vatsimManager.on("vatsimDataReceived", handleVatsimDataReceived);
 

@@ -8,7 +8,7 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import { handleAddMainVolume } from "@events/streamDeck/mainVolume/addStationVolume";
+import { handleAddMainVolume } from "@events/streamDeck/mainVolume/addMainVolume";
 import { handleRemove } from "@events/streamDeck/remove";
 import { handleDialRotate } from "@events/streamDeck/mainVolume/dialRotate";
 import debounce from "debounce";
