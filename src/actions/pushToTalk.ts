@@ -2,6 +2,7 @@ import {
   action,
   DidReceiveSettingsEvent,
   JsonValue,
+  KeyAction,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
@@ -11,6 +12,7 @@ import { handlePushToTalkPressed } from "@events/streamDeck/pushToTalk/pushToTal
 import { handlePushToTalkReleased } from "@events/streamDeck/pushToTalk/pushToTalkReleased";
 import { handleUpdatePushToTalk } from "@events/streamDeck/pushToTalk/updatePushToTalk";
 import { handleRemove } from "@events/streamDeck/remove";
+import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.pushtotalk" })
 
@@ -18,6 +20,13 @@ import { handleRemove } from "@events/streamDeck/remove";
  * Represents a push-to-talk action
  */
 export class PushToTalk extends SingletonAction<PushToTalkSettings> {
+  debouncedUpdate = debounce(
+    (action: KeyAction, settings: PushToTalkSettings) => {
+      handleUpdatePushToTalk(action, settings);
+    },
+    300
+  );
+
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
@@ -59,7 +68,7 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
       return;
     }
 
-    handleUpdatePushToTalk(ev.action, ev.payload.settings);
+    this.debouncedUpdate(ev.action, ev.payload.settings);
   }
 }
 

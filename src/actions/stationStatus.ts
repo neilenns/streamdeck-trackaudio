@@ -3,6 +3,7 @@ import {
   action,
   DidReceiveSettingsEvent,
   JsonValue,
+  KeyAction,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
@@ -14,6 +15,7 @@ import { handleStationStatusLongPress } from "@events/streamDeck/stationStatus/s
 import { handleStationStatusShortPress } from "@events/streamDeck/stationStatus/stationStatusShortPress";
 import { handleUpdateStation } from "@events/streamDeck/stationStatus/updateStation";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
+import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationstatus" })
 /**
@@ -21,6 +23,10 @@ import { LONG_PRESS_THRESHOLD } from "@utils/constants";
  */
 export class StationStatus extends SingletonAction<StationSettings> {
   private _keyDownStart = 0;
+
+  debouncedUpdate = debounce((action: KeyAction, settings: StationSettings) => {
+    handleUpdateStation(action, settings);
+  }, 300);
 
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
@@ -55,7 +61,7 @@ export class StationStatus extends SingletonAction<StationSettings> {
       return;
     }
 
-    handleUpdateStation(ev.action, ev.payload.settings);
+    this.debouncedUpdate(ev.action, ev.payload.settings);
   }
 
   override onKeyDown(): void | Promise<void> {

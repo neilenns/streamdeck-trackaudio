@@ -2,6 +2,7 @@ import {
   action,
   DidReceiveSettingsEvent,
   JsonValue,
+  KeyAction,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
@@ -13,6 +14,7 @@ import { handleAtisLetterShortPress } from "@events/streamDeck/atisLetter/atisLe
 import { handleUpdateAtisLetter } from "@events/streamDeck/atisLetter/updateAtisLetter";
 import { handleRemove } from "@events/streamDeck/remove";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
+import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.atisletter" })
 /**
@@ -20,6 +22,13 @@ import { LONG_PRESS_THRESHOLD } from "@utils/constants";
  */
 export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   private _keyDownStart = 0;
+
+  debouncedUpdate = debounce(
+    (action: KeyAction, settings: AtisLetterSettings) => {
+      handleUpdateAtisLetter(action, settings);
+    },
+    300
+  );
 
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
@@ -54,7 +63,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
       return;
     }
 
-    handleUpdateAtisLetter(ev.action, ev.payload.settings);
+    this.debouncedUpdate(ev.action, ev.payload.settings);
   }
 
   override onKeyDown(): Promise<void> | void {
