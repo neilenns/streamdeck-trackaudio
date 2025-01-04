@@ -113,13 +113,6 @@ export class MainVolumeController extends BaseController {
   }
 
   /**
-   * Returns the title specified by the user in the property inspector.
-   */
-  get title() {
-    return this.settings.title;
-  }
-
-  /**
    * True if connected to TrackAudio.
    */
   get isConnected(): boolean {
@@ -175,7 +168,6 @@ export class MainVolumeController extends BaseController {
     this.action
       .setFeedback({
         title: {
-          value: this.title,
           color: "#FFFFFF",
         },
         indicator: {

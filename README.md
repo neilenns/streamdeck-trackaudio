@@ -95,7 +95,6 @@ for the station.
 | Change amount | The size of volume change to make on each click of the knob.                                            | 1       |
 | Muted         | The image to display when the station is muted in TrackAudio. Optional, defaults to a muted icon.       |         |
 | Not muted     | The image to display when the station is not muted in TrackAudio. Optional, defaults to a volume icon.  |         |
-| Title         | The title to display on the action. Optional.                                                           |         |
 | Unavailable   | The image to display when the station is not added in TrackAudio. Optional, defaults to a warning icon. |         |
 
 ## Configuring a hotline action
@@ -195,7 +194,6 @@ Turning the knob will adjust the station volume.
 | Change amount | The size of volume change to make on each click of the knob.                                | 1       |
 | Connected     | The image to display when connected to TrackAudio. Optional, defaults to a volume icon.     |         |
 | Not connected | The image to display when not connected to TrackAudio. Optional, defaults to a volume icon. |         |
-| Title         | The title to display on the action. Optional.                                               |         |
 
 ## SVG templates
 

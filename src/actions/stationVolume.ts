@@ -77,6 +77,5 @@ export interface StationVolumeSettings {
   changeAmount?: number;
   mutedImagePath?: string;
   notMutedImagePath?: string;
-  title?: string;
   [key: string]: JsonValue;
 }

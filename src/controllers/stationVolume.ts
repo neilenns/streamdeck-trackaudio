@@ -161,13 +161,6 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Returns the title specified by the user in the property inspector.
-   */
-  get title() {
-    return this.settings.title;
-  }
-
-  /**
    * Gets the frequency.
    */
   get frequency() {
@@ -257,7 +250,6 @@ export class StationVolumeController extends BaseController {
       this.action
         .setFeedback({
           title: {
-            value: this.title,
             color: "grey",
           },
           indicator: {
@@ -279,7 +271,6 @@ export class StationVolumeController extends BaseController {
     this.action
       .setFeedback({
         title: {
-          value: this.title,
           color: this.isOutputMuted ? "grey" : "#FFFFFF",
         },
         indicator: {

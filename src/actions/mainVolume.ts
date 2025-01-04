@@ -67,6 +67,5 @@ export interface MainVolumeSettings {
   changeAmount?: number;
   connectedImagePath?: string;
   notConnectedImagePath?: string;
-  title?: string;
   [key: string]: JsonValue;
 }
