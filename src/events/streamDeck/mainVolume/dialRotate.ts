@@ -16,8 +16,8 @@ export const handleDialRotate = (action: DialAction, ticks: number) => {
     return;
   }
 
-  // Calculate the new volume level
-  const newVolume = Math.min(
+  // Calculate the change amount
+  const amount = Math.min(
     100,
     Math.max(-100, savedAction.changeAmount * ticks)
   );
@@ -26,7 +26,7 @@ export const handleDialRotate = (action: DialAction, ticks: number) => {
   trackAudioManager.sendMessage({
     type: "kChangeMainOutputVolume",
     value: {
-      amount: newVolume,
+      amount,
     },
   });
 };
