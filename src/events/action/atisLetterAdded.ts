@@ -6,7 +6,7 @@ import vatsimManager from "@managers/vatsim";
  * Handles when an ATIS letter is added.
  */
 export const handleAtisLetterAdded = (controller: AtisLetterController) => {
-  controller.refreshTitle();
+  controller.refreshDisplay();
 
   if (trackAudioManager.isVoiceConnected) {
     vatsimManager.start();

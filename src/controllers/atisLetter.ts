@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
+import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
 const defaultUnavailableTemplatePath =
@@ -37,6 +38,14 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
+   * Refreshes the title and image on the action.
+   */
+  public override refreshDisplay = debounce(() => {
+    this.refreshTitle();
+    this.refreshImage();
+  });
+
+  /**
    * Resets the action to its default, disconnected, state.
    */
   public reset() {
@@ -44,8 +53,7 @@ export class AtisLetterController extends BaseController {
     this._isUpdated = false;
     this._isUnavailable = false;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   //#region Getters and setters
@@ -73,7 +81,7 @@ export class AtisLetterController extends BaseController {
     }
 
     this._isUnavailable = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -164,8 +172,7 @@ export class AtisLetterController extends BaseController {
     this.unavailableImagePath = newValue.unavailableImagePath;
     this.updatedImagePath = newValue.updatedImagePath;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -193,7 +200,7 @@ export class AtisLetterController extends BaseController {
       }, 1000 * 60 * 2); // Two minute timeout
     }
 
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -217,8 +224,7 @@ export class AtisLetterController extends BaseController {
     }
 
     this._letter = newLetter;
-    this.refreshTitle();
-    this.refreshImage(); // For cases where the state is fully responsible for displaying the content
+    this.refreshDisplay();
   }
 
   /**
@@ -232,7 +238,7 @@ export class AtisLetterController extends BaseController {
   /**
    * Sets the image based on the state of the action.
    */
-  public refreshImage() {
+  private refreshImage() {
     const replacements = {
       callsign: this.callsign,
       letter: this.letter,
@@ -264,7 +270,7 @@ export class AtisLetterController extends BaseController {
   /**
    * Sets the title on the action.
    */
-  public refreshTitle() {
+  private refreshTitle() {
     const title = new TitleBuilder();
 
     title.push(this.title, this.showTitle);

@@ -37,7 +37,7 @@ export const handleStationStateUpdate = (data: StationStateUpdate) => {
         entry.isOutputMuted = value.isOutputMuted;
         entry.outputVolume = value.outputVolume;
 
-        entry.refreshImage();
+        entry.refreshDisplay();
       });
 
     // Do the same for hotline actions
@@ -50,7 +50,7 @@ export const handleStationStateUpdate = (data: StationStateUpdate) => {
         entry.isRxHotline = value.rx;
       }
 
-      entry.refreshImage();
+      entry.refreshDisplay();
     });
 
     actionManager.getStationVolumeControllers().forEach((entry) => {
@@ -58,6 +58,8 @@ export const handleStationStateUpdate = (data: StationStateUpdate) => {
         entry.isOutputMuted = value.isOutputMuted;
         entry.outputVolume = value.outputVolume;
       }
+
+      entry.refreshDisplay();
     });
 
     return;

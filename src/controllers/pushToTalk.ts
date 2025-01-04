@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
+import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 
@@ -28,6 +29,14 @@ export class PushToTalkController extends BaseController {
     super(action);
     this.settings = settings;
   }
+
+  /**
+   * Refreshes the title and image on the action.
+   */
+  public override refreshDisplay = debounce(() => {
+    this.refreshTitle();
+    this.refreshImage();
+  }, 100);
 
   /**
    * Resets the action to its default, disconnected, state.
@@ -98,7 +107,7 @@ export class PushToTalkController extends BaseController {
     }
 
     this._isTransmitting = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -121,15 +130,14 @@ export class PushToTalkController extends BaseController {
     this.notTransmittingImagePath = newValue.notTransmittingImagePath;
     this.transmittingImagePath = newValue.transmittingImagePath;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
   //#endregion
 
   /**
    * Sets the title on the action.
    */
-  public refreshTitle() {
+  private refreshTitle() {
     const title = new TitleBuilder();
 
     title.push(this.title, this.showTitle);
@@ -140,7 +148,7 @@ export class PushToTalkController extends BaseController {
   /**
    * Sets the action image to the correct one for when comms are active.
    */
-  public refreshImage() {
+  private refreshImage() {
     const replacements = {
       title: this.title,
     };

@@ -7,6 +7,5 @@ export interface Controller {
   type: string;
   action: KeyAction | DialAction;
   reset(): void;
-  refreshImage(): void;
-  refreshTitle(): void;
+  refreshDisplay(): void;
 }

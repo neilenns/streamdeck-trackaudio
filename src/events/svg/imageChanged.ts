@@ -5,5 +5,5 @@ import actionManager from "@managers/action";
  * all actions to redraw their background image.
  */
 export const handleImageChanged = () => {
-  actionManager.refreshAllImages();
+  actionManager.refreshDisplayAll();
 };
