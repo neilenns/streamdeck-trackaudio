@@ -1,40 +1,45 @@
-import { Hotline } from "@actions/hotline";
-import { StationStatus } from "@actions/stationStatus";
+// SDKs
+import { VoiceConnectedState } from "@interfaces/messages";
+import mainLogger from "@utils/logger";
 import streamDeck from "@elgato/streamdeck";
+
+// Managers
 import actionManager from "@managers/action";
 import svgManager from "@managers/svg";
 import trackAudioManager from "@managers/trackAudio";
 import vatsimManager from "@managers/vatsim";
 
-// Event handlers
+// Actions
 import { AtisLetter } from "@actions/atisLetter";
+import { Hotline } from "@actions/hotline";
 import { PushToTalk } from "@actions/pushToTalk";
-import { TrackAudioStatus } from "@actions/trackAudioStatus";
-import { handleAtisLetterAdded } from "@eventHandlers/action/atisLetterAdded";
-import { handleAtisLetterUpdated } from "@eventHandlers/action/atisLetterUpdated";
-import { handleHotlineSettingsUpdated } from "@eventHandlers/action/hotlineSettingsUpdated";
-import { handleRemoved } from "@eventHandlers/action/removed";
-import { handleStationStatusAdded } from "@eventHandlers/action/stationStatusAdded";
-import { handleStationStatusSettingsUpdated } from "@eventHandlers/action/stationStatusSettingsUpdated";
-import { handleTrackAudioStatusAdded } from "@eventHandlers/action/trackAudioStatusAdded";
-import { handleImageChanged } from "@eventHandlers/svg/imageChanged";
-import { handleConnected } from "@eventHandlers/trackAudio/connected";
-import { handleDisconnected } from "@eventHandlers/trackAudio/disconnected";
-import { handleFrequencyRemoved } from "@eventHandlers/trackAudio/frequencyRemoved";
-import { handleRxBegin } from "@eventHandlers/trackAudio/rxBegin";
-import { handleRxEnd } from "@eventHandlers/trackAudio/rxEnd";
-import { handleStationAdded } from "@eventHandlers/trackAudio/stationAdded";
-import { handleStationStateUpdate } from "@eventHandlers/trackAudio/stationStateUpdate";
-import { handleStationStates } from "@eventHandlers/trackAudio/stationStates";
-import { handleTxBegin } from "@eventHandlers/trackAudio/txBegin";
-import { handleTxEnd } from "@eventHandlers/trackAudio/txEnd";
-import { handleVoiceConnectedState } from "@eventHandlers/trackAudio/voiceConnectedState";
-import { handleVatsimDataReceived } from "@eventHandlers/vatsim/vatsimDataReceived";
-import { handleActionAdded } from "@eventHandlers/action/actionAdded";
-import mainLogger from "@utils/logger";
-import { VoiceConnectedState } from "@interfaces/messages";
-import { handleStationVolumeAdded } from "@eventHandlers/action/stationVolumeAdded";
+import { StationStatus } from "@actions/stationStatus";
 import { StationVolume } from "@actions/stationVolume";
+import { TrackAudioStatus } from "@actions/trackAudioStatus";
+
+// Event handlers
+import { handleActionAdded } from "@events/action/actionAdded";
+import { handleAtisLetterAdded } from "@events/action/atisLetterAdded";
+import { handleAtisLetterUpdated } from "@events/action/atisLetterUpdated";
+import { handleConnected } from "@events/trackAudio/connected";
+import { handleDisconnected } from "@events/trackAudio/disconnected";
+import { handleFrequencyRemoved } from "@events/trackAudio/frequencyRemoved";
+import { handleHotlineSettingsUpdated } from "@events/action/hotlineSettingsUpdated";
+import { handleImageChanged } from "@events/svg/imageChanged";
+import { handleRemoved } from "@events/action/removed";
+import { handleRxBegin } from "@events/trackAudio/rxBegin";
+import { handleRxEnd } from "@events/trackAudio/rxEnd";
+import { handleStationAdded } from "@events/trackAudio/stationAdded";
+import { handleStationStates } from "@events/trackAudio/stationStates";
+import { handleStationStateUpdate } from "@events/trackAudio/stationStateUpdate";
+import { handleStationStatusAdded } from "@events/action/stationStatusAdded";
+import { handleStationStatusSettingsUpdated } from "@events/action/stationStatusSettingsUpdated";
+import { handleStationVolumeAdded } from "@events/action/stationVolumeAdded";
+import { handleTrackAudioStatusAdded } from "@events/action/trackAudioStatusAdded";
+import { handleTxBegin } from "@events/trackAudio/txBegin";
+import { handleTxEnd } from "@events/trackAudio/txEnd";
+import { handleVatsimDataReceived } from "@events/vatsim/vatsimDataReceived";
+import { handleVoiceConnectedState } from "@events/trackAudio/voiceConnectedState";
 
 const logger = mainLogger.child({ service: "plugin" });
 

@@ -8,7 +8,7 @@
     "paths": {
       "@actions/*": ["./src/actions/*"],
       "@controllers/*": ["./src/controllers/*"],
-      "@eventHandlers/*": ["./src/eventHandlers/*"],
+      "@events/*": ["./src/events/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@interfaces/*": ["./src/interfaces/*"],
       "@managers/*": ["./src/managers/*"],

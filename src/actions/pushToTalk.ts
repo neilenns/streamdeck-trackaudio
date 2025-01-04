@@ -2,11 +2,17 @@ import {
   action,
   DidReceiveSettingsEvent,
   JsonValue,
+  KeyAction,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import actionManager from "@managers/action";
+import { handleAddPushToTalk } from "@events/streamDeck/pushToTalk/addPushToTalk";
+import { handlePushToTalkPressed } from "@events/streamDeck/pushToTalk/pushToTalkPressed";
+import { handlePushToTalkReleased } from "@events/streamDeck/pushToTalk/pushToTalkReleased";
+import { handleUpdatePushToTalk } from "@events/streamDeck/pushToTalk/updatePushToTalk";
+import { handleRemove } from "@events/streamDeck/remove";
+import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.pushtotalk" })
 
@@ -14,6 +20,13 @@ import actionManager from "@managers/action";
  * Represents a push-to-talk action
  */
 export class PushToTalk extends SingletonAction<PushToTalkSettings> {
+  debouncedUpdate = debounce(
+    (action: KeyAction, settings: PushToTalkSettings) => {
+      handleUpdatePushToTalk(action, settings);
+    },
+    300
+  );
+
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
@@ -26,22 +39,22 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
       return;
     }
 
-    actionManager.addPushToTalk(ev.action, ev.payload.settings);
+    handleAddPushToTalk(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
     ev: WillDisappearEvent<PushToTalkSettings>
   ): void | Promise<void> {
-    actionManager.remove(ev.action);
+    handleRemove(ev.action);
   }
 
   override onKeyDown(): void | Promise<void> {
-    actionManager.pttPressed();
+    handlePushToTalkPressed();
   }
 
   override onKeyUp(): void | Promise<void> {
-    actionManager.pttReleased();
+    handlePushToTalkReleased();
   }
 
   // When settings are received the ActionManager is called to update the existing
@@ -55,7 +68,7 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
       return;
     }
 
-    actionManager.updatePushToTalk(ev.action, ev.payload.settings);
+    this.debouncedUpdate(ev.action, ev.payload.settings);
   }
 }
 

@@ -28,11 +28,11 @@ Here is how the code is structured:
 
 - `com.neil-enns.trackaudio.sdPlugin/pi`: The property inspectors for the actions. They are written using [sdpi-components](https://sdpi-components.dev/docs/components), which automatically handles sending the property values to the plugin.
 
-- `src/actions`: These are all the Stream Deck SingletonAction classes. They do very little except responding to Stream Deck events then firing off their own events that get handled in `src/plugin.ts`.
+- `src/actions`: These are all the Stream Deck SingletonAction classes. They do very little except responding to Stream Deck events invoking an event handler from `src/events/streamDeck`.
 
 - `src/controllers`: These classes manage individual instances of an action on a profile. They track the action object provided by Stream Deck as well as the settings and other associated properties. The `BaseController` class provides common methods for setting action titles and images.
 
-- `src/eventHandlers`: These functions manage all the events fired by the controllers or managers.
+- `src/events`: These functions manage all the events fired by the actions and managers.
 
 - `src/helpers`: Random bits of code that are used across all the other files.
 
@@ -42,7 +42,7 @@ Here is how the code is structured:
 
 Here are some bits and pieces that might be interesting:
 
-- `src/managers/action.ts` is a singleton class that keeps track of the plugin's actions as they are added to a Stream Deck profile. It exposes methods that are called to set the state, image, or display text in response to websocket messages.
+- `src/managers/action.ts` is a singleton class that keeps track of the plugin's actions as they are added to a Stream Deck profile.
 
 - `src/managers/trackAudio.ts` is a singleton class that manages the websocket connection with TrackAudio. It listens to various messages from TrackAudio then fires its own events that are handled by the plugin to update the buttons. The connection to TrackAudio is only opened if the profile has at least one button from this plugin in it, and it disconnects from TrackAudio if all plugin buttons are removed.
 
