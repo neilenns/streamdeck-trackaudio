@@ -157,9 +157,17 @@ export class MainVolumeController extends BaseController {
       volume: this.outputVolume,
     };
 
-    this.setFeedbackImage(this.connectedTemplatePath, {
+    if (this.isConnected) {
+      this.setFeedbackImage(this.connectedTemplatePath, {
+        ...replacements,
+        state: "connected",
+      });
+
+      return;
+    }
+    this.setFeedbackImage(this.notConnectedTemplatePath, {
       ...replacements,
-      state: this.isConnected ? "connected" : "notConnected",
+      state: "notConnected",
     });
   }
 
