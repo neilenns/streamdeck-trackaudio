@@ -1,5 +1,6 @@
 import {
   action,
+  DialAction,
   DialDownEvent,
   DialRotateEvent,
   DidReceiveSettingsEvent,
@@ -8,14 +9,24 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import actionManager from "@managers/action";
+import { handleRemove } from "@events/streamDeck/remove";
+import { handleAddStationVolume } from "@events/streamDeck/stationVolume/addStationVolume";
+import { handleDialPress } from "@events/streamDeck/stationVolume/dialPress";
+import { handleDialRotate } from "@events/streamDeck/stationVolume/dialRotate";
+import { handleUpdateStationVolumeSettings } from "@events/streamDeck/stationVolume/updateStationVolumeSettings";
+import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationvolume" })
 /**
  * Represents the volume of a TrackAudio station
  */
 export class StationVolume extends SingletonAction<StationVolumeSettings> {
-  private _settings: StationVolumeSettings | null = null;
+  debouncedUpdate = debounce(
+    (action: DialAction, settings: StationVolumeSettings) => {
+      handleUpdateStationVolumeSettings(action, settings);
+    },
+    300
+  );
 
   override onWillAppear(
     ev: WillAppearEvent<StationVolumeSettings>
@@ -26,13 +37,13 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
       return;
     }
 
-    actionManager.addStationVolume(ev.action, ev.payload.settings);
+    handleAddStationVolume(ev.action, ev.payload.settings);
   }
 
   override onDialRotate(
     ev: DialRotateEvent<StationVolumeSettings>
   ): Promise<void> | void {
-    actionManager.changeStationVolume(ev.action, ev.payload.ticks);
+    handleDialRotate(ev.action, ev.payload.ticks);
   }
 
   override onDidReceiveSettings(
@@ -44,19 +55,19 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
       return;
     }
 
-    actionManager.updateStationVolumeSettings(ev.action, ev.payload.settings);
+    this.debouncedUpdate(ev.action, ev.payload.settings);
   }
 
   override onDialDown(
     ev: DialDownEvent<StationVolumeSettings>
   ): Promise<void> | void {
-    actionManager.toggleStationMute(ev.action);
+    handleDialPress(ev.action);
   }
 
   override onWillDisappear(
     ev: WillDisappearEvent<StationVolumeSettings>
   ): Promise<void> | void {
-    actionManager.remove(ev.action);
+    handleRemove(ev.action);
   }
 }
 

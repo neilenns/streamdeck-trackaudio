@@ -2,13 +2,19 @@ import {
   action,
   DidReceiveSettingsEvent,
   JsonValue,
+  KeyAction,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import actionManager from "@managers/action";
+import { handleAddHotline } from "@events/streamDeck/hotline/addHotline";
+import { handleHotlineLongPress } from "@events/streamDeck/hotline/hotlineLongPress";
+import { handleHotlineShortPress } from "@events/streamDeck/hotline/hotlineShortPress";
+import { handleUpdateHotline } from "@events/streamDeck/hotline/updateHotline";
+import { handleRemove } from "@events/streamDeck/remove";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
+import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.hotline" })
 /**
@@ -16,6 +22,10 @@ import { LONG_PRESS_THRESHOLD } from "@utils/constants";
  */
 export class Hotline extends SingletonAction<HotlineSettings> {
   private _keyDownStart = 0;
+
+  debouncedUpdate = debounce((action: KeyAction, settings: HotlineSettings) => {
+    handleUpdateHotline(action, settings);
+  }, 300);
 
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code. The default title is also set
@@ -29,14 +39,14 @@ export class Hotline extends SingletonAction<HotlineSettings> {
       return;
     }
 
-    actionManager.addHotline(ev.action, ev.payload.settings);
+    handleAddHotline(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
     ev: WillDisappearEvent<HotlineSettings>
   ): void | Promise<void> {
-    actionManager.remove(ev.action);
+    handleRemove(ev.action);
   }
 
   // When settings are received the ActionManager is called to update the existing
@@ -50,7 +60,7 @@ export class Hotline extends SingletonAction<HotlineSettings> {
       return;
     }
 
-    actionManager.updateHotline(ev.action, ev.payload.settings);
+    this.debouncedUpdate(ev.action, ev.payload.settings);
   }
 
   override onKeyDown(): void | Promise<void> {
@@ -61,9 +71,9 @@ export class Hotline extends SingletonAction<HotlineSettings> {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {
-      actionManager.hotlineLongPress(ev.action);
+      handleHotlineLongPress(ev.action);
     } else {
-      actionManager.hotlineShortPress(ev.action);
+      handleHotlineShortPress(ev.action);
     }
   }
 }

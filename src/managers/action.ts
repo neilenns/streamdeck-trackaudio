@@ -1,8 +1,3 @@
-import { AtisLetterSettings } from "@actions/atisLetter";
-import { HotlineSettings } from "@actions/hotline";
-import { PushToTalkSettings } from "@actions/pushToTalk";
-import { StationSettings } from "@actions/stationStatus";
-import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import {
   AtisLetterController,
   isAtisLetterController,
@@ -20,24 +15,16 @@ import {
   TrackAudioStatusController,
   isTrackAudioStatusController,
 } from "@controllers/trackAudioStatus";
-import { ActionContext, DialAction, KeyAction } from "@elgato/streamdeck";
+import { ActionContext } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import {
-  SetStationState,
-  StationStateUpdate,
-  StationStateUpdateAvailable,
-} from "@interfaces/messages";
+import { SetStationState, StationStateUpdate } from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
-import { handleAsyncException } from "@root/utils/handleAsyncException";
 import mainLogger from "@utils/logger";
-import debounce from "debounce";
 import { EventEmitter } from "events";
-import vatsimManager from "./vatsim";
 import {
   isStationVolumeController,
   StationVolumeController,
 } from "@controllers/stationVolume";
-import { StationVolumeSettings } from "@actions/stationVolume";
 
 const logger = mainLogger.child({ service: "action" });
 
@@ -50,13 +37,6 @@ class ActionManager extends EventEmitter {
 
   private constructor() {
     super();
-
-    // Debounce the update methods to avoid rapid pinging of TrackAudio or
-    // title redraws while typing
-    this.updateAtisLetter = debounce(this.updateAtisLetter.bind(this), 500);
-    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
-    this.updateHotline = debounce(this.updateHotline.bind(this), 500);
-    this.updateStation = debounce(this.updateStation.bind(this), 500);
   }
 
   /**
@@ -94,147 +74,6 @@ class ActionManager extends EventEmitter {
       350
     );
   }
-
-  /**
-   * Adds a push-to-talk action to the action list. Emits a pushToTalkAdded event
-   * after the action is added.
-   * @param action The action
-   */
-  public addPushToTalk(action: KeyAction, settings: PushToTalkSettings): void {
-    const controller = new PushToTalkController(action, settings);
-    this.actions.push(controller);
-
-    this.emit("pushToTalkAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a TrackAudio status action to the action list. Emits a trackAudioStatusAdded event
-   * after the action is added.
-   * @param action The action to add
-   */
-  public addTrackAudio(action: KeyAction, settings: TrackAudioStatusSettings) {
-    const controller = new TrackAudioStatusController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("trackAudioStatusAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a hotline actiont to the action list. Emits a trackAudioStatusAdded event
-   * after the action is added.
-   * @param action The action to add
-   * @param settings The settings for the action
-   */
-  public addHotline(action: KeyAction, settings: HotlineSettings) {
-    const controller = new HotlineController(action, settings);
-
-    // Force buttons to refresh so the newly added button shows the correct state.
-    this.actions.push(controller);
-    this.emit("hotlineAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a station status action to the action list. Emits a stationStatusAdded
-   * event after the action is added.
-   * @param action The action
-   * @param settings The settings for the action
-   */
-  public addStation(action: KeyAction, settings: StationSettings): void {
-    const controller = new StationStatusController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("stationStatusAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a station volume action to the action list. Emits a stationVolumeAdded
-   * event after the action is added.
-   * @param action The action
-   * @param settings The settings for the action
-   */
-  public addStationVolume(
-    action: DialAction,
-    settings: StationVolumeSettings
-  ): void {
-    const controller = new StationVolumeController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("stationVolumeAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Adds a station status action to the action list. Emits a stationStatusAdded
-   * event after the action is added.
-   * @param action The action
-   * @param settings The settings for the action
-   */
-  public addAtisLetter(action: KeyAction, settings: AtisLetterSettings): void {
-    const controller = new AtisLetterController(action, settings);
-
-    this.actions.push(controller);
-    this.emit("atisLetterAdded", controller);
-    this.emit("actionAdded", controller);
-  }
-
-  /**
-   * Called when a TrackAudio status action keydown event is triggered.
-   * Forces a refresh of the TrackAudio status.
-   * @param action The action
-   */
-  public trackAudioStatusLongPress(action: KeyAction) {
-    this.resetAll();
-    trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK status on TrackAudio action: ",
-        error
-      );
-    });
-  }
-
-  /**
-   * Called when an ATIS letter action has a short press. Clears the state.
-   * @param actionId The ID of the action that had the short press
-   */
-  public atisLetterShortPress(action: KeyAction) {
-    const savedAction = this.getAtisLetterControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.isUpdated = false;
-  }
-
-  /**
-   * Called when an ATIS letter action has a long press. Refreshses the ATIS.
-   * @param actionId The ID of the action that had the long press
-   */
-  public atisLetterLongPress(action: KeyAction) {
-    const savedAction = this.getAtisLetterControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.reset();
-    vatsimManager.refresh();
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException("Unable to show OK on ATIS button:", error);
-    });
-  }
-
   /**
    * Resets the ATIS letter on all ATIS letter actions to undefined.
    */
@@ -242,147 +81,6 @@ class ActionManager extends EventEmitter {
     this.getAtisLetterControllers().forEach((action) => {
       action.letter = undefined;
     });
-  }
-
-  /**
-   * Updates the settings associated with a station volume action.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateStationVolumeSettings(
-    action: DialAction,
-    settings: StationVolumeSettings
-  ) {
-    const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.settings = settings;
-  }
-
-  /**
-   * Updates the settings associated with a station status action.
-   * Emits a stationStatusSettingsUpdated event if the settings require
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateStation(action: KeyAction, settings: StationSettings) {
-    const savedAction = this.getStationStatusControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    // This avoids unnecessary calls to TrackAudio when the callsign or listenTo settings
-    // didn't change.
-    const requiresStationRefresh =
-      savedAction.callsign !== settings.callsign ||
-      savedAction.listenTo !== (settings.listenTo ?? "rx");
-
-    savedAction.settings = settings;
-
-    if (requiresStationRefresh) {
-      this.emit("stationStatusSettingsUpdated", savedAction);
-    }
-  }
-
-  /**
-   * Updates the settings associated with a TrackAudio status action.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateTrackAudioStatus(
-    action: KeyAction,
-    settings: TrackAudioStatusSettings
-  ) {
-    const savedAction = this.getTrackAudioStatusControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.settings = settings;
-  }
-
-  /**
-   * Updates the settings associated with a hotline status action.
-   * Emits a hotlineSettingsUpdated event if the settings require
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateHotline(action: KeyAction, settings: HotlineSettings) {
-    const savedAction = this.getHotlineControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    // This avoids unnecessary calls to TrackAudio when the callsigns aren't the settings
-    // that changed.
-    const requiresStationRefresh =
-      savedAction.primaryCallsign !== settings.primaryCallsign ||
-      savedAction.hotlineCallsign !== settings.hotlineCallsign;
-
-    savedAction.settings = settings;
-
-    if (requiresStationRefresh) {
-      this.emit("hotlineSettingsUpdated", savedAction);
-    }
-  }
-
-  /**
-   * Updates the settings associated with an ATIS letter status action.
-   * Emits a atisLetterUpdated event if the settings require
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updateAtisLetter(action: KeyAction, settings: AtisLetterSettings) {
-    const savedAction = this.getAtisLetterControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    const requiresRefresh = savedAction.settings.callsign !== settings.callsign;
-
-    savedAction.settings = settings;
-
-    if (requiresRefresh) {
-      this.emit("atisLetterUpdated", savedAction);
-    }
-  }
-
-  /**
-   * Updates the settings associated with a push to talk action.
-   * the action to refresh.
-   * @param action The action to update
-   * @param settings The new settings to use
-   */
-  public updatePushToTalk(action: KeyAction, settings: PushToTalkSettings) {
-    const savedAction = this.getPushToTalkControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.settings = settings;
   }
 
   /**
@@ -413,58 +111,6 @@ class ActionManager extends EventEmitter {
 
       if (entry.hotlineCallsign === callsign) {
         entry.hotlineFrequency = 0;
-      }
-    });
-  }
-
-  /**
-   * Updates stations to match the provided station state update.
-   * If a callsign is provided in the update then all stations with that callsign
-   * have their frequency set.
-   * @param data The StationStateUpdate message from TrackAudio
-   */
-  public updateStationState(data: StationStateUpdateAvailable) {
-    // First set the frequency if one was provided. This usually comes in the first
-    // station state update message from TrackAudio. Setting the frequency also
-    // updates the isAvailable state since any station with a frequency is available.
-    if (data.value.callsign) {
-      this.setStationFrequency(data.value.callsign, data.value.frequency);
-    }
-
-    // Set the listen state for all stations using the frequency and refresh the
-    // state image.
-    this.getStationStatusControllers()
-      .filter((entry) => entry.frequency === data.value.frequency)
-      .forEach((entry) => {
-        entry.isListening =
-          (data.value.rx && entry.listenTo === "rx") ||
-          (data.value.tx && entry.listenTo === "tx") ||
-          (data.value.xc && entry.listenTo === "xc") ||
-          (data.value.xca && entry.listenTo === "xca");
-
-        entry.isOutputMuted = data.value.isOutputMuted;
-        entry.outputVolume = data.value.outputVolume;
-
-        entry.refreshImage();
-      });
-
-    // Do the same for hotline actions
-    this.getHotlineControllers().forEach((entry) => {
-      if (entry.primaryFrequency === data.value.frequency) {
-        entry.isTxPrimary = data.value.tx;
-      }
-      if (entry.hotlineFrequency === data.value.frequency) {
-        entry.isTxHotline = data.value.tx;
-        entry.isRxHotline = data.value.rx;
-      }
-
-      entry.refreshImage();
-    });
-
-    this.getStationVolumeControllers().forEach((entry) => {
-      if (entry.frequency === data.value.frequency) {
-        entry.isOutputMuted = data.value.isOutputMuted;
-        entry.outputVolume = data.value.outputVolume;
       }
     });
   }
@@ -593,310 +239,6 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Updates all actions that match the frequency to show the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public rxBegin(frequency: number, callsign: string) {
-    this.getStationStatusControllers()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.isListeningForReceive
-      )
-      .forEach((entry) => {
-        entry.isReceiving = true;
-        entry.lastReceivedCallsign = callsign;
-      });
-
-    // Hotline actions that have a hotline frequency matching the rxBegin frequency
-    // also update to show a transmission is occurring.
-    this.getHotlineControllers()
-      .filter((entry) => entry.hotlineFrequency === frequency)
-      .forEach((entry) => {
-        entry.isReceiving = true;
-      });
-  }
-
-  /**
-   * Updates all actions that match the callsign to clear the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public rxEnd(frequency: number) {
-    this.getStationStatusControllers()
-      .filter(
-        (entry) => entry.frequency === frequency && entry.isListeningForReceive
-      )
-      .forEach((entry) => {
-        entry.isReceiving = false;
-      });
-
-    // Hotline actions that have a hotline frequency matching the rxBegin frequency
-    // also update to show a transmission is occurring.
-    this.getHotlineControllers()
-      .filter((entry) => entry.hotlineFrequency === frequency)
-      .forEach((entry) => {
-        entry.isReceiving = false;
-      });
-  }
-
-  /**
-   * Updates all actions that are listening to tx to show the transmission in progress state.
-   * @param frequency The callsign of the actions to update
-   */
-  public txBegin() {
-    this.getStationStatusControllers()
-      .filter((entry) => entry.isListeningForTransmit)
-      .forEach((entry) => {
-        entry.isTransmitting = true;
-      });
-
-    this.getPushToTalkControllers().forEach((entry) => {
-      entry.isTransmitting = true;
-    });
-  }
-
-  /**
-   * Updates all actions that are listening to tx to clear the transmission in progress state.
-   */
-  public txEnd() {
-    this.getStationStatusControllers()
-      .filter((entry) => entry.isListeningForTransmit)
-      .forEach((entry) => {
-        entry.isTransmitting = false;
-      });
-
-    this.getPushToTalkControllers().forEach((entry) => {
-      entry.isTransmitting = false;
-    });
-  }
-
-  /**
-   * Changes the station volume by the number of ticks times the change amount.
-   * @param action The action that triggered the volume change
-   * @param ticks The number of ticks the dial was rotated
-   */
-  public changeStationVolume(action: DialAction, ticks: number) {
-    const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    // Calculate the new volume level
-    const newVolume = Math.min(
-      100,
-      Math.max(-100, savedAction.changeAmount * ticks)
-    );
-
-    // Unmute the station since the knob was turned
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: savedAction.frequency,
-        isOutputMuted: false,
-        rx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-        tx: undefined,
-      },
-    });
-
-    // Set the volume
-    trackAudioManager.sendMessage({
-      type: "kChangeStationVolume",
-      value: {
-        frequency: savedAction.frequency,
-        amount: newVolume,
-      },
-    });
-  }
-
-  public toggleStationMute(action: DialAction) {
-    const savedAction = this.getStationVolumeControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: savedAction.frequency,
-        isOutputMuted: "toggle",
-        rx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-        tx: undefined,
-      },
-    });
-  }
-
-  /**
-   * Removes an action from the list.
-   * @param action The action to remove
-   */
-  public remove(action: ActionContext): void {
-    this.actions = this.actions.filter(
-      (entry) => entry.action.id !== action.id
-    );
-
-    this.emit("removed", this.actions.length);
-  }
-
-  /**
-   * Handles the short press of a hotline action. Toggles the tx on both the primary and hotline frequency.
-   * @param actionId The action id to toggle the state of
-   */
-  public hotlineShortPress(action: KeyAction): void {
-    const foundAction = this.getHotlineControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!foundAction) {
-      return;
-    }
-
-    // Catches the case where for some reason both primary and hotline are both
-    // set to tx, which should never happen. In that situation pretend the primary
-    // is off and hotline is on, which will mean the button push causes the primary
-    // to turn on and the hotline to turn off.
-    if (foundAction.isTxPrimary === foundAction.isTxHotline) {
-      foundAction.isTxPrimary = false;
-      foundAction.isTxHotline = true;
-    }
-
-    // The primary frequency always gets its xc state toggled to match the tx state,
-    // ensuring xc is re-enabled when tx turns on.
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.primaryFrequency,
-        tx: !foundAction.isTxPrimary,
-        rx: undefined,
-        xc: !foundAction.isTxPrimary,
-        xca: undefined,
-        headset: undefined,
-        isOutputMuted: undefined,
-      },
-    });
-
-    // The hotline frequency gets its tx state toggled
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.hotlineFrequency,
-        tx: !foundAction.isTxHotline,
-        rx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-        isOutputMuted: undefined,
-      },
-    });
-  }
-
-  public hotlineLongPress(action: KeyAction) {
-    const foundAction = this.getHotlineControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!foundAction) {
-      return;
-    }
-
-    foundAction.reset();
-    trackAudioManager.refreshStationState(foundAction.primaryCallsign);
-    trackAudioManager.refreshStationState(foundAction.hotlineCallsign);
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK status on TrackAudio action: ",
-        error
-      );
-    });
-  }
-
-  /**
-   * Handles a short press of a station status action. Toggles the
-   * the tx, rx, xc, or spkr state of a frequency bound to a Stream Deck action.
-   * @param actionId The action id to toggle the state of
-   */
-  public stationStatusShortPress(action: KeyAction): void {
-    const foundAction = this.actions.find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!foundAction || !isStationStatusController(foundAction)) {
-      return;
-    }
-
-    // Don't try and do anything on a station that doesn't have a frequency (typically this means it doesn't exist)
-    if (foundAction.frequency === 0) {
-      return;
-    }
-
-    // Mute if that's the requested action.
-    if (foundAction.toggleMuteOnPress) {
-      trackAudioManager.sendMessage({
-        type: "kSetStationState",
-        value: {
-          frequency: foundAction.frequency,
-          isOutputMuted: "toggle",
-          rx: undefined,
-          tx: undefined,
-          xc: undefined,
-          xca: undefined,
-          headset: undefined,
-        },
-      });
-      return;
-    }
-
-    // Send the message to TrackAudio.
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.frequency,
-        rx: foundAction.listenTo === "rx" ? "toggle" : undefined,
-        tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
-        xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
-        xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
-        headset: undefined,
-        isOutputMuted: undefined,
-      },
-    });
-  }
-
-  /**
-   * Called when a station status action has a long press. Resets the
-   * station status and refreshses its state.
-   * @param actionId The ID of the action that had the long press
-   */
-  public stationStatusLongPress(action: KeyAction) {
-    const savedAction = this.getStationStatusControllers().find(
-      (entry) => entry.action.id === action.id
-    );
-
-    if (!savedAction) {
-      return;
-    }
-
-    savedAction.reset();
-    trackAudioManager.refreshStationState(savedAction.callsign);
-
-    action.showOk().catch((error: unknown) => {
-      handleAsyncException(
-        "Unable to show OK on station status button:",
-        error
-      );
-    });
-  }
-
-  /**
    * Updates the connection state on all TrackAudio status buttons to the current connected states
    * and updates the background image to the appropriate state image.
    * @param isConnected True if connected, false if not
@@ -906,20 +248,6 @@ class ActionManager extends EventEmitter {
       entry.isConnected = trackAudioManager.isConnected;
       entry.isVoiceConnected = trackAudioManager.isVoiceConnected;
     });
-  }
-
-  /**
-   * Sends a message via TrackAudioManager to indicate a PushToTalk action was pressed.
-   */
-  public pttPressed() {
-    trackAudioManager.sendMessage({ type: "kPttPressed" });
-  }
-
-  /**
-   * Sends a message via TrackAudioManager to indicate a PushToTalk action was released.
-   */
-  public pttReleased() {
-    trackAudioManager.sendMessage({ type: "kPttReleased" });
   }
 
   /**
@@ -939,6 +267,36 @@ class ActionManager extends EventEmitter {
     typeGuard: (action: Controller) => action is T
   ): T[] {
     return this.actions.filter(typeGuard);
+  }
+
+  /**
+   * Adds a controller to the list of tracked actions.
+   * @param controller The controller to add
+   */
+  public add(controller: Controller): void {
+    this.actions.push(controller);
+    this.emit("actionAdded", controller);
+  }
+
+  /**
+   * Finds controllers based on the predicate.
+   */
+  public find(
+    predicate: (entry: Controller) => boolean
+  ): Controller | undefined {
+    return this.actions.find(predicate);
+  }
+
+  /**
+   * Removes an action from the list.
+   * @param action The action to remove
+   */
+  public remove(action: ActionContext): void {
+    this.actions = this.actions.filter(
+      (entry) => entry.action.id !== action.id
+    );
+
+    this.emit("removed", this.actions.length);
   }
 
   /**

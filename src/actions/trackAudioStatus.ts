@@ -2,13 +2,18 @@ import {
   action,
   DidReceiveSettingsEvent,
   JsonValue,
+  KeyAction,
   KeyUpEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import actionManager from "@managers/action";
+import { handleRemove } from "@events/streamDeck/remove";
+import { handleAddTrackAudioStatus } from "@events/streamDeck/trackAudioStatus/addTrackAudioStatus";
+import { handleTrackAudioStatusLongPress } from "@events/streamDeck/trackAudioStatus/trackAudioStatusLongPress";
+import { handleUpdateTrackAudioStatus } from "@events/streamDeck/trackAudioStatus/updateTrackAudioStatus";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
+import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.trackaudiostatus" })
 /**
@@ -16,6 +21,13 @@ import { LONG_PRESS_THRESHOLD } from "@utils/constants";
  */
 export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> {
   private _keyDownStart = 0;
+
+  debouncedUpdate = debounce(
+    (action: KeyAction, settings: TrackAudioStatusSettings) => {
+      handleUpdateTrackAudioStatus(action, settings);
+    },
+    300
+  );
 
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code.
@@ -28,14 +40,14 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
       return;
     }
 
-    actionManager.addTrackAudio(ev.action, ev.payload.settings);
+    handleAddTrackAudioStatus(ev.action, ev.payload.settings);
   }
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
     ev: WillDisappearEvent<TrackAudioStatusSettings>
   ): void | Promise<void> {
-    actionManager.remove(ev.action);
+    handleRemove(ev.action);
   }
 
   override onDidReceiveSettings(
@@ -47,7 +59,7 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
       return;
     }
 
-    actionManager.updateTrackAudioStatus(ev.action, ev.payload.settings);
+    this.debouncedUpdate(ev.action, ev.payload.settings);
   }
 
   override onKeyDown(): Promise<void> | void {
@@ -60,7 +72,7 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {
-      actionManager.trackAudioStatusLongPress(ev.action);
+      handleTrackAudioStatusLongPress(ev.action);
     }
   }
 }
