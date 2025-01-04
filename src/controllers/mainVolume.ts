@@ -122,7 +122,7 @@ export class MainVolumeController extends BaseController {
   /**
    * True if connected to TrackAudio.
    */
-  get isConnected(): boolean | undefined {
+  get isConnected(): boolean {
     return this._isConnected;
   }
 
