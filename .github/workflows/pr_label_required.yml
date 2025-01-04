@@ -19,6 +19,7 @@ jobs:
           count: 1
           add_comment: true
           labels: |
+            breaking change
             ignore-for-release-notes
             feature
             enhancement
