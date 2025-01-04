@@ -162,6 +162,13 @@ class TrackAudioManager extends EventEmitter {
   }
 
   /**
+   * Sends a message to TrackAudio to refresh the main output volume.
+   */
+  public refreshMainOutputVolume() {
+    this.sendMessage({ type: "kGetMainOutputVolume" });
+  }
+
+  /**
    * Sends a message to TrackAudio to refresh the voice connected state.
    */
   public refreshVoiceConnectedState() {

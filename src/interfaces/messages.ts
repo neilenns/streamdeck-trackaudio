@@ -189,6 +189,13 @@ export interface GetVoiceConnectedState {
 }
 
 /**
+ * Represents the kGetMainOutputVolume message to TrackAudio.
+ */
+export interface GetMainOuptutVolume {
+  type: "kGetMainOutputVolume";
+}
+
+/**
  * Represents the kAddStation message to TrackAudio.
  */
 export interface AddStation {
@@ -240,7 +247,8 @@ export type OutgoingMessage =
   | GetVoiceConnectedState
   | AddStation
   | ChangeStationVolume
-  | ChangeMainOutputVolume;
+  | ChangeMainOutputVolume
+  | GetMainOuptutVolume;
 
 /**
  * Typeguard for VoiceConnected.
