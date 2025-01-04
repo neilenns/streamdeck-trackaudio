@@ -5,12 +5,6 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 
-const StateColor = {
-  NOT_CONNECTED: "white",
-  CONNECTED: "#5fcdfa",
-  VOICE_CONNECTED: "#060",
-};
-
 const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
 /**
@@ -200,7 +194,6 @@ export class TrackAudioStatusController extends BaseController {
     if (this.isVoiceConnected) {
       this.setImage(this.voiceConnectedImagePath, {
         ...replacements,
-        stateColor: StateColor.VOICE_CONNECTED,
         state: "voiceConnected",
       });
       return;
@@ -209,14 +202,13 @@ export class TrackAudioStatusController extends BaseController {
     if (this.isConnected) {
       this.setImage(this.connectedImagePath, {
         ...replacements,
-        stateColor: StateColor.CONNECTED,
         state: "connected",
       });
       return;
     }
 
     this.setImage(this.notConnectedImagePath, {
-      stateColor: StateColor.NOT_CONNECTED,
+      ...replacements,
       state: "notConnected",
     });
   }

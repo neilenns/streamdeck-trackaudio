@@ -5,12 +5,6 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 
-const StateColor = {
-  CURRENT: "black",
-  UNAVAILABLE: "black",
-  UPDATED: "#f60",
-};
-
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
 const defaultUnavailableTemplatePath =
   "images/actions/atisLetter/unavailable.svg";
@@ -248,7 +242,6 @@ export class AtisLetterController extends BaseController {
     if (this.isUnavailable) {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
-        stateColor: StateColor.CURRENT,
         state: "current",
       });
       return;
@@ -257,7 +250,6 @@ export class AtisLetterController extends BaseController {
     if (this.isUpdated) {
       this.setImage(this.updatedImagePath, {
         ...replacements,
-        stateColor: StateColor.UPDATED,
         state: "updated",
       });
       return;
@@ -265,7 +257,6 @@ export class AtisLetterController extends BaseController {
 
     this.setImage(this.currentImagePath, {
       ...replacements,
-      stateColor: StateColor.CURRENT,
       state: "current",
     });
   }

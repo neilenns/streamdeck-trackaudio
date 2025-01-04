@@ -1,3 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" width="144" height="144">
-	<rect width="144" height="144" fill="{{stateColor}}" />
+		<style>
+			.background {
+				{{#if (eq state "updated")}}
+					fill: #f60;
+				{{else if (eq state "current")}}
+					fill: black;
+				{{else if (eq state "unavailable")}}
+					fill: black;
+				{{else}}
+					fill: black;
+				{{/if}}
+			}
+		</style>
+	<rect class="background" width="144" height="144" />
 </svg>
