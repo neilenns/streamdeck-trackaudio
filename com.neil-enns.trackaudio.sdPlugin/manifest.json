@@ -37,6 +37,7 @@
         "layout": "$B1",
         "TriggerDescription": {
           "Push": "Toggle mute",
+          "Touch": "Toggle mute",
           "Rotate": "Adjust volume"
         }
       },

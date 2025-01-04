@@ -6,15 +6,17 @@ import {
   DidReceiveSettingsEvent,
   JsonValue,
   SingletonAction,
+  TouchTapEvent,
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
+import { handleDialRotate } from "@events/streamDeck/mainVolume/dialRotate";
 import { handleRemove } from "@events/streamDeck/remove";
 import { handleAddStationVolume } from "@events/streamDeck/stationVolume/addStationVolume";
 import { handleDialPress } from "@events/streamDeck/stationVolume/dialPress";
-import { handleDialRotate } from "@events/streamDeck/stationVolume/dialRotate";
 import { handleUpdateStationVolumeSettings } from "@events/streamDeck/stationVolume/updateStationVolumeSettings";
 import debounce from "debounce";
+import { MainVolumeSettings } from "./mainVolume";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationvolume" })
 /**
@@ -61,6 +63,18 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   override onDialDown(
     ev: DialDownEvent<StationVolumeSettings>
   ): Promise<void> | void {
+    handleDialPress(ev.action);
+  }
+
+  override onTouchTap(
+    ev: TouchTapEvent<MainVolumeSettings>
+  ): Promise<void> | void {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // DialAction.
+    if (!ev.action.isDial()) {
+      return;
+    }
+
     handleDialPress(ev.action);
   }
 
