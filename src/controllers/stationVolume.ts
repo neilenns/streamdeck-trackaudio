@@ -103,7 +103,10 @@ export class StationVolumeController extends BaseController {
     }
 
     this._outputVolume = newValue;
-    this.refreshDisplay();
+
+		// This isn't debounced to ensure speedy updates when the volume changes.
+    this.refreshImage();
+		this.refreshTitle();
   }
 
   /**
