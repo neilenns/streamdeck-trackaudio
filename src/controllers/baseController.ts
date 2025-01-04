@@ -32,14 +32,9 @@ export abstract class BaseController implements Controller {
   abstract reset(): void;
 
   /**
-   * Refreshes the image displayed on the action.
+   * Refreshes the text and image displayed on the action.
    */
-  abstract refreshImage(): void;
-
-  /**
-   * Refreshes the title displayed on the action.
-   */
-  abstract refreshTitle(): void;
+  abstract refreshDisplay(): void;
 
   /**
    * Sets the title on the tracked action, catching any exceptions

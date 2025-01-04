@@ -1,12 +1,10 @@
 import { StationVolumeSettings } from "@actions/stationVolume";
 import { BaseController } from "./baseController";
 import { DialAction } from "@elgato/streamdeck";
-import mainLogger from "@utils/logger";
 import { Controller } from "@interfaces/controller";
 import { stringOrUndefined } from "@utils/utils";
 import { handleAsyncException } from "@utils/handleAsyncException";
-
-const logger = mainLogger.child({ service: "plugin" });
+import debounce from "debounce";
 
 const defaultMutedTemplatePath = "images/actions/stationVolume/muted.svg";
 const defaultNotMutedTemplatePath = "images/actions/stationVolume/notMuted.svg";
@@ -38,6 +36,14 @@ export class StationVolumeController extends BaseController {
     this.action = action;
     this.settings = settings;
   }
+
+  /**
+   * Refreshes the title and image on the action.
+   */
+  public override refreshDisplay = debounce(() => {
+    this.refreshTitle();
+    this.refreshImage();
+  }, 100);
 
   /**
    * Gets the not muted SVG template path.
@@ -97,8 +103,7 @@ export class StationVolumeController extends BaseController {
     }
 
     this._outputVolume = newValue;
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -117,8 +122,7 @@ export class StationVolumeController extends BaseController {
     }
 
     this._isOutputMuted = newValue;
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -146,8 +150,7 @@ export class StationVolumeController extends BaseController {
     this.notMutedTemplatePath = newValue.notMutedImagePath;
     this.unavailableTemplatePath = newValue.unavailableImagePath;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -182,8 +185,7 @@ export class StationVolumeController extends BaseController {
 
     // The frequency doesn't come from settings like the other displayed properties and could cause a
     // change in the display of the action.
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -202,8 +204,7 @@ export class StationVolumeController extends BaseController {
     }
 
     this._isAvailable = newValue;
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -214,17 +215,15 @@ export class StationVolumeController extends BaseController {
   }
 
   override reset(): void {
-    logger.info("Resetting StationVolumeController");
     this._isAvailable = undefined;
     this._isOutputMuted = false;
     this._frequency = 0;
     this._outputVolume = 100;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
-  override refreshImage(): void {
+  private refreshImage(): void {
     const replacements = {
       volume: this.outputVolume,
     };
@@ -252,7 +251,7 @@ export class StationVolumeController extends BaseController {
     });
   }
 
-  override refreshTitle(): void {
+  private refreshTitle(): void {
     // Set the unavilable state if the station is not available.
     if (this.isAvailable !== undefined && !this.isAvailable) {
       this.action

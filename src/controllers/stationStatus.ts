@@ -5,11 +5,15 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { LRUCache } from "lru-cache";
 import { BaseController } from "./baseController";
+import debounce from "debounce";
+import mainLogger from "@utils/logger";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
 // in the kFrequenciesUpdate message.
 export type ListenTo = "rx" | "tx" | "xc" | "xca";
+
+const logger = mainLogger.child({ service: "stationStatus" });
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
 const defaultUnavailableTemplatePath =
@@ -56,6 +60,15 @@ export class StationStatusController extends BaseController {
     this.action = action;
     this.settings = settings;
   }
+
+  /**
+   * Refreshes the title and image on the action.
+   */
+  public override refreshDisplay = debounce(() => {
+    logger.debug(`Refreshing display for ${this.callsign ?? ""}`);
+    this.refreshTitle();
+    this.refreshImage();
+  }, 100);
 
   //#region Getters and setters
   /**
@@ -157,8 +170,7 @@ export class StationStatusController extends BaseController {
     }
 
     this._isOutputMuted = newValue;
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -177,8 +189,7 @@ export class StationStatusController extends BaseController {
     }
 
     this._outputVolume = newValue;
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -199,8 +210,7 @@ export class StationStatusController extends BaseController {
 
     // The frequency doesn't come from settings like the other displayed properties and could cause a
     // change in the display of the action.
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -373,8 +383,7 @@ export class StationStatusController extends BaseController {
     this.notListeningImagePath = newValue.notListeningImagePath;
     this.unavailableImagePath = newValue.unavailableImagePath;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -394,7 +403,7 @@ export class StationStatusController extends BaseController {
     }
 
     this._isReceiving = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -414,7 +423,7 @@ export class StationStatusController extends BaseController {
     }
 
     this._isTransmitting = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -434,7 +443,7 @@ export class StationStatusController extends BaseController {
     }
 
     this._isListening = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -453,7 +462,7 @@ export class StationStatusController extends BaseController {
     }
 
     this._isAvailable = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -468,7 +477,7 @@ export class StationStatusController extends BaseController {
       this._lastReceivedCallsignHistory?.clear();
     }
 
-    this.refreshTitle();
+    this.refreshDisplay();
   }
 
   /**
@@ -503,8 +512,7 @@ export class StationStatusController extends BaseController {
     reason: LRUCache.DisposeReason
   ) {
     if (this.showLastReceivedCallsign && reason === "expire") {
-      this.refreshImage();
-      this.refreshTitle();
+      this.refreshDisplay();
     }
   }
 
@@ -521,8 +529,7 @@ export class StationStatusController extends BaseController {
     this._isAvailable = undefined;
     this._isOutputMuted = undefined;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -530,7 +537,7 @@ export class StationStatusController extends BaseController {
    * the base title if it exists, showLastReceivedCallsign is enabled in settings,
    * and the action is listening to RX.
    */
-  public refreshTitle() {
+  private refreshTitle() {
     const title = new TitleBuilder();
 
     title.push(this.title, this.showTitle);
@@ -549,7 +556,7 @@ export class StationStatusController extends BaseController {
    * Sets the action image to the correct one given the current isReceiving, isTransmitting, isAvailable and
    * isListening value.
    */
-  public refreshImage() {
+  private refreshImage() {
     const replacements = {
       callsign: this.callsign,
       frequency: this.frequency,

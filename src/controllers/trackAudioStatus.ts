@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
+import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
@@ -30,6 +31,11 @@ export class TrackAudioStatusController extends BaseController {
     super(action);
     this.settings = settings;
   }
+
+  public override refreshDisplay = debounce(() => {
+    this.refreshTitle();
+    this.refreshImage();
+  }, 100);
 
   public reset() {
     this.isConnected = false;
@@ -120,8 +126,7 @@ export class TrackAudioStatusController extends BaseController {
       newValue.voiceConnectedImagePath
     );
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -142,8 +147,7 @@ export class TrackAudioStatusController extends BaseController {
 
     this._isVoiceConnected = newValue;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -168,14 +172,14 @@ export class TrackAudioStatusController extends BaseController {
       this._isVoiceConnected = false;
     }
 
-    this.refreshImage();
+    this.refreshDisplay();
   }
   //#endregion
 
   /**
    * Sets the title on the action.
    */
-  public refreshTitle() {
+  private refreshTitle() {
     const title = new TitleBuilder();
 
     title.push(this.title, this.showTitle);
@@ -186,7 +190,7 @@ export class TrackAudioStatusController extends BaseController {
   /**
    * Sets the action image based on the isConnected state
    */
-  public refreshImage() {
+  private refreshImage() {
     const replacements = {
       title: this.title,
     };

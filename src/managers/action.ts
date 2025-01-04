@@ -359,20 +359,11 @@ class ActionManager extends EventEmitter {
   }
 
   /**
-   * Refreshes the image on all tracked actions.
+   * Refreshes the text and image on all tracked actions.
    */
-  public refreshAllImages() {
+  public refreshDisplayAll() {
     this.actions.forEach((entry) => {
-      entry.refreshImage();
-    });
-  }
-
-  /**
-   * Refreshes the title on all tracked actions.
-   */
-  public refreshAllTitles() {
-    this.actions.forEach((entry) => {
-      entry.refreshTitle();
+      entry.refreshDisplay();
     });
   }
 

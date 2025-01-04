@@ -4,6 +4,7 @@ import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
+import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
 const defaultUnavailableTemplatePath = "images/actions/hotline/unavailable.svg";
@@ -43,6 +44,14 @@ export class HotlineController extends BaseController {
   }
 
   /**
+   * Updates the title and image on the action.
+   */
+  public override refreshDisplay = debounce(() => {
+    this.refreshTitle();
+    this.refreshImage();
+  }, 100);
+
+  /**
    * Resets the action to its default, disconnected, state.
    */
   public reset() {
@@ -55,8 +64,7 @@ export class HotlineController extends BaseController {
     this._hotlineFrequency = 0;
     this._isAvailable = undefined;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   //#region Getters/setters
@@ -176,8 +184,7 @@ export class HotlineController extends BaseController {
     this.isAvailable =
       this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -198,8 +205,7 @@ export class HotlineController extends BaseController {
     this.isAvailable =
       this.primaryFrequency !== 0 && this.hotlineFrequency !== 0;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -218,7 +224,7 @@ export class HotlineController extends BaseController {
     }
 
     this._isAvailable = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -231,7 +237,7 @@ export class HotlineController extends BaseController {
     }
 
     this._isReceiving = newValue;
-    this.refreshImage();
+    this.refreshDisplay();
   }
 
   /**
@@ -358,15 +364,14 @@ export class HotlineController extends BaseController {
     this.receivingImagePath = newValue.receivingImagePath;
     this.unavailableImagePath = newValue.unavailableImagePath;
 
-    this.refreshTitle();
-    this.refreshImage();
+    this.refreshDisplay();
   }
   //#endregion
 
   /**
    * Sets the title on the action.
    */
-  public refreshTitle() {
+  private refreshTitle() {
     const title = new TitleBuilder();
 
     title.push(this.title, this.showTitle);
@@ -380,7 +385,7 @@ export class HotlineController extends BaseController {
   /**
    * Sets the image based on the state of the action.
    */
-  public refreshImage() {
+  private refreshImage() {
     const replacements = {
       hotlineCallsign: this.hotlineCallsign,
       hotlineFrequency: this.hotlineFrequency,
