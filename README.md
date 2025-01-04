@@ -16,6 +16,7 @@ Do you use [vATIS](https://vatis.app/) when controlling? Check out the [vATIS ac
 - [Configuring a TrackAudio status action](#configuring-a-trackaudio-status-action)
 - [Configuring an ATIS letter action](#configuring-an-atis-letter-action)
 - [Configuring a push to talk action](#configuring-a-push-to-talk-action)
+- [Configuring a main volume action](#configuring-a-main-volume-action)
 - [SVG templates](#svg-templates)
 - [Examples](#examples)
   - [Seattle tower](#seattle-tower)
@@ -94,7 +95,7 @@ for the station.
 | Change amount | The size of volume change to make on each click of the knob.                                            | 1       |
 | Muted         | The image to display when the station is muted in TrackAudio. Optional, defaults to a muted icon.       |         |
 | Not muted     | The image to display when the station is not muted in TrackAudio. Optional, defaults to a volume icon.  |         |
-| Title         | The title to display on the callsign. Optional.                                                         |         |
+| Title         | The title to display on the action. Optional.                                                           |         |
 | Unavailable   | The image to display when the station is not added in TrackAudio. Optional, defaults to a warning icon. |         |
 
 ## Configuring a hotline action
@@ -180,6 +181,21 @@ The push to talk action does not require configuration for use. Simply add it to
 | Not transmitting | Shown when idle. Optional.                  | ![Microphone with black background](docs/images/ptt-idle.png)          |
 | Transmitting     | Shown when actively transmitting. Optional. | ![Microphone with orange background](docs/images/ptt-transmitting.png) |
 | Show title       | Show the title on the action.               | false                                                                  |
+
+## Configuring a main volume action
+
+The main volume action displays the current volume of TrackAudio and enables changing the volume. This action requires a dial control, available on the [Stream Deck +](https://www.elgato.com/us/en/p/stream-deck-plus-black).
+
+Turning the knob will adjust the station volume.
+
+### Main volume settings <!-- omit from toc -->
+
+| Setting       | Description                                                                                 | Default |
+| ------------- | ------------------------------------------------------------------------------------------- | ------- |
+| Change amount | The size of volume change to make on each click of the knob.                                | 1       |
+| Connected     | The image to display when connected to TrackAudio. Optional, defaults to a volume icon.     |         |
+| Not connected | The image to display when not connected to TrackAudio. Optional, defaults to a volume icon. |         |
+| Title         | The title to display on the action. Optional.                                               |         |
 
 ## SVG templates
 

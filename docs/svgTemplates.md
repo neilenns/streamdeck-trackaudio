@@ -3,6 +3,7 @@
 - [Introduction](#introduction)
 - [ATIS letter variables](#atis-letter-variables)
 - [Hotline variables](#hotline-variables)
+- [Main volume variables](#main-volume-variables)
 - [Push to talk variables](#push-to-talk-variables)
 - [Station status variables](#station-status-variables)
 - [Station volume variables](#station-volume-variables)
@@ -84,6 +85,20 @@ The states are:
 - receiving
 - unavailable
 
+## Main volume variables
+
+The following variables are supported with the main volume action:
+
+| Variable | Description                                         |
+| -------- | --------------------------------------------------- |
+| state    | The action's current state                          |
+| volume   | The volume level for the station, between 0 and 100 |
+
+The states are:
+
+- connected
+- notConnected
+
 ## Push to talk variables
 
 The following variables are supported with the push to talk action:
@@ -123,10 +138,10 @@ The states are:
 
 The following variables are supported with the station volume action:
 
-| Variable     | Description                                         |
-| ------------ | --------------------------------------------------- |
-| state        | The action's current state                          |
-| outputVolume | The volume level for the station, between 0 and 100 |
+| Variable | Description                                         |
+| -------- | --------------------------------------------------- |
+| state    | The action's current state                          |
+| volume   | The volume level for the station, between 0 and 100 |
 
 The states are:
 
