@@ -9,6 +9,16 @@ export interface VoiceConnectedState {
 }
 
 /**
+ * Represents the kMainOutputVolumeChange message from TrackAudio.
+ */
+export interface MainOutputVolumeChange {
+  type: "kMainOutputVolumeChange";
+  value: {
+    outputVolume: number;
+  };
+}
+
+/**
  * Represents the kStationStates message from TrackAudio.
  */
 export interface StationStates {
@@ -129,6 +139,16 @@ export interface ChangeStationVolume {
 }
 
 /**
+ * Represents the kChangeMainOutputVolume message to TrackAudio.
+ */
+export interface ChangeMainOutputVolume {
+  type: "kChangeMainOutputVolume";
+  value: {
+    amount: number;
+  };
+}
+
+/**
  * Represents the kSetStationState message to TrackAudio.
  */
 export interface SetStationState {
@@ -180,6 +200,20 @@ export interface AddStation {
 }
 
 /**
+ * Represents the kPttPressed message to TrackAudio.
+ */
+export interface PttPressed {
+  type: "kPttPressed";
+}
+
+/**
+ * Represents the kPttReleased message to TrackAudio.
+ */
+export interface PttReleased {
+  type: "kPttReleased";
+}
+
+/**
  * Type union for all possible incoming websocket messages from TrackAudio
  */
 export type IncomingMessage =
@@ -191,7 +225,8 @@ export type IncomingMessage =
   | TxEnd
   | VoiceConnectedState
   | StationAdded
-  | FrequencyRemoved;
+  | FrequencyRemoved
+  | MainOutputVolumeChange;
 
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
@@ -204,7 +239,8 @@ export type OutgoingMessage =
   | PttReleased
   | GetVoiceConnectedState
   | AddStation
-  | ChangeStationVolume;
+  | ChangeStationVolume
+  | ChangeMainOutputVolume;
 
 /**
  * Typeguard for VoiceConnected.
@@ -328,16 +364,8 @@ export function isTxEnd(message: IncomingMessage): message is TxEnd {
   return message.type === "kTxEnd";
 }
 
-/**
- * Represents the kPttPressed message to TrackAudio.
- */
-export interface PttPressed {
-  type: "kPttPressed";
-}
-
-/**
- * Represents the kPttReleased message to TrackAudio.
- */
-export interface PttReleased {
-  type: "kPttReleased";
+export function isMainOutputVolumeChange(
+  message: IncomingMessage
+): message is MainOutputVolumeChange {
+  return message.type === "kMainOutputVolumeChange";
 }

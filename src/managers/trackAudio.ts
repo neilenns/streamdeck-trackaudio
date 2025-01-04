@@ -2,6 +2,7 @@ import {
   IncomingMessage,
   OutgoingMessage,
   isFrequencyRemoved,
+  isMainOutputVolumeChange,
   isRxBegin,
   isRxEnd,
   isStationAdded,
@@ -148,6 +149,8 @@ class TrackAudioManager extends EventEmitter {
     } else if (isVoiceConnectedState(data)) {
       this._isVoiceConnected = data.value.connected;
       this.emit("voiceConnectedState", data);
+    } else if (isMainOutputVolumeChange(data)) {
+      this.emit("mainOutputVolumeChange", data);
     }
   }
 

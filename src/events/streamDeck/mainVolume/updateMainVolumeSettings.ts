@@ -1,18 +1,18 @@
-import { StationVolumeSettings } from "@actions/stationVolume";
+import { MainVolumeSettings } from "@actions/mainVolume";
 import { DialAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
 
 /**
- * Updates the settings associated with a station volume action.
+ * Updates the settings associated with a main volume action.
  * @param action The action to update
  * @param settings The new settings to use
  */
-export const handleUpdateStationVolumeSettings = (
+export const handleUpdateMainVolumeSettings = (
   action: DialAction,
-  settings: StationVolumeSettings
+  settings: MainVolumeSettings
 ) => {
   const savedAction = actionManager
-    .getStationVolumeControllers()
+    .getMainVolumeControllers()
     .find((entry) => entry.action.id === action.id);
 
   if (!savedAction) {

@@ -5,6 +5,28 @@
   "Author": "Neil Enns",
   "Actions": [
     {
+      "Name": "Main volume",
+      "UUID": "com.neil-enns.trackaudio.mainvolume",
+      "Icon": "images/plugin/volume",
+      "PropertyInspectorPath": "pi/mainVolume.html",
+      "Tooltip": "Controlls the main volume for TrackAudio.",
+      "Controllers": ["Encoder"],
+      "Encoder": {
+        "layout": "$B1",
+        "TriggerDescription": {
+          "Push": "Toggle mute",
+          "Rotate": "Adjust volume"
+        }
+      },
+      "DisableAutomaticStates": true,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
       "Name": "Station volume",
       "UUID": "com.neil-enns.trackaudio.stationvolume",
       "Icon": "images/plugin/volume",
