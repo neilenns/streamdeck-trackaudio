@@ -9,7 +9,7 @@
       "UUID": "com.neil-enns.trackaudio.mainvolume",
       "Icon": "images/plugin/volume",
       "PropertyInspectorPath": "pi/mainVolume.html",
-      "Tooltip": "Controlls the main volume for TrackAudio.",
+      "Tooltip": "Controls the main volume for TrackAudio.",
       "Controllers": ["Encoder"],
       "Encoder": {
         "layout": "$B1",
@@ -31,7 +31,7 @@
       "UUID": "com.neil-enns.trackaudio.stationvolume",
       "Icon": "images/plugin/volume",
       "PropertyInspectorPath": "pi/stationVolume.html",
-      "Tooltip": "Controlls the volume for the specified station.",
+      "Tooltip": "Controls the volume for the specified station.",
       "Controllers": ["Encoder"],
       "Encoder": {
         "layout": "$B1",
