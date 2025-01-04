@@ -528,6 +528,7 @@ export class StationStatusController extends BaseController {
     this._isReceiving = false;
     this._isTransmitting = false;
     this._isAvailable = undefined;
+    this._isOutputMuted = undefined;
 
     this.refreshTitle();
     this.refreshImage();
