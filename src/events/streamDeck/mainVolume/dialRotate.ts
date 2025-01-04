@@ -24,7 +24,7 @@ export const handleDialRotate = (action: DialAction, ticks: number) => {
 
   // Set the volume
   trackAudioManager.sendMessage({
-    type: "kChangeMainOutputVolume",
+    type: "kChangeMainVolume",
     value: {
       amount,
     },

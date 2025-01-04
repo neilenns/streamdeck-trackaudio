@@ -2,7 +2,7 @@ import {
   IncomingMessage,
   OutgoingMessage,
   isFrequencyRemoved,
-  isMainOutputVolumeChange,
+  isMainVolumeChange,
   isRxBegin,
   isRxEnd,
   isStationAdded,
@@ -12,9 +12,9 @@ import {
   isTxEnd,
   isVoiceConnectedState,
 } from "@interfaces/messages";
+import mainLogger from "@utils/logger";
 import { EventEmitter } from "events";
 import WebSocket from "ws";
-import mainLogger from "@utils/logger";
 
 const logger = mainLogger.child({ service: "trackAudio" });
 
@@ -149,8 +149,8 @@ class TrackAudioManager extends EventEmitter {
     } else if (isVoiceConnectedState(data)) {
       this._isVoiceConnected = data.value.connected;
       this.emit("voiceConnectedState", data);
-    } else if (isMainOutputVolumeChange(data)) {
-      this.emit("mainOutputVolumeChange", data);
+    } else if (isMainVolumeChange(data)) {
+      this.emit("mainVolumeChange", data);
     }
   }
 
@@ -162,10 +162,10 @@ class TrackAudioManager extends EventEmitter {
   }
 
   /**
-   * Sends a message to TrackAudio to refresh the main output volume.
+   * Sends a message to TrackAudio to refresh the main volume.
    */
-  public refreshMainOutputVolume() {
-    this.sendMessage({ type: "kGetMainOutputVolume" });
+  public refreshMainVolume() {
+    this.sendMessage({ type: "kGetMainVolume" });
   }
 
   /**

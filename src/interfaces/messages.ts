@@ -9,10 +9,10 @@ export interface VoiceConnectedState {
 }
 
 /**
- * Represents the kMainOutputVolumeChange message from TrackAudio.
+ * Represents the kMainVolumeChange message from TrackAudio.
  */
-export interface MainOutputVolumeChange {
-  type: "kMainOutputVolumeChange";
+export interface MainVolumeChange {
+  type: "kMainVolumeChange";
   value: {
     volume: number;
   };
@@ -139,10 +139,10 @@ export interface ChangeStationVolume {
 }
 
 /**
- * Represents the kChangeMainOutputVolume message to TrackAudio.
+ * Represents the kChangeMainVolume message to TrackAudio.
  */
-export interface ChangeMainOutputVolume {
-  type: "kChangeMainOutputVolume";
+export interface ChangeMainVolume {
+  type: "kChangeMainVolume";
   value: {
     amount: number;
   };
@@ -189,10 +189,10 @@ export interface GetVoiceConnectedState {
 }
 
 /**
- * Represents the kGetMainOutputVolume message to TrackAudio.
+ * Represents the kGetMainVolume message to TrackAudio.
  */
-export interface GetMainOuptutVolume {
-  type: "kGetMainOutputVolume";
+export interface GetMainVolume {
+  type: "kGetMainVolume";
 }
 
 /**
@@ -233,7 +233,7 @@ export type IncomingMessage =
   | VoiceConnectedState
   | StationAdded
   | FrequencyRemoved
-  | MainOutputVolumeChange;
+  | MainVolumeChange;
 
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
@@ -247,8 +247,8 @@ export type OutgoingMessage =
   | GetVoiceConnectedState
   | AddStation
   | ChangeStationVolume
-  | ChangeMainOutputVolume
-  | GetMainOuptutVolume;
+  | ChangeMainVolume
+  | GetMainVolume;
 
 /**
  * Typeguard for VoiceConnected.
@@ -372,8 +372,8 @@ export function isTxEnd(message: IncomingMessage): message is TxEnd {
   return message.type === "kTxEnd";
 }
 
-export function isMainOutputVolumeChange(
+export function isMainVolumeChange(
   message: IncomingMessage
-): message is MainOutputVolumeChange {
-  return message.type === "kMainOutputVolumeChange";
+): message is MainVolumeChange {
+  return message.type === "kMainVolumeChange";
 }
