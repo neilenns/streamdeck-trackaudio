@@ -7,7 +7,10 @@ import trackAudioManager from "@managers/trackAudio";
  * @param action The action that triggered the volume change
  * @param ticks The number of ticks the dial was rotated
  */
-export const handleDialRotate = (action: DialAction, ticks: number) => {
+export const handleMainVolumeDialRotate = (
+  action: DialAction,
+  ticks: number
+) => {
   const savedAction = actionManager
     .getMainVolumeControllers()
     .find((entry) => entry.action.id === action.id);

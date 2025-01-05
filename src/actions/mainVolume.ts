@@ -10,7 +10,7 @@ import {
 } from "@elgato/streamdeck";
 import { handleAddMainVolume } from "@events/streamDeck/mainVolume/addMainVolume";
 import { handleRemove } from "@events/streamDeck/remove";
-import { handleDialRotate } from "@events/streamDeck/mainVolume/dialRotate";
+import { handleMainVolumeDialRotate } from "@events/streamDeck/mainVolume/mainVolumeDialRotate";
 import debounce from "debounce";
 import { handleUpdateMainVolumeSettings } from "@events/streamDeck/mainVolume/updateMainVolumeSettings";
 
@@ -41,7 +41,7 @@ export class MainVolume extends SingletonAction<MainVolumeSettings> {
   override onDialRotate(
     ev: DialRotateEvent<MainVolumeSettings>
   ): Promise<void> | void {
-    handleDialRotate(ev.action, ev.payload.ticks);
+    handleMainVolumeDialRotate(ev.action, ev.payload.ticks);
   }
 
   override onDidReceiveSettings(

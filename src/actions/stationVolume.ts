@@ -10,10 +10,10 @@ import {
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
-import { handleDialRotate } from "@events/streamDeck/mainVolume/dialRotate";
+import { handleStationVolumeDialRotate } from "@events/streamDeck/stationVolume/stationVolumeDialRotate";
 import { handleRemove } from "@events/streamDeck/remove";
 import { handleAddStationVolume } from "@events/streamDeck/stationVolume/addStationVolume";
-import { handleDialPress } from "@events/streamDeck/stationVolume/dialPress";
+import { handleStationVolumeDialPress } from "@events/streamDeck/stationVolume/stationVolumeDialPress";
 import { handleUpdateStationVolumeSettings } from "@events/streamDeck/stationVolume/updateStationVolumeSettings";
 import debounce from "debounce";
 import { MainVolumeSettings } from "./mainVolume";
@@ -45,7 +45,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   override onDialRotate(
     ev: DialRotateEvent<StationVolumeSettings>
   ): Promise<void> | void {
-    handleDialRotate(ev.action, ev.payload.ticks);
+    handleStationVolumeDialRotate(ev.action, ev.payload.ticks);
   }
 
   override onDidReceiveSettings(
@@ -63,7 +63,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   override onDialDown(
     ev: DialDownEvent<StationVolumeSettings>
   ): Promise<void> | void {
-    handleDialPress(ev.action);
+    handleStationVolumeDialPress(ev.action);
   }
 
   override onTouchTap(
