@@ -75,7 +75,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
       return;
     }
 
-    handleDialPress(ev.action);
+    handleStationVolumeDialPress(ev.action);
   }
 
   override onWillDisappear(
