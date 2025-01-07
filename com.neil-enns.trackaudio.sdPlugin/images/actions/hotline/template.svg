@@ -10,11 +10,11 @@
 				{{else if (eq state "listening")}}
 					fill: #009;
 				{{else if (eq state "neitherActive")}}
-					file: black;
+					fill: black;
 				{{else if (eq state "receiving")}}
-					file: #060;
+					fill: #060;
 				{{else if (eq state "unavailable")}}
-					file: black;
+					fill: black;
 				{{else}}
 					fill: black;
 				{{/if}}
