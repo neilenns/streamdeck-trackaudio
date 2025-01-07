@@ -7,7 +7,7 @@
 				{{else if (eq state "connected")}}
 					fill: #5fcdfa;
 				{{else if (eq state "voiceConnected")}}
-					fill: ##060;
+					fill: #006600;
 				{{else}}
 					fill: black;
 				{{/if}}
