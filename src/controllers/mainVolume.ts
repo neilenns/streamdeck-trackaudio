@@ -5,13 +5,14 @@ import { handleAsyncException } from "@utils/handleAsyncException";
 import { stringOrUndefined } from "@utils/utils";
 import debounce from "debounce";
 import { BaseController } from "./baseController";
+import { MAIN_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultConnectedTemplatePath = "images/actions/mainVolume/template.svg";
 const defaultNotConnectedTemplatePath =
   "images/actions/mainVolume/template.svg";
 
 export class MainVolumeController extends BaseController {
-  type = "MainVolumeController";
+  type = MAIN_VOLUME_CONTROLLER_TYPE;
 
   declare action: DialAction; // This ensures action from the base class is always a DialAction
 
@@ -185,5 +186,5 @@ export class MainVolumeController extends BaseController {
 export function isMainVolumeController(
   action: Controller
 ): action is MainVolumeController {
-  return action.type === "MainVolumeController";
+  return action.type === MAIN_VOLUME_CONTROLLER_TYPE;
 }
