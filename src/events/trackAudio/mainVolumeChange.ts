@@ -6,7 +6,7 @@ const logger = mainLogger.child({ service: "handleMainVolumeChange" });
 
 /**
  * Updates all main volume controllers to reflect the new main volume.
- * @param data he MainVolumeChange message containing the new volume value.
+ * @param data The MainVolumeChange message containing the new volume value.
  */
 export const handleMainVolumeChange = (data: MainVolumeChange) => {
   if (
