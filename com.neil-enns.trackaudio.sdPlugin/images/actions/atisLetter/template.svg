@@ -11,6 +11,15 @@
 					fill: black;
 				{{/if}}
 			}
+			{{#if (eq state "unavailable")}}
+      .unavailableIcon {
+        fill: #666;
+        stroke-width: 0px;
+      }
+			{{/if}}
 		</style>
 	<rect class="background" width="144" height="144" />
+	{{#if (eq state "unavailable")}}
+	  <path class="unavailableIcon" d="M72,25.6c2.9,0,5.7,1.6,7.1,4.1l44.8,76.3c1.5,2.6,1.5,5.7,0,8.3s-4.2,4.2-7.2,4.2H27.2c-3,0-5.7-1.6-7.2-4.2s-1.5-5.8,0-8.3L64.8,29.7c1.5-2.5,4.2-4.1,7.1-4.1ZM72,52.1c-2.8,0-5,2.2-5,5v23.2c0,2.8,2.2,5,5,5s5-2.2,5-5v-23.2c0-2.8-2.2-5-5-5ZM78.6,98.5c0-3.7-3-6.6-6.6-6.6s-6.6,3-6.6,6.6,3,6.6,6.6,6.6,6.6-3,6.6-6.6Z"/>
+	{{/if}}
 </svg>

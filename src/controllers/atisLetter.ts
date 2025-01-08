@@ -7,8 +7,6 @@ import { BaseController } from "./baseController";
 import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
-const defaultUnavailableTemplatePath =
-  "images/actions/atisLetter/unavailable.svg";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -126,7 +124,7 @@ export class AtisLetterController extends BaseController {
    * if the user didn't specify a custom icon.
    */
   get unavailableImagePath(): string {
-    return this._unavailableImagePath ?? defaultUnavailableTemplatePath;
+    return this._unavailableImagePath ?? defaultTemplatePath;
   }
 
   /**
@@ -248,7 +246,7 @@ export class AtisLetterController extends BaseController {
     if (this.isUnavailable) {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
-        state: "current",
+        state: "unavailable",
       });
       return;
     }
