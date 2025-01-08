@@ -1,6 +1,7 @@
 import { StationSettings } from "@actions/stationStatus";
 import { KeyAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import logger from "@utils/logger";
 
 /**
  * Updates the settings associated with a station status action.
@@ -13,23 +14,27 @@ export const handleUpdateStation = (
   action: KeyAction,
   settings: StationSettings
 ) => {
-  const savedAction = actionManager
-    .getStationStatusControllers()
-    .find((entry) => entry.action.id === action.id);
+  try {
+    const savedAction = actionManager
+      .getStationStatusControllers()
+      .find((entry) => entry.action.id === action.id);
 
-  if (!savedAction) {
-    return;
-  }
+    if (!savedAction) {
+      return;
+    }
 
-  // This avoids unnecessary calls to TrackAudio when the callsign or listenTo settings
-  // didn't change.
-  const requiresStationRefresh =
-    savedAction.callsign !== settings.callsign ||
-    savedAction.listenTo !== (settings.listenTo ?? "rx");
+    // This avoids unnecessary calls to TrackAudio when the callsign or listenTo settings
+    // didn't change.
+    const requiresStationRefresh =
+      savedAction.callsign !== settings.callsign ||
+      savedAction.listenTo !== (settings.listenTo ?? "rx");
 
-  savedAction.settings = settings;
+    savedAction.settings = settings;
 
-  if (requiresStationRefresh) {
-    actionManager.emit("stationStatusSettingsUpdated", savedAction);
+    if (requiresStationRefresh) {
+      actionManager.emit("stationStatusSettingsUpdated", savedAction);
+    }
+  } catch (error) {
+    logger.error("Error in handleUpdateStation:", error);
   }
 };

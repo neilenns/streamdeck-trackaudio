@@ -2,6 +2,7 @@ import { HotlineSettings } from "@actions/hotline";
 import { HotlineController } from "@controllers/hotline";
 import { KeyAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import logger from "@utils/logger";
 
 /**
  * Adds a hotline action to the action list. Emits a trackAudioStatusAdded event
@@ -13,10 +14,16 @@ export const handleAddHotline = (
   action: KeyAction,
   settings: HotlineSettings
 ) => {
-  const controller = new HotlineController(action, settings);
+  const childLogger = logger.child({ service: "handleAddHotline" });
 
-  // Force buttons to refresh so the newly added button shows the correct state.
-  actionManager.add(controller);
-  actionManager.emit("hotlineAdded", controller);
-  actionManager.emit("actionAdded", controller);
+  try {
+    const controller = new HotlineController(action, settings);
+
+    // Force buttons to refresh so the newly added button shows the correct state.
+    actionManager.add(controller);
+    actionManager.emit("hotlineAdded", controller);
+    actionManager.emit("actionAdded", controller);
+  } catch (error) {
+    childLogger.error("Error in handleAddHotline:", error);
+  }
 };

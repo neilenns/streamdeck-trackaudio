@@ -1,6 +1,7 @@
 import { AtisLetterSettings } from "@actions/atisLetter";
 import { KeyAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import logger from "@utils/logger";
 
 /**
  * Updates the settings associated with an ATIS letter status action.
@@ -13,19 +14,23 @@ export const handleUpdateAtisLetter = (
   action: KeyAction,
   settings: AtisLetterSettings
 ) => {
-  const savedAction = actionManager
-    .getAtisLetterControllers()
-    .find((entry) => entry.action.id === action.id);
+  try {
+    const savedAction = actionManager
+      .getAtisLetterControllers()
+      .find((entry) => entry.action.id === action.id);
 
-  if (!savedAction) {
-    return;
-  }
+    if (!savedAction) {
+      return;
+    }
 
-  const requiresRefresh = savedAction.settings.callsign !== settings.callsign;
+    const requiresRefresh = savedAction.settings.callsign !== settings.callsign;
 
-  savedAction.settings = settings;
+    savedAction.settings = settings;
 
-  if (requiresRefresh) {
-    actionManager.emit("atisLetterUpdated", savedAction);
+    if (requiresRefresh) {
+      actionManager.emit("atisLetterUpdated", savedAction);
+    }
+  } catch (error) {
+    logger.error("Error in handleUpdateAtisLetter:", error);
   }
 };

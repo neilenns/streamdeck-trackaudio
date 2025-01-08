@@ -2,6 +2,7 @@ import { StationSettings } from "@actions/stationStatus";
 import { StationStatusController } from "@controllers/stationStatus";
 import { KeyAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import logger from "@utils/logger";
 
 /**
  * Adds a station status action to the action list. Emits a stationStatusAdded
@@ -13,9 +14,15 @@ export const handleAddStation = (
   action: KeyAction,
   settings: StationSettings
 ) => {
-  const controller = new StationStatusController(action, settings);
+  const childLogger = logger.child({ service: "handleAddStation" });
 
-  actionManager.add(controller);
-  actionManager.emit("stationStatusAdded", controller);
-  actionManager.emit("actionAdded", controller);
+  try {
+    const controller = new StationStatusController(action, settings);
+
+    actionManager.add(controller);
+    actionManager.emit("stationStatusAdded", controller);
+    actionManager.emit("actionAdded", controller);
+  } catch (error) {
+    childLogger.error("Error in handleAddStation:", error);
+  }
 };

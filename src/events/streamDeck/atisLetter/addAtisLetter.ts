@@ -2,6 +2,7 @@ import { AtisLetterSettings } from "@actions/atisLetter";
 import { AtisLetterController } from "@controllers/atisLetter";
 import { KeyAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import logger from "@utils/logger";
 
 /**
  * Adds a station status action to the action list. Emits a stationStatusAdded
@@ -13,9 +14,15 @@ export const handleAddAtisLetter = (
   action: KeyAction,
   settings: AtisLetterSettings
 ) => {
-  const controller = new AtisLetterController(action, settings);
+  const childLogger = logger.child({ service: "handleAddAtisLetter" });
 
-  actionManager.add(controller);
-  actionManager.emit("atisLetterAdded", controller);
-  actionManager.emit("actionAdded", controller);
+  try {
+    const controller = new AtisLetterController(action, settings);
+
+    actionManager.add(controller);
+    actionManager.emit("atisLetterAdded", controller);
+    actionManager.emit("actionAdded", controller);
+  } catch (error) {
+    childLogger.error("Error in handleAddAtisLetter:", error);
+  }
 };
