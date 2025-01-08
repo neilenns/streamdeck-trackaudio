@@ -6,7 +6,7 @@ const logger = mainLogger.child({ service: "handleMainVolumeChange" });
 
 /**
  * Updates all main volume controllers to reflect the new main volume.
- * @param data The RxBegin message.
+ * @param data he MainVolumeChange message containing the new volume value.
  */
 export const handleMainVolumeChange = (data: MainVolumeChange) => {
   if (
@@ -18,7 +18,11 @@ export const handleMainVolumeChange = (data: MainVolumeChange) => {
     return;
   }
 
-  actionManager.getMainVolumeControllers().forEach((entry) => {
-    entry.volume = data.value.volume;
-  });
+  try {
+    actionManager.getMainVolumeControllers().forEach((entry) => {
+      entry.volume = data.value.volume;
+    });
+  } catch (error: unknown) {
+    logger.error("Failed to update main volume controllers", error);
+  }
 };

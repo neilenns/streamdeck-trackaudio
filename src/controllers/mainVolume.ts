@@ -163,16 +163,11 @@ export class MainVolumeController extends BaseController {
   private refreshTitle(): void {
     this.action
       .setFeedback({
-        title: {
-          color: "#FFFFFF",
-        },
         indicator: {
           value: this.volume,
-          bar_fill_c: "#FFFFFF",
         },
         value: {
           value: `${this.volume.toString()}%`,
-          color: "#FFFFFF",
         },
       })
       .catch((error: unknown) => {
