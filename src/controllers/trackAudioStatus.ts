@@ -8,12 +8,13 @@ import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
+const TRACKAUDIO_STATUS_CONTROLLER_TYPE = "TrackAudioStatusController";
 /**
  * A TrackAudioStatusController action, for use with ActionManager. Tracks the
  * state and Stream Deck action for an individual action in a profile.
  */
 export class TrackAudioStatusController extends BaseController {
-  type = "TrackAudioStatusController";
+  type = TRACKAUDIO_STATUS_CONTROLLER_TYPE;
 
   private _isConnected = false;
   private _isVoiceConnected = false;
@@ -226,5 +227,5 @@ export class TrackAudioStatusController extends BaseController {
 export function isTrackAudioStatusController(
   action: Controller
 ): action is TrackAudioStatusController {
-  return action.type === "TrackAudioStatusController";
+  return action.type === TRACKAUDIO_STATUS_CONTROLLER_TYPE;
 }

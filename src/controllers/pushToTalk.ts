@@ -8,12 +8,14 @@ import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 
+const PUSH_TO_TALK_CONTROLLER_TYPE = "PushToTalkController";
+
 /**
  * A PushToTalkController action, for use with ActionManager. Tracks the
  * state and Stream Deck action for an individual action in a profile.
  */
 export class PushToTalkController extends BaseController {
-  type = "PushToTalkController";
+  type = PUSH_TO_TALK_CONTROLLER_TYPE;
 
   private _settings: PushToTalkSettings | null = null;
   private _isTransmitting = false;
@@ -176,5 +178,5 @@ export class PushToTalkController extends BaseController {
 export function isPushToTalkController(
   action: Controller
 ): action is PushToTalkController {
-  return action.type === "PushToTalkController";
+  return action.type === PUSH_TO_TALK_CONTROLLER_TYPE;
 }

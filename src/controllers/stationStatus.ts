@@ -17,12 +17,14 @@ const logger = mainLogger.child({ service: "stationStatus" });
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
 
+const STATION_STATUS_CONTROLLER_TYPE = "StationStatusController";
+
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and Stream Deck action for an individual action in a profile.
  */
 export class StationStatusController extends BaseController {
-  type = "StationStatusController";
+  type = STATION_STATUS_CONTROLLER_TYPE;
 
   private _frequency = 0;
   private _isAvailable: boolean | undefined = undefined;
@@ -622,5 +624,5 @@ export class StationStatusController extends BaseController {
 export function isStationStatusController(
   action: Controller
 ): action is StationStatusController {
-  return action.type === "StationStatusController";
+  return action.type === STATION_STATUS_CONTROLLER_TYPE;
 }

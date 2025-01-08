@@ -8,12 +8,14 @@ import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
 
+const ATIS_LETTER_CONTROLLER_TYPE = "AtisLetterController";
+
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
  * state and Stream Deck action for an individual action in a profile.
  */
 export class AtisLetterController extends BaseController {
-  type = "AtisLetterController";
+  type = ATIS_LETTER_CONTROLLER_TYPE;
 
   private _autoClearTimeout?: NodeJS.Timeout;
   private _isUnavailable = false;
@@ -286,5 +288,5 @@ export class AtisLetterController extends BaseController {
 export function isAtisLetterController(
   action: Controller
 ): action is AtisLetterController {
-  return action.type === "AtisLetterController";
+  return action.type === ATIS_LETTER_CONTROLLER_TYPE;
 }

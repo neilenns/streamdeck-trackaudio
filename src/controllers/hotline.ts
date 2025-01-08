@@ -8,12 +8,13 @@ import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
 
+const HOTLINE_CONTROLLER_TYPE = "HotlineController";
 /**
  * A HotlineController action, for use with ActionManager. Tracks the settings,
  * state and Stream Deck action for an individual action in a profile.
  */
 export class HotlineController extends BaseController {
-  type = "HotlineController";
+  type = HOTLINE_CONTROLLER_TYPE;
 
   private _settings: HotlineSettings | null = null;
 
@@ -453,5 +454,5 @@ export class HotlineController extends BaseController {
 export function isHotlineController(
   action: Controller
 ): action is HotlineController {
-  return action.type === "HotlineController";
+  return action.type === HOTLINE_CONTROLLER_TYPE;
 }

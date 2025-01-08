@@ -8,8 +8,10 @@ import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/stationVolume/template.svg";
 
+const STATION_VOLUME_CONTROLLER_TYPE = "StationVolumeController";
+
 export class StationVolumeController extends BaseController {
-  type = "StationVolumeController";
+  type = STATION_VOLUME_CONTROLLER_TYPE;
 
   declare action: DialAction; // This ensures action from the base class is always a DialAction
 
@@ -302,5 +304,5 @@ export class StationVolumeController extends BaseController {
 export function isStationVolumeController(
   action: Controller
 ): action is StationVolumeController {
-  return action.type === "StationVolumeController";
+  return action.type === STATION_VOLUME_CONTROLLER_TYPE;
 }
