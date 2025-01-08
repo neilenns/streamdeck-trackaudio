@@ -7,7 +7,6 @@ import { BaseController } from "./baseController";
 import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
-const defaultUnavailableTemplatePath = "images/actions/hotline/unavailable.svg";
 
 /**
  * A HotlineController action, for use with ActionManager. Tracks the settings,
@@ -96,7 +95,7 @@ export class HotlineController extends BaseController {
    * user didn't specify a custom icon.
    */
   get unavailableImagePath(): string {
-    return this._unavailableImagePath ?? defaultUnavailableTemplatePath;
+    return this._unavailableImagePath ?? defaultTemplatePath;
   }
 
   /**
