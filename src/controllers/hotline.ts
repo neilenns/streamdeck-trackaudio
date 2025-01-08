@@ -5,6 +5,7 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { HOTLINE_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
 
@@ -13,7 +14,7 @@ const defaultTemplatePath = "images/actions/hotline/template.svg";
  * state and Stream Deck action for an individual action in a profile.
  */
 export class HotlineController extends BaseController {
-  type = "HotlineController";
+  type = HOTLINE_CONTROLLER_TYPE;
 
   private _settings: HotlineSettings | null = null;
 
@@ -453,5 +454,5 @@ export class HotlineController extends BaseController {
 export function isHotlineController(
   action: Controller
 ): action is HotlineController {
-  return action.type === "HotlineController";
+  return action.type === HOTLINE_CONTROLLER_TYPE;
 }

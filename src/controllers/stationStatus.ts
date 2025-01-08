@@ -7,6 +7,7 @@ import { LRUCache } from "lru-cache";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
 import mainLogger from "@utils/logger";
+import { STATION_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -22,7 +23,7 @@ const defaultTemplatePath = "images/actions/stationStatus/template.svg";
  * state and Stream Deck action for an individual action in a profile.
  */
 export class StationStatusController extends BaseController {
-  type = "StationStatusController";
+  type = STATION_STATUS_CONTROLLER_TYPE;
 
   private _frequency = 0;
   private _isAvailable: boolean | undefined = undefined;
@@ -622,5 +623,5 @@ export class StationStatusController extends BaseController {
 export function isStationStatusController(
   action: Controller
 ): action is StationStatusController {
-  return action.type === "StationStatusController";
+  return action.type === STATION_STATUS_CONTROLLER_TYPE;
 }
