@@ -16,7 +16,6 @@ import { handleAddStationVolume } from "@events/streamDeck/stationVolume/addStat
 import { handleStationVolumeDialPress } from "@events/streamDeck/stationVolume/stationVolumeDialPress";
 import { handleUpdateStationVolumeSettings } from "@events/streamDeck/stationVolume/updateStationVolumeSettings";
 import debounce from "debounce";
-import { MainVolumeSettings } from "./mainVolume";
 
 @action({ UUID: "com.neil-enns.trackaudio.stationvolume" })
 /**
@@ -63,11 +62,17 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   override onDialDown(
     ev: DialDownEvent<StationVolumeSettings>
   ): Promise<void> | void {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // DialAction.
+    if (!ev.action.isDial()) {
+      return;
+    }
+
     handleStationVolumeDialPress(ev.action);
   }
 
   override onTouchTap(
-    ev: TouchTapEvent<MainVolumeSettings>
+    ev: TouchTapEvent<StationVolumeSettings>
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // DialAction.

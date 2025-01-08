@@ -1,5 +1,4 @@
 import { MainVolumeSettings } from "@actions/mainVolume";
-import { StationVolumeSettings } from "@actions/stationVolume";
 import { DialAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { handleAsyncException } from "@utils/handleAsyncException";
@@ -17,15 +16,15 @@ export class MainVolumeController extends BaseController {
   declare action: DialAction; // This ensures action from the base class is always a DialAction
 
   private _isConnected = false;
-  private _volume? = 100;
-  private _settings: StationVolumeSettings | null = null;
+  private _volume = 100;
+  private _settings: MainVolumeSettings | null = null;
 
   private _connectedTemplatePath?: string;
   private _notConnectedTemplatePath?: string;
 
   /**
    * Creates a new MainVolumeController object.
-   * @param action The callsign for the action
+   * @param action The dial action associated with the controller
    * @param settings: The options for the action
    */
   constructor(action: DialAction, settings: MainVolumeSettings) {
@@ -75,13 +74,13 @@ export class MainVolumeController extends BaseController {
    * Gets the output volume. Returns 100 if undefined.
    **/
   get volume(): number {
-    return this._volume ?? 100;
+    return this._volume;
   }
 
   /**
    * Sets the output volume.
    **/
-  set volume(newValue: number | undefined) {
+  set volume(newValue: number) {
     if (this._volume === newValue) {
       return;
     }
@@ -151,20 +150,14 @@ export class MainVolumeController extends BaseController {
   private refreshImage(): void {
     const replacements = {
       volume: this.volume,
+      state: this.isConnected ? "connected" : "notConnected",
     };
 
-    if (this.isConnected) {
-      this.setFeedbackImage(this.connectedTemplatePath, {
-        ...replacements,
-        state: "connected",
-      });
+    const templatePath = this.isConnected
+      ? this.connectedTemplatePath
+      : this.notConnectedTemplatePath;
 
-      return;
-    }
-    this.setFeedbackImage(this.notConnectedTemplatePath, {
-      ...replacements,
-      state: "notConnected",
-    });
+    this.setFeedbackImage(templatePath, replacements);
   }
 
   private refreshTitle(): void {

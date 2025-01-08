@@ -3,7 +3,7 @@ import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
 
 /**
- * Changes the main by the number of ticks times the change amount.
+ * Changes the main volume by the number of ticks times the change amount.
  * @param action The action that triggered the volume change
  * @param ticks The number of ticks the dial was rotated
  */
