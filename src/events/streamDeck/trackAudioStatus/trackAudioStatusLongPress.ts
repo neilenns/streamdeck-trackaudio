@@ -11,6 +11,7 @@ import { handleAsyncException } from "@utils/handleAsyncException";
 export const handleTrackAudioStatusLongPress = (action: KeyAction) => {
   actionManager.resetAll();
   trackAudioManager.refreshVoiceConnectedState(); // This also causes a refresh of the station states
+  trackAudioManager.refreshMainVolume(); // This will force an update of the main volume knobs
 
   action.showOk().catch((error: unknown) => {
     handleAsyncException(

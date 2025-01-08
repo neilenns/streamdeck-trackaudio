@@ -25,6 +25,10 @@ import {
   isStationVolumeController,
   StationVolumeController,
 } from "@controllers/stationVolume";
+import {
+  isMainVolumeController,
+  MainVolumeController,
+} from "@controllers/mainVolume";
 
 const logger = mainLogger.child({ service: "action" });
 
@@ -345,6 +349,14 @@ class ActionManager extends EventEmitter {
    */
   public getStationVolumeControllers(): StationVolumeController[] {
     return this.getControllers(isStationVolumeController);
+  }
+
+  /**
+   * Retrieves the list of all tracked MainVolumeController.
+   * @returns An array of MainVolumeControllers
+   */
+  public getMainVolumeControllers(): MainVolumeController[] {
+    return this.getControllers(isMainVolumeController);
   }
 
   /**

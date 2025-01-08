@@ -6,13 +6,14 @@ import {
   DidReceiveSettingsEvent,
   JsonValue,
   SingletonAction,
+  TouchTapEvent,
   WillAppearEvent,
   WillDisappearEvent,
 } from "@elgato/streamdeck";
+import { handleStationVolumeDialRotate } from "@events/streamDeck/stationVolume/stationVolumeDialRotate";
 import { handleRemove } from "@events/streamDeck/remove";
 import { handleAddStationVolume } from "@events/streamDeck/stationVolume/addStationVolume";
-import { handleDialPress } from "@events/streamDeck/stationVolume/dialPress";
-import { handleDialRotate } from "@events/streamDeck/stationVolume/dialRotate";
+import { handleStationVolumeDialPress } from "@events/streamDeck/stationVolume/stationVolumeDialPress";
 import { handleUpdateStationVolumeSettings } from "@events/streamDeck/stationVolume/updateStationVolumeSettings";
 import debounce from "debounce";
 
@@ -43,7 +44,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   override onDialRotate(
     ev: DialRotateEvent<StationVolumeSettings>
   ): Promise<void> | void {
-    handleDialRotate(ev.action, ev.payload.ticks);
+    handleStationVolumeDialRotate(ev.action, ev.payload.ticks);
   }
 
   override onDidReceiveSettings(
@@ -61,7 +62,25 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   override onDialDown(
     ev: DialDownEvent<StationVolumeSettings>
   ): Promise<void> | void {
-    handleDialPress(ev.action);
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // DialAction.
+    if (!ev.action.isDial()) {
+      return;
+    }
+
+    handleStationVolumeDialPress(ev.action);
+  }
+
+  override onTouchTap(
+    ev: TouchTapEvent<StationVolumeSettings>
+  ): Promise<void> | void {
+    // This should never happen. Typeguard to ensure the rest of the code can just use
+    // DialAction.
+    if (!ev.action.isDial()) {
+      return;
+    }
+
+    handleStationVolumeDialPress(ev.action);
   }
 
   override onWillDisappear(
@@ -77,6 +96,5 @@ export interface StationVolumeSettings {
   changeAmount?: number;
   mutedImagePath?: string;
   notMutedImagePath?: string;
-  title?: string;
   [key: string]: JsonValue;
 }

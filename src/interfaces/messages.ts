@@ -9,6 +9,16 @@ export interface VoiceConnectedState {
 }
 
 /**
+ * Represents the kMainVolumeChange message from TrackAudio.
+ */
+export interface MainVolumeChange {
+  type: "kMainVolumeChange";
+  value: {
+    volume: number;
+  };
+}
+
+/**
  * Represents the kStationStates message from TrackAudio.
  */
 export interface StationStates {
@@ -129,6 +139,16 @@ export interface ChangeStationVolume {
 }
 
 /**
+ * Represents the kChangeMainVolume message to TrackAudio.
+ */
+export interface ChangeMainVolume {
+  type: "kChangeMainVolume";
+  value: {
+    amount: number;
+  };
+}
+
+/**
  * Represents the kSetStationState message to TrackAudio.
  */
 export interface SetStationState {
@@ -169,6 +189,13 @@ export interface GetVoiceConnectedState {
 }
 
 /**
+ * Represents the kGetMainVolume message to TrackAudio.
+ */
+export interface GetMainVolume {
+  type: "kGetMainVolume";
+}
+
+/**
  * Represents the kAddStation message to TrackAudio.
  */
 export interface AddStation {
@@ -177,6 +204,20 @@ export interface AddStation {
     callsign?: string;
     frequency?: string;
   };
+}
+
+/**
+ * Represents the kPttPressed message to TrackAudio.
+ */
+export interface PttPressed {
+  type: "kPttPressed";
+}
+
+/**
+ * Represents the kPttReleased message to TrackAudio.
+ */
+export interface PttReleased {
+  type: "kPttReleased";
 }
 
 /**
@@ -191,7 +232,8 @@ export type IncomingMessage =
   | TxEnd
   | VoiceConnectedState
   | StationAdded
-  | FrequencyRemoved;
+  | FrequencyRemoved
+  | MainVolumeChange;
 
 /**
  * Type union for all possible outgoing websocket messages to TrackAudio
@@ -204,7 +246,9 @@ export type OutgoingMessage =
   | PttReleased
   | GetVoiceConnectedState
   | AddStation
-  | ChangeStationVolume;
+  | ChangeStationVolume
+  | ChangeMainVolume
+  | GetMainVolume;
 
 /**
  * Typeguard for VoiceConnected.
@@ -328,16 +372,8 @@ export function isTxEnd(message: IncomingMessage): message is TxEnd {
   return message.type === "kTxEnd";
 }
 
-/**
- * Represents the kPttPressed message to TrackAudio.
- */
-export interface PttPressed {
-  type: "kPttPressed";
-}
-
-/**
- * Represents the kPttReleased message to TrackAudio.
- */
-export interface PttReleased {
-  type: "kPttReleased";
+export function isMainVolumeChange(
+  message: IncomingMessage
+): message is MainVolumeChange {
+  return message.type === "kMainVolumeChange";
 }

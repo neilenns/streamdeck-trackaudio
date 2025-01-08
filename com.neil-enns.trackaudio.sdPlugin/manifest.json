@@ -5,16 +5,39 @@
   "Author": "Neil Enns",
   "Actions": [
     {
-      "Name": "Station volume",
-      "UUID": "com.neil-enns.trackaudio.stationvolume",
+      "Name": "Main volume",
+      "UUID": "com.neil-enns.trackaudio.mainvolume",
       "Icon": "images/plugin/volume",
-      "PropertyInspectorPath": "pi/stationVolume.html",
-      "Tooltip": "Controlls the volume for the specified station.",
+      "PropertyInspectorPath": "pi/mainVolume.html",
+      "Tooltip": "Controls the main volume for TrackAudio.",
       "Controllers": ["Encoder"],
       "Encoder": {
         "layout": "$B1",
         "TriggerDescription": {
           "Push": "Toggle mute",
+          "Rotate": "Adjust volume"
+        }
+      },
+      "DisableAutomaticStates": true,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "Station volume",
+      "UUID": "com.neil-enns.trackaudio.stationvolume",
+      "Icon": "images/plugin/volume",
+      "PropertyInspectorPath": "pi/stationVolume.html",
+      "Tooltip": "Controls the volume for the specified station.",
+      "Controllers": ["Encoder"],
+      "Encoder": {
+        "layout": "$B1",
+        "TriggerDescription": {
+          "Push": "Toggle mute",
+          "Touch": "Toggle mute",
           "Rotate": "Adjust volume"
         }
       },

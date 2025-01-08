@@ -5,14 +5,6 @@
     <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
   </head>
   <body>
-    <sdpi-item label="Callsign">
-      <sdpi-textfield
-        setting="callsign"
-        placeholder="Station callsign, e.g. SEA_TWR"
-        required
-      ></sdpi-textfield>
-    </sdpi-item>
-
     <sdpi-item label="Change amount">
       <sdpi-range
         setting="changeAmount"
@@ -24,23 +16,16 @@
       ></sdpi-range>
     </sdpi-item>
 
-    <sdpi-item label="Muted">
+    <sdpi-item label="Connected">
       <sdpi-file
-        setting="mutedImagePath"
+        setting="connectedImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>
 
-    <sdpi-item label="Not muted">
+    <sdpi-item label="Not connected">
       <sdpi-file
-        setting="notMutedImagePath"
-        accept="image/png, image/jpeg, image/svg+xml"
-      ></sdpi-file>
-    </sdpi-item>
-
-    <sdpi-item label="Unavailable">
-      <sdpi-file
-        setting="unavailableImagePath"
+        setting="notConnectedImagePath"
         accept="image/png, image/jpeg, image/svg+xml"
       ></sdpi-file>
     </sdpi-item>

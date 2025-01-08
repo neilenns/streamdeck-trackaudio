@@ -101,7 +101,10 @@ export class StationVolumeController extends BaseController {
     }
 
     this._outputVolume = newValue;
-    this.refreshDisplay();
+
+		// This isn't debounced to ensure speedy updates when the volume changes.
+    this.refreshImage();
+		this.refreshTitle();
   }
 
   /**
@@ -156,13 +159,6 @@ export class StationVolumeController extends BaseController {
    */
   get callsign() {
     return this.settings.callsign;
-  }
-
-  /**
-   * Returns the title specified by the user in the property inspector.
-   */
-  get title() {
-    return this.settings.title;
   }
 
   /**
@@ -255,7 +251,6 @@ export class StationVolumeController extends BaseController {
       this.action
         .setFeedback({
           title: {
-            value: this.title,
             color: "grey",
           },
           indicator: {
@@ -277,7 +272,6 @@ export class StationVolumeController extends BaseController {
     this.action
       .setFeedback({
         title: {
-          value: this.title,
           color: this.isOutputMuted ? "grey" : "#FFFFFF",
         },
         indicator: {

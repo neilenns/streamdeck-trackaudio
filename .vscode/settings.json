@@ -20,5 +20,6 @@
   "[svg]": {
     "editor.formatOnSave": false
   },
-  "svg.preview.background": "editor"
+  "svg.preview.background": "editor",
+  "cSpell.words": ["elgato", "streamdeck"]
 }
