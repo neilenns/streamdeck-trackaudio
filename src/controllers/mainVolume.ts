@@ -31,7 +31,6 @@ export class MainVolumeController extends BaseController {
   constructor(action: DialAction, settings: MainVolumeSettings) {
     super(action);
 
-    this.action = action;
     this.settings = settings;
   }
 
