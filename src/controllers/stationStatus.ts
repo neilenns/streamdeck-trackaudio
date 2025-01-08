@@ -16,10 +16,6 @@ export type ListenTo = "rx" | "tx" | "xc" | "xca";
 const logger = mainLogger.child({ service: "stationStatus" });
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
-const defaultUnavailableTemplatePath =
-  "images/actions/stationStatus/unavailable.svg";
-const defaultBlockedCommsImagePath = "images/actions/stationStatus/blocked.svg";
-const defaultMutedImagePath = "images/actions/stationStatus/template.svg";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -76,7 +72,7 @@ export class StationStatusController extends BaseController {
    * the user didn't specify a custom icon.
    */
   get mutedImagePath(): string {
-    return this._mutedImagePath ?? defaultMutedImagePath;
+    return this._mutedImagePath ?? defaultTemplatePath;
   }
 
   /**
@@ -114,7 +110,7 @@ export class StationStatusController extends BaseController {
    * user didn't specify a custom icon.
    */
   get blockedCommsImagePath(): string {
-    return this._blockedCommsImagePath ?? defaultBlockedCommsImagePath;
+    return this._blockedCommsImagePath ?? defaultTemplatePath;
   }
 
   /**
@@ -144,7 +140,7 @@ export class StationStatusController extends BaseController {
    * user didn't specify a custom icon.
    */
   get unavailableImagePath(): string {
-    return this._unavailableImagePath ?? defaultUnavailableTemplatePath;
+    return this._unavailableImagePath ?? defaultTemplatePath;
   }
 
   /**

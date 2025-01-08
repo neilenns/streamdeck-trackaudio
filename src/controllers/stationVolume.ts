@@ -6,10 +6,7 @@ import { stringOrUndefined } from "@utils/utils";
 import { handleAsyncException } from "@utils/handleAsyncException";
 import debounce from "debounce";
 
-const defaultMutedTemplatePath = "images/actions/stationVolume/muted.svg";
-const defaultNotMutedTemplatePath = "images/actions/stationVolume/notMuted.svg";
-const defaultUnavailableTemplatePath =
-  "images/actions/stationVolume/unavailable.svg";
+const defaultTemplatePath = "images/actions/stationVolume/template.svg";
 
 export class StationVolumeController extends BaseController {
   type = "StationVolumeController";
@@ -49,7 +46,7 @@ export class StationVolumeController extends BaseController {
    * Gets the not muted SVG template path.
    */
   get notMutedTemplatePath(): string {
-    return this._notMutedTemplatePath ?? defaultNotMutedTemplatePath;
+    return this._notMutedTemplatePath ?? defaultTemplatePath;
   }
 
   /**
@@ -63,7 +60,7 @@ export class StationVolumeController extends BaseController {
    * Gets the muted SVG template path.
    */
   get mutedTemplatePath(): string {
-    return this._mutedTemplatePath ?? defaultMutedTemplatePath;
+    return this._mutedTemplatePath ?? defaultTemplatePath;
   }
 
   /**
@@ -77,7 +74,7 @@ export class StationVolumeController extends BaseController {
    * Gets the unavailable SVG template path.
    */
   get unavailableTemplatePath(): string {
-    return this._unavilableTemplatePath ?? defaultUnavailableTemplatePath;
+    return this._unavilableTemplatePath ?? defaultTemplatePath;
   }
 
   /**

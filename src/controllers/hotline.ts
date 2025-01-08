@@ -7,7 +7,7 @@ import { BaseController } from "./baseController";
 import debounce from "debounce";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
-const defaultUnavailableTemplatePath = "images/actions/hotline/unavailable.svg";
+const defaultUnavailableTemplatePath = "images/actions/hotline/template.svg";
 
 /**
  * A HotlineController action, for use with ActionManager. Tracks the settings,
