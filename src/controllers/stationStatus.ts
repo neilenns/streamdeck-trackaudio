@@ -7,6 +7,7 @@ import { LRUCache } from "lru-cache";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
 import mainLogger from "@utils/logger";
+import { STATION_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -16,8 +17,6 @@ export type ListenTo = "rx" | "tx" | "xc" | "xca";
 const logger = mainLogger.child({ service: "stationStatus" });
 
 const defaultTemplatePath = "images/actions/stationStatus/template.svg";
-
-const STATION_STATUS_CONTROLLER_TYPE = "StationStatusController";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,

@@ -5,10 +5,9 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { ATIS_LETTER_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
-
-const ATIS_LETTER_CONTROLLER_TYPE = "AtisLetterController";
 
 /**
  * A StationStatus action, for use with ActionManager. Tracks the settings,
@@ -281,9 +280,9 @@ export class AtisLetterController extends BaseController {
 }
 
 /*
- * Typeguard for HotlineController.
+ * Typeguard for AtisLetterController.
  * @param action The action
- * @returns True if the action is a HotlineController
+ * @returns True if the action is an AtisLetterController
  */
 export function isAtisLetterController(
   action: Controller

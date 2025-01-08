@@ -5,10 +5,10 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { HOTLINE_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
 
-const HOTLINE_CONTROLLER_TYPE = "HotlineController";
 /**
  * A HotlineController action, for use with ActionManager. Tracks the settings,
  * state and Stream Deck action for an individual action in a profile.

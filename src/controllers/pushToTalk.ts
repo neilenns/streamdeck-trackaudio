@@ -5,10 +5,9 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { PUSH_TO_TALK_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
-
-const PUSH_TO_TALK_CONTROLLER_TYPE = "PushToTalkController";
 
 /**
  * A PushToTalkController action, for use with ActionManager. Tracks the

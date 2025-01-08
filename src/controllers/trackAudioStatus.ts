@@ -5,10 +5,10 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { TRACKAUDIO_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
-const TRACKAUDIO_STATUS_CONTROLLER_TYPE = "TrackAudioStatusController";
 /**
  * A TrackAudioStatusController action, for use with ActionManager. Tracks the
  * state and Stream Deck action for an individual action in a profile.

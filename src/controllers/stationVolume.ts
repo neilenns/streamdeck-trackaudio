@@ -5,10 +5,9 @@ import { Controller } from "@interfaces/controller";
 import { stringOrUndefined } from "@utils/utils";
 import { handleAsyncException } from "@utils/handleAsyncException";
 import debounce from "debounce";
+import { STATION_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/stationVolume/template.svg";
-
-const STATION_VOLUME_CONTROLLER_TYPE = "StationVolumeController";
 
 export class StationVolumeController extends BaseController {
   type = STATION_VOLUME_CONTROLLER_TYPE;
