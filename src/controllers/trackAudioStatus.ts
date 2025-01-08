@@ -5,6 +5,7 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { TRACKAUDIO_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
@@ -13,7 +14,7 @@ const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
  * state and Stream Deck action for an individual action in a profile.
  */
 export class TrackAudioStatusController extends BaseController {
-  type = "TrackAudioStatusController";
+  type = TRACKAUDIO_STATUS_CONTROLLER_TYPE;
 
   private _isConnected = false;
   private _isVoiceConnected = false;
@@ -226,5 +227,5 @@ export class TrackAudioStatusController extends BaseController {
 export function isTrackAudioStatusController(
   action: Controller
 ): action is TrackAudioStatusController {
-  return action.type === "TrackAudioStatusController";
+  return action.type === TRACKAUDIO_STATUS_CONTROLLER_TYPE;
 }

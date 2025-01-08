@@ -5,6 +5,7 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { ATIS_LETTER_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
 
@@ -13,7 +14,7 @@ const defaultTemplatePath = "images/actions/atisLetter/template.svg";
  * state and Stream Deck action for an individual action in a profile.
  */
 export class AtisLetterController extends BaseController {
-  type = "AtisLetterController";
+  type = ATIS_LETTER_CONTROLLER_TYPE;
 
   private _autoClearTimeout?: NodeJS.Timeout;
   private _isUnavailable = false;
@@ -279,12 +280,12 @@ export class AtisLetterController extends BaseController {
 }
 
 /*
- * Typeguard for HotlineController.
+ * Typeguard for AtisLetterController.
  * @param action The action
- * @returns True if the action is a HotlineController
+ * @returns True if the action is an AtisLetterController
  */
 export function isAtisLetterController(
   action: Controller
 ): action is AtisLetterController {
-  return action.type === "AtisLetterController";
+  return action.type === ATIS_LETTER_CONTROLLER_TYPE;
 }

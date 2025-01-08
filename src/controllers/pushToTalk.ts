@@ -5,6 +5,7 @@ import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
+import { PUSH_TO_TALK_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 
@@ -13,7 +14,7 @@ const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
  * state and Stream Deck action for an individual action in a profile.
  */
 export class PushToTalkController extends BaseController {
-  type = "PushToTalkController";
+  type = PUSH_TO_TALK_CONTROLLER_TYPE;
 
   private _settings: PushToTalkSettings | null = null;
   private _isTransmitting = false;
@@ -176,5 +177,5 @@ export class PushToTalkController extends BaseController {
 export function isPushToTalkController(
   action: Controller
 ): action is PushToTalkController {
-  return action.type === "PushToTalkController";
+  return action.type === PUSH_TO_TALK_CONTROLLER_TYPE;
 }
