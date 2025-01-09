@@ -16,6 +16,7 @@ import { handleAtisLetterShortPress } from "@events/streamDeck/atisLetter/atisLe
 import { handleUpdateAtisLetter } from "@events/streamDeck/atisLetter/updateAtisLetter";
 import { handleRemove } from "@events/streamDeck/remove";
 import { LONG_PRESS_THRESHOLD } from "@utils/constants";
+import { handleAsyncException } from "@utils/handleAsyncException";
 import debounce from "debounce";
 
 @action({ UUID: "com.neil-enns.trackaudio.atisletter" })
@@ -74,9 +75,13 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
     ev: SendToPluginEvent<JsonValue, AtisLetterSettings>
   ): Promise<void> {
     if (ev.payload === "openMarketplace") {
-      await streamDeck.system.openUrl(
-        "https://marketplace.elgato.com/product/vatis-878fcd1a-7e0a-4d6e-bd36-c70b075573ea"
-      );
+      try {
+        await streamDeck.system.openUrl(
+          "https://marketplace.elgato.com/product/vatis-878fcd1a-7e0a-4d6e-bd36-c70b075573ea"
+        );
+      } catch (error: unknown) {
+        handleAsyncException("Unable to open marketplace link", error);
+      }
     }
   }
 
