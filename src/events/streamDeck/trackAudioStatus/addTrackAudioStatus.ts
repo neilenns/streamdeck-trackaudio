@@ -17,5 +17,4 @@ export const handleAddTrackAudioStatus = (
 
   actionManager.add(controller);
   actionManager.emit("trackAudioStatusAdded", controller);
-  actionManager.emit("actionAdded", controller);
 };

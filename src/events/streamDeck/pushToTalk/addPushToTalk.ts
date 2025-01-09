@@ -15,5 +15,4 @@ import actionManager from "@managers/action";
   actionManager.add(controller);
 
   actionManager.emit("pushToTalkAdded", controller);
-  actionManager.emit("actionAdded", controller);
 };

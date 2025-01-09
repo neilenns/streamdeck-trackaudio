@@ -279,7 +279,6 @@ class ActionManager extends EventEmitter {
    */
   public add(controller: Controller): void {
     this.actions.push(controller);
-    this.emit("actionAdded", controller);
   }
 
   /**
