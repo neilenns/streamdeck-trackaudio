@@ -4,9 +4,11 @@ import {
   JsonValue,
   KeyAction,
   KeyUpEvent,
+  SendToPluginEvent,
   SingletonAction,
   WillAppearEvent,
   WillDisappearEvent,
+  streamDeck,
 } from "@elgato/streamdeck";
 import { handleAddAtisLetter } from "@events/streamDeck/atisLetter/addAtisLetter";
 import { handleAtisLetterLongPress } from "@events/streamDeck/atisLetter/atisLetterLongPress";
@@ -64,6 +66,18 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
     }
 
     this.debouncedUpdate(ev.action, ev.payload.settings);
+  }
+
+  // Handles the click on the Get it on marketplace icon that directs people to the vATIS
+  // plugin instead of using this action.
+  override async onSendToPlugin(
+    ev: SendToPluginEvent<JsonValue, AtisLetterSettings>
+  ): Promise<void> {
+    if (ev.payload === "openMarketplace") {
+      await streamDeck.system.openUrl(
+        "https://marketplace.elgato.com/product/vatis-878fcd1a-7e0a-4d6e-bd36-c70b075573ea"
+      );
+    }
   }
 
   override onKeyDown(): Promise<void> | void {

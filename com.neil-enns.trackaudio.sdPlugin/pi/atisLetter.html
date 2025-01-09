@@ -5,6 +5,16 @@
     <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
   </head>
   <body>
+    <sdpi-item>
+      Using vATIS? Check out the vATIS plugin instead of this action.
+      <div
+        style="text-align: center"
+        onClick="SDPIComponents.streamDeckClient.send('sendToPlugin', 'openMarketplace');"
+      >
+        <img src="../images/marketplace-dark.svg" />
+      </div>
+    </sdpi-item>
+
     <sdpi-item label="Title">
       <sdpi-textarea
         setting="title"
