@@ -17,5 +17,4 @@ export const handleAddStation = (
 
   actionManager.add(controller);
   actionManager.emit("stationStatusAdded", controller);
-  actionManager.emit("actionAdded", controller);
 };

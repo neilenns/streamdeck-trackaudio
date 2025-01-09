@@ -17,5 +17,4 @@ export const handleAddStationVolume = (
 
   actionManager.add(controller);
   actionManager.emit("stationVolumeAdded", controller);
-  actionManager.emit("actionAdded", controller);
 };

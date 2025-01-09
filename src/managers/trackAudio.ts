@@ -29,6 +29,7 @@ class TrackAudioManager extends EventEmitter {
   private reconnectTimer: NodeJS.Timeout | null = null;
 
   private _isVoiceConnected = false;
+  private _isAppRunning = false;
 
   //#region Constructor and instance management
   private constructor() {
@@ -46,6 +47,22 @@ class TrackAudioManager extends EventEmitter {
     return TrackAudioManager.instance;
   }
   //#endregion
+
+  /**
+   * Gets whether the TrackAudio application was detected as running by Stream Deck.
+   * @returns {boolean} True if running.
+   */
+  public get isAppRunning(): boolean {
+    return this._isAppRunning;
+  }
+
+  /**
+   * Sets whether the TrackAudio application is running.
+   * @params newValue True if running.
+   */
+  public set isAppRunning(newValue: boolean) {
+    this._isAppRunning = newValue;
+  }
 
   /**
    * Sets the connection URL for TrackAudio.

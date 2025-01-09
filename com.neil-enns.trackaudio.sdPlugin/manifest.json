@@ -130,6 +130,10 @@
       ]
     }
   ],
+  "ApplicationsToMonitor": {
+    "mac": ["com.vatsim.trackaudio"],
+    "windows": ["trackaudio.exe"]
+  },
   "Category": "TrackAudio",
   "CategoryIcon": "images/plugin/categoryIcon",
   "CodePath": "bin/plugin.js",

@@ -18,5 +18,4 @@ export const handleAddHotline = (
   // Force buttons to refresh so the newly added button shows the correct state.
   actionManager.add(controller);
   actionManager.emit("hotlineAdded", controller);
-  actionManager.emit("actionAdded", controller);
 };

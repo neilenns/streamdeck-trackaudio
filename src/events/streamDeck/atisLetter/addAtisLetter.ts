@@ -17,5 +17,4 @@ export const handleAddAtisLetter = (
 
   actionManager.add(controller);
   actionManager.emit("atisLetterAdded", controller);
-  actionManager.emit("actionAdded", controller);
 };

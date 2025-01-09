@@ -17,5 +17,4 @@ export const handleAddMainVolume = (
 
   actionManager.add(controller);
   actionManager.emit("mainVolumeAdded", controller);
-  actionManager.emit("actionAdded", controller);
 };
