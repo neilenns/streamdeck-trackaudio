@@ -29,6 +29,7 @@ import { handleMainVolumeAdded } from "@events/action/mainVolumeAdded";
 import { handleMainVolumeChange } from "@events/trackAudio/mainVolumeChange";
 import { handleOnApplicationDidLaunch } from "@events/streamDeck/applicationDidLaunch";
 import { handleOnApplicationDidTerminate } from "@events/streamDeck/applicationDidTerminate";
+import { handleOnSystemDidWakeUp } from "@events/streamDeck/systemDidWakeUp";
 import { handleRemoved } from "@events/action/removed";
 import { handleRxBegin } from "@events/trackAudio/rxBegin";
 import { handleRxEnd } from "@events/trackAudio/rxEnd";
@@ -67,6 +68,7 @@ streamDeck.actions.registerAction(new MainVolume());
 // Register the event handlers
 streamDeck.system.onApplicationDidLaunch(handleOnApplicationDidLaunch);
 streamDeck.system.onApplicationDidTerminate(handleOnApplicationDidTerminate);
+streamDeck.system.onSystemDidWakeUp(handleOnSystemDidWakeUp);
 
 trackAudioManager.on("connected", () => {
   disconnectHandled = false;

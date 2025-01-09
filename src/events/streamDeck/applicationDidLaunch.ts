@@ -2,9 +2,10 @@ import { ApplicationDidLaunchEvent } from "@elgato/streamdeck";
 import trackAudioManager from "@managers/trackAudio";
 import mainLogger from "@utils/logger";
 
-const logger = mainLogger.child({ service: "applicationDidLaunch" });
-
 export const handleOnApplicationDidLaunch = (ev: ApplicationDidLaunchEvent) => {
+  const logger = mainLogger.child({ service: "applicationDidLaunch" });
+
   logger.info("Received applicationDidLaunch event", ev.application);
+  trackAudioManager.isAppRunning = true;
   trackAudioManager.connect();
 };
