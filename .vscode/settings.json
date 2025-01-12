@@ -21,5 +21,15 @@
     "editor.formatOnSave": false
   },
   "svg.preview.background": "editor",
-  "cSpell.words": ["elgato", "streamdeck"]
+  "cSpell.words": [
+    "Autopurge",
+    "Callsign",
+    "callsigns",
+    "coms",
+    "elgato",
+    "stationvolume",
+    "streamdeck",
+    "trackaudio",
+    "Typeguard"
+  ]
 }

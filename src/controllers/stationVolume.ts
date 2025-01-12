@@ -1,11 +1,11 @@
 import { StationVolumeSettings } from "@actions/stationVolume";
-import { BaseController } from "./baseController";
 import { DialAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
-import { stringOrUndefined } from "@utils/utils";
-import { handleAsyncException } from "@utils/handleAsyncException";
-import debounce from "debounce";
 import { STATION_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
+import { handleAsyncException } from "@utils/handleAsyncException";
+import { stringOrUndefined } from "@utils/utils";
+import debounce from "debounce";
+import { BaseController } from "./baseController";
 
 const defaultTemplatePath = "images/actions/stationVolume/template.svg";
 
@@ -21,7 +21,7 @@ export class StationVolumeController extends BaseController {
   private _notMutedTemplatePath?: string;
   private _outputVolume? = 100;
   private _settings: StationVolumeSettings | null = null;
-  private _unavilableTemplatePath?: string;
+  private _unavailableTemplatePath?: string;
 
   /**
    * Creates a new StationVolumeController object.
@@ -75,14 +75,14 @@ export class StationVolumeController extends BaseController {
    * Gets the unavailable SVG template path.
    */
   get unavailableTemplatePath(): string {
-    return this._unavilableTemplatePath ?? defaultTemplatePath;
+    return this._unavailableTemplatePath ?? defaultTemplatePath;
   }
 
   /**
    * Sets the unavailable SVG template path.
    */
   set unavailableTemplatePath(newValue: string | undefined) {
-    this._unavilableTemplatePath = stringOrUndefined(newValue);
+    this._unavailableTemplatePath = stringOrUndefined(newValue);
   }
 
   /**
@@ -223,8 +223,16 @@ export class StationVolumeController extends BaseController {
       volume: this.outputVolume,
     };
 
-    // Set the unavilable state if the station is not available.
-    if (this.isAvailable !== undefined && !this.isAvailable) {
+    if (this.isAvailable === undefined) {
+      this.setFeedbackImage(this.unavailableTemplatePath, {
+        ...replacements,
+        state: "notConnected",
+      });
+      return;
+    }
+
+    // Set the unavailable state if the station is not available.
+    if (!this.isAvailable) {
       this.setFeedbackImage(this.unavailableTemplatePath, {
         ...replacements,
         state: "unavailable",
@@ -247,8 +255,10 @@ export class StationVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
-    // Set the unavilable state if the station is not available.
-    if (this.isAvailable !== undefined && !this.isAvailable) {
+    // Set the unavailable state if the station is not available.
+    // If TrackAudio voice isn't connected isAvailable is undefined
+    // and things get shown in the same state.
+    if (this.isAvailable === undefined || !this.isAvailable) {
       this.action
         .setFeedback({
           title: {
@@ -269,7 +279,7 @@ export class StationVolumeController extends BaseController {
       return;
     }
 
-    // Nomral connected state.
+    // Normal connected state.
     this.action
       .setFeedback({
         title: {

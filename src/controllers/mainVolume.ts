@@ -1,11 +1,11 @@
 import { MainVolumeSettings } from "@actions/mainVolume";
 import { DialAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import { MAIN_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 import { handleAsyncException } from "@utils/handleAsyncException";
 import { stringOrUndefined } from "@utils/utils";
 import debounce from "debounce";
 import { BaseController } from "./baseController";
-import { MAIN_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultConnectedTemplatePath = "images/actions/mainVolume/template.svg";
 const defaultNotConnectedTemplatePath =
@@ -57,7 +57,7 @@ export class MainVolumeController extends BaseController {
   }
 
   /**
-   * Gets the notconnected SVG template path.
+   * Gets the not connected SVG template path.
    */
   get notConnectedTemplatePath(): string {
     return this._notConnectedTemplatePath ?? defaultNotConnectedTemplatePath;
