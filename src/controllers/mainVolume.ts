@@ -152,7 +152,7 @@ export class MainVolumeController extends BaseController {
   private refreshImage(): void {
     const replacements = {
       volume: this.volume,
-      state: trackAudioManager.isConnected ? "connected" : "notConnected",
+      state: trackAudioManager.isVoiceConnected ? "connected" : "notConnected",
     };
 
     const templatePath = trackAudioManager.isConnected
@@ -163,7 +163,7 @@ export class MainVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
-    const color = trackAudioManager.isConnected ? "white" : "grey";
+    const color = trackAudioManager.isVoiceConnected ? "white" : "grey";
 
     this.action
       .setFeedback({

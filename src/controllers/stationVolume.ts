@@ -224,7 +224,7 @@ export class StationVolumeController extends BaseController {
       volume: this.outputVolume,
     };
 
-    if (!trackAudioManager.isConnected) {
+    if (!trackAudioManager.isVoiceConnected) {
       this.setFeedbackImage(this.notMutedTemplatePath, {
         ...replacements,
         state: "notConnected",
@@ -256,7 +256,11 @@ export class StationVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
-    if (!this.isAvailable || !trackAudioManager.isConnected) {
+    if (
+      !trackAudioManager.isConnected ||
+      !trackAudioManager.isVoiceConnected ||
+      !this.isAvailable
+    ) {
       this.action
         .setFeedback({
           title: {
