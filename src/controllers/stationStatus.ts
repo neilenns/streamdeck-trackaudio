@@ -3,11 +3,11 @@ import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
+import { STATION_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
+import mainLogger from "@utils/logger";
+import debounce from "debounce";
 import { LRUCache } from "lru-cache";
 import { BaseController } from "./baseController";
-import debounce from "debounce";
-import mainLogger from "@utils/logger";
-import { STATION_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -211,7 +211,7 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Returns the frequency formated for display. A value of 121900000
+   * Returns the frequency formatted for display. A value of 121900000
    * will be returned as "121.900". If the frequency is undefined or 0
    * then an empty string is returned.
    */
@@ -224,7 +224,7 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Conveinence property to get the listenTo value of settings.
+   * Convenience property to get the listenTo value of settings.
    */
   get listenTo() {
     return this.settings.listenTo ?? "rx";
@@ -384,7 +384,7 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * True if the station is actively receiveing.
+   * True if the station is actively receiving.
    */
   get isReceiving() {
     return this._isReceiving;
