@@ -3,12 +3,11 @@ import trackAudioManager from "@managers/trackAudio";
 
 export const handleConnected = () => {
   actionManager.getTrackAudioStatusControllers().forEach((entry) => {
-    entry.isConnected = trackAudioManager.isConnected;
-    entry.isVoiceConnected = trackAudioManager.isVoiceConnected;
+    entry.refreshDisplay();
   });
 
   actionManager.getMainVolumeControllers().forEach((entry) => {
-    entry.isConnected = trackAudioManager.isConnected;
+    entry.refreshDisplay();
   });
 
   trackAudioManager.refreshVoiceConnectedState(); // This will force an update of station states as well if voice is connected.

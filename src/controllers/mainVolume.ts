@@ -1,11 +1,12 @@
 import { MainVolumeSettings } from "@actions/mainVolume";
 import { DialAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import trackAudioManager from "@managers/trackAudio";
+import { MAIN_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 import { handleAsyncException } from "@utils/handleAsyncException";
 import { stringOrUndefined } from "@utils/utils";
 import debounce from "debounce";
 import { BaseController } from "./baseController";
-import { MAIN_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 
 const defaultConnectedTemplatePath = "images/actions/mainVolume/template.svg";
 const defaultNotConnectedTemplatePath =
@@ -16,7 +17,6 @@ export class MainVolumeController extends BaseController {
 
   declare action: DialAction; // This ensures action from the base class is always a DialAction
 
-  private _isConnected = false;
   private _volume = 100;
   private _settings: MainVolumeSettings | null = null;
 
@@ -57,7 +57,7 @@ export class MainVolumeController extends BaseController {
   }
 
   /**
-   * Gets the notconnected SVG template path.
+   * Gets the not connected SVG template path.
    */
   get notConnectedTemplatePath(): string {
     return this._notConnectedTemplatePath ?? defaultNotConnectedTemplatePath;
@@ -115,25 +115,6 @@ export class MainVolumeController extends BaseController {
   }
 
   /**
-   * True if connected to TrackAudio.
-   */
-  get isConnected(): boolean {
-    return this._isConnected;
-  }
-
-  /**
-   * Sets the isConnected property and updates the action image accordingly.
-   */
-  set isConnected(newValue: boolean) {
-    if (this._isConnected === newValue) {
-      return;
-    }
-
-    this._isConnected = newValue;
-    this.refreshDisplay();
-  }
-
-  /**
    * Convenience property to get the changeAmount value of settings.
    */
   get changeAmount() {
@@ -142,7 +123,6 @@ export class MainVolumeController extends BaseController {
   }
 
   override reset(): void {
-    this._isConnected = false;
     this._volume = 100;
 
     this.refreshDisplay();
@@ -151,10 +131,10 @@ export class MainVolumeController extends BaseController {
   private refreshImage(): void {
     const replacements = {
       volume: this.volume,
-      state: this.isConnected ? "connected" : "notConnected",
+      state: trackAudioManager.isConnected ? "connected" : "notConnected",
     };
 
-    const templatePath = this.isConnected
+    const templatePath = trackAudioManager.isConnected
       ? this.connectedTemplatePath
       : this.notConnectedTemplatePath;
 

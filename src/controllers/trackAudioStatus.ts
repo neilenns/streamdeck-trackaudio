@@ -1,11 +1,12 @@
 import { TrackAudioStatusSettings } from "@actions/trackAudioStatus";
 import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import trackAudioManager from "@managers/trackAudio";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
-import { BaseController } from "./baseController";
-import debounce from "debounce";
 import { TRACKAUDIO_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
+import debounce from "debounce";
+import { BaseController } from "./baseController";
 
 const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 
@@ -16,8 +17,6 @@ const defaultTemplatePath = "images/actions/trackAudioStatus/template.svg";
 export class TrackAudioStatusController extends BaseController {
   type = TRACKAUDIO_STATUS_CONTROLLER_TYPE;
 
-  private _isConnected = false;
-  private _isVoiceConnected = false;
   private _settings: TrackAudioStatusSettings | null = null;
 
   private _notConnectedImagePath?: string;
@@ -39,8 +38,7 @@ export class TrackAudioStatusController extends BaseController {
   }, 100);
 
   public reset() {
-    this.isConnected = false;
-    this.isVoiceConnected = false;
+    this.refreshDisplay();
   }
 
   //#region Getters and setters
@@ -129,52 +127,6 @@ export class TrackAudioStatusController extends BaseController {
 
     this.refreshDisplay();
   }
-
-  /**
-   * Returns true when the voice connected state is displayed.
-   */
-  get isVoiceConnected() {
-    return this._isVoiceConnected;
-  }
-
-  /**
-   * Sets the isConnected state
-   */
-  set isVoiceConnected(newValue: boolean) {
-    // Don't do anything if the state is the same
-    if (this._isVoiceConnected === newValue) {
-      return;
-    }
-
-    this._isVoiceConnected = newValue;
-
-    this.refreshDisplay();
-  }
-
-  /**
-   * Returns true when the connected state is displayed.
-   */
-  get isConnected() {
-    return this._isConnected;
-  }
-
-  /**
-   * Sets the isConnected state
-   */
-  set isConnected(newValue: boolean) {
-    // Don't do anything if the state is the same
-    if (this._isConnected === newValue) {
-      return;
-    }
-
-    this._isConnected = newValue;
-
-    if (!newValue) {
-      this._isVoiceConnected = false;
-    }
-
-    this.refreshDisplay();
-  }
   //#endregion
 
   /**
@@ -196,7 +148,7 @@ export class TrackAudioStatusController extends BaseController {
       title: this.title,
     };
 
-    if (this.isVoiceConnected) {
+    if (trackAudioManager.isVoiceConnected) {
       this.setImage(this.voiceConnectedImagePath, {
         ...replacements,
         state: "voiceConnected",
@@ -204,7 +156,7 @@ export class TrackAudioStatusController extends BaseController {
       return;
     }
 
-    if (this.isConnected) {
+    if (trackAudioManager.isConnected) {
       this.setImage(this.connectedImagePath, {
         ...replacements,
         state: "connected",
