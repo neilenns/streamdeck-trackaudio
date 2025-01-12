@@ -102,9 +102,9 @@ export class StationVolumeController extends BaseController {
 
     this._outputVolume = newValue;
 
-		// This isn't debounced to ensure speedy updates when the volume changes.
+    // This isn't debounced to ensure speedy updates when the volume changes.
     this.refreshImage();
-		this.refreshTitle();
+    this.refreshTitle();
   }
 
   /**
@@ -205,7 +205,8 @@ export class StationVolumeController extends BaseController {
    * Convenience property to get the changeAmount value of settings.
    */
   get changeAmount() {
-    return this.settings.changeAmount ?? 1;
+    const amount = this.settings.changeAmount ?? 2;
+    return amount > 0 ? amount : 2;
   }
 
   override reset(): void {

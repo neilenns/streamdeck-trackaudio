@@ -137,8 +137,8 @@ export class MainVolumeController extends BaseController {
    * Convenience property to get the changeAmount value of settings.
    */
   get changeAmount() {
-    const amount = this.settings.changeAmount ?? 1;
-    return amount > 0 ? amount : 1;
+    const amount = this.settings.changeAmount ?? 2;
+    return amount > 0 ? amount : 2;
   }
 
   override reset(): void {
