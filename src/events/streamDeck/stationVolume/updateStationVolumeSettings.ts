@@ -1,6 +1,7 @@
 import { StationVolumeSettings } from "@actions/stationVolume";
 import { DialAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
+import trackAudioManager from "@managers/trackAudio";
 
 /**
  * Updates the settings associated with a station volume action.
@@ -19,5 +20,11 @@ export const handleUpdateStationVolumeSettings = (
     return;
   }
 
+  const refreshRequired = savedAction.callsign !== settings.callsign;
+
   savedAction.settings = settings;
+
+  if (refreshRequired) {
+    trackAudioManager.refreshStationState(savedAction.callsign);
+  }
 };
