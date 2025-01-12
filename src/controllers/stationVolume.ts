@@ -1,6 +1,7 @@
 import { StationVolumeSettings } from "@actions/stationVolume";
 import { DialAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import trackAudioManager from "@managers/trackAudio";
 import { STATION_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 import { handleAsyncException } from "@utils/handleAsyncException";
 import { stringOrUndefined } from "@utils/utils";
@@ -223,8 +224,8 @@ export class StationVolumeController extends BaseController {
       volume: this.outputVolume,
     };
 
-    if (this.isAvailable === undefined) {
-      this.setFeedbackImage(this.unavailableTemplatePath, {
+    if (!trackAudioManager.isConnected) {
+      this.setFeedbackImage(this.notMutedTemplatePath, {
         ...replacements,
         state: "notConnected",
       });
@@ -255,10 +256,7 @@ export class StationVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
-    // Set the unavailable state if the station is not available.
-    // If TrackAudio voice isn't connected isAvailable is undefined
-    // and things get shown in the same state.
-    if (this.isAvailable === undefined || !this.isAvailable) {
+    if (!this.isAvailable || !trackAudioManager.isConnected) {
       this.action
         .setFeedback({
           title: {

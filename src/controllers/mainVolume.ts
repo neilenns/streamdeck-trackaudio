@@ -1,6 +1,7 @@
 import { MainVolumeSettings } from "@actions/mainVolume";
 import { DialAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import trackAudioManager from "@managers/trackAudio";
 import { MAIN_VOLUME_CONTROLLER_TYPE } from "@utils/controllerTypes";
 import { handleAsyncException } from "@utils/handleAsyncException";
 import { stringOrUndefined } from "@utils/utils";
@@ -151,10 +152,10 @@ export class MainVolumeController extends BaseController {
   private refreshImage(): void {
     const replacements = {
       volume: this.volume,
-      state: this.isConnected ? "connected" : "notConnected",
+      state: trackAudioManager.isConnected ? "connected" : "notConnected",
     };
 
-    const templatePath = this.isConnected
+    const templatePath = trackAudioManager.isConnected
       ? this.connectedTemplatePath
       : this.notConnectedTemplatePath;
 
@@ -162,13 +163,20 @@ export class MainVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
+    const color = trackAudioManager.isConnected ? "white" : "grey";
+
     this.action
       .setFeedback({
+        title: {
+          color: color,
+        },
         indicator: {
           value: this.volume,
+          color,
         },
         value: {
           value: `${this.volume.toString()}%`,
+          color,
         },
       })
       .catch((error: unknown) => {
