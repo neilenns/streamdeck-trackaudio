@@ -4,6 +4,10 @@ import {
 } from "@controllers/atisLetter";
 import { HotlineController, isHotlineController } from "@controllers/hotline";
 import {
+  MainVolumeController,
+  isMainVolumeController,
+} from "@controllers/mainVolume";
+import {
   PushToTalkController,
   isPushToTalkController,
 } from "@controllers/pushToTalk";
@@ -11,6 +15,10 @@ import {
   StationStatusController,
   isStationStatusController,
 } from "@controllers/stationStatus";
+import {
+  StationVolumeController,
+  isStationVolumeController,
+} from "@controllers/stationVolume";
 import {
   TrackAudioStatusController,
   isTrackAudioStatusController,
@@ -21,14 +29,6 @@ import { SetStationState, StationStateUpdate } from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
 import mainLogger from "@utils/logger";
 import { EventEmitter } from "events";
-import {
-  isStationVolumeController,
-  StationVolumeController,
-} from "@controllers/stationVolume";
-import {
-  isMainVolumeController,
-  MainVolumeController,
-} from "@controllers/mainVolume";
 
 const logger = mainLogger.child({ service: "action" });
 
@@ -245,12 +245,10 @@ class ActionManager extends EventEmitter {
   /**
    * Updates the connection state on all TrackAudio status buttons to the current connected states
    * and updates the background image to the appropriate state image.
-   * @param isConnected True if connected, false if not
    */
   public updateTrackAudioConnectionState() {
     this.getTrackAudioStatusControllers().forEach((entry) => {
-      entry.isConnected = trackAudioManager.isConnected;
-      entry.isVoiceConnected = trackAudioManager.isVoiceConnected;
+      entry.refreshDisplay();
     });
   }
 
