@@ -17,7 +17,6 @@ export class MainVolumeController extends BaseController {
 
   declare action: DialAction; // This ensures action from the base class is always a DialAction
 
-  private _isConnected = false;
   private _volume = 100;
   private _settings: MainVolumeSettings | null = null;
 
@@ -116,25 +115,6 @@ export class MainVolumeController extends BaseController {
   }
 
   /**
-   * True if connected to TrackAudio.
-   */
-  get isConnected(): boolean {
-    return this._isConnected;
-  }
-
-  /**
-   * Sets the isConnected property and updates the action image accordingly.
-   */
-  set isConnected(newValue: boolean) {
-    if (this._isConnected === newValue) {
-      return;
-    }
-
-    this._isConnected = newValue;
-    this.refreshDisplay();
-  }
-
-  /**
    * Convenience property to get the changeAmount value of settings.
    */
   get changeAmount() {
@@ -143,7 +123,6 @@ export class MainVolumeController extends BaseController {
   }
 
   override reset(): void {
-    this._isConnected = false;
     this._volume = 100;
 
     this.refreshDisplay();
