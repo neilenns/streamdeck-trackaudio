@@ -8,6 +8,7 @@ export const handleVoiceConnectedState = async (data: VoiceConnectedState) => {
 
   if (data.value.connected) {
     trackAudioManager.refreshStationStates();
+    trackAudioManager.refreshMainVolume();
 
     // Only start polling VATSIM if there are ATIS letters.
     if (actionManager.getAtisLetterControllers().length > 0) {
