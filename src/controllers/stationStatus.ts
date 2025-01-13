@@ -8,6 +8,7 @@ import mainLogger from "@utils/logger";
 import debounce from "debounce";
 import { LRUCache } from "lru-cache";
 import { BaseController } from "./baseController";
+import trackAudioManager from "@managers/trackAudio";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -568,7 +569,7 @@ export class StationStatusController extends BaseController {
       outputVolume: this.outputVolume,
     };
 
-    if (this.isAvailable !== undefined && !this.isAvailable) {
+    if (trackAudioManager.isVoiceConnected && !this.isAvailable) {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
         state: "unavailable",
