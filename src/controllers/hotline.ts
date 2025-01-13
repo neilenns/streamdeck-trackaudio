@@ -6,6 +6,7 @@ import { stringOrUndefined } from "@root/utils/utils";
 import { BaseController } from "./baseController";
 import debounce from "debounce";
 import { HOTLINE_CONTROLLER_TYPE } from "@utils/controllerTypes";
+import trackAudioManager from "@managers/trackAudio";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
 
@@ -394,7 +395,7 @@ export class HotlineController extends BaseController {
       title: this.title,
     };
 
-    if (this.isAvailable !== undefined && !this.isAvailable) {
+    if (trackAudioManager.isVoiceConnected && !this.isAvailable) {
       this.setImage(this.unavailableImagePath, {
         ...replacements,
         state: "unavailable",
