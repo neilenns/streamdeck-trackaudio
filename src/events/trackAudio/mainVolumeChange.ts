@@ -20,6 +20,7 @@ export const handleMainVolumeChange = (data: MainVolumeChange) => {
 
   try {
     actionManager.getMainVolumeControllers().forEach((entry) => {
+      logger.info(`Setting mainVolume to ${data.value.volume.toString()}`);
       entry.volume = data.value.volume;
     });
   } catch (error: unknown) {

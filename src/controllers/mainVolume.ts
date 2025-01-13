@@ -7,6 +7,9 @@ import { handleAsyncException } from "@utils/handleAsyncException";
 import { stringOrUndefined } from "@utils/utils";
 import debounce from "debounce";
 import { BaseController } from "./baseController";
+import mainLogger from "@utils/logger";
+
+const logger = mainLogger.child({ service: "mainVolumeController" });
 
 const defaultConnectedTemplatePath = "images/actions/mainVolume/template.svg";
 const defaultNotConnectedTemplatePath =
@@ -134,7 +137,7 @@ export class MainVolumeController extends BaseController {
       state: trackAudioManager.isVoiceConnected ? "connected" : "notConnected",
     };
 
-    const templatePath = trackAudioManager.isConnected
+    const templatePath = trackAudioManager.isVoiceConnected
       ? this.connectedTemplatePath
       : this.notConnectedTemplatePath;
 
@@ -142,6 +145,11 @@ export class MainVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
+    logger.info(
+      `mainVolume refresh title, isVoiceConnected is ${
+        trackAudioManager.isConnected ? "true" : "false"
+      }`
+    );
     if (!trackAudioManager.isVoiceConnected) {
       this.action
         .setFeedback({

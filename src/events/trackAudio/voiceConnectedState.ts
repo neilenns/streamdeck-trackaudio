@@ -8,7 +8,7 @@ export const handleVoiceConnectedState = async (data: VoiceConnectedState) => {
 
   if (data.value.connected) {
     trackAudioManager.refreshStationStates();
-    trackAudioManager.refreshMainVolume();
+    trackAudioManager.refreshMainVolume(); // This will force an update of the main volume knobs
 
     // Only start polling VATSIM if there are ATIS letters.
     if (actionManager.getAtisLetterControllers().length > 0) {
