@@ -285,15 +285,15 @@ export class StationVolumeController extends BaseController {
     this.action
       .setFeedback({
         title: {
-          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+          color: this.isOutputMuted ? "#a71d2a" : "#FFFFFF",
         },
         indicator: {
           value: this.outputVolume,
-          bar_fill_c: this.isOutputMuted ? "grey" : "#FFFFFF",
+          bar_fill_c: this.isOutputMuted ? "#a71d2a" : "#FFFFFF",
         },
         value: {
           value: `${this.outputVolume.toString()}%`,
-          color: this.isOutputMuted ? "grey" : "#FFFFFF",
+          color: this.isOutputMuted ? "#a71d2a" : "#FFFFFF",
         },
       })
       .catch((error: unknown) => {
