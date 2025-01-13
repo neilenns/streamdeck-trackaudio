@@ -256,11 +256,7 @@ export class StationVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
-    if (
-      !trackAudioManager.isConnected ||
-      !trackAudioManager.isVoiceConnected ||
-      !this.isAvailable
-    ) {
+    if (!trackAudioManager.isVoiceConnected || !this.isAvailable) {
       this.action
         .setFeedback({
           title: {

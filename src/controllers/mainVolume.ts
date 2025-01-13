@@ -134,7 +134,7 @@ export class MainVolumeController extends BaseController {
       state: trackAudioManager.isVoiceConnected ? "connected" : "notConnected",
     };
 
-    const templatePath = trackAudioManager.isConnected
+    const templatePath = trackAudioManager.isVoiceConnected
       ? this.connectedTemplatePath
       : this.notConnectedTemplatePath;
 
@@ -142,20 +142,39 @@ export class MainVolumeController extends BaseController {
   }
 
   private refreshTitle(): void {
-    const color = trackAudioManager.isVoiceConnected ? "white" : "grey";
+    if (!trackAudioManager.isVoiceConnected) {
+      this.action
+        .setFeedback({
+          title: {
+            color: "grey",
+          },
+          indicator: {
+            value: 0,
+            bar_fill_c: "grey",
+          },
+          value: {
+            value: "",
+            color: "grey",
+          },
+        })
+        .catch((error: unknown) => {
+          handleAsyncException("Unable to set dial feedback: ", error);
+        });
+      return;
+    }
 
     this.action
       .setFeedback({
         title: {
-          color: color,
+          color: "white",
         },
         indicator: {
           value: this.volume,
-          color,
+          bar_fill_c: "white",
         },
         value: {
           value: `${this.volume.toString()}%`,
-          color,
+          color: "white",
         },
       })
       .catch((error: unknown) => {
