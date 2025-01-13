@@ -7,6 +7,8 @@
 	        fill: grey;
 		{{else if (eq state "notConnected")}}
 	        fill: grey;
+		{{else if (eq state "muted")}}
+					fill: #a71d2a;
 		{{else}}
         	fill: #FFFFFF;
 		{{/if}}
