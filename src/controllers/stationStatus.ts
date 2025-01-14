@@ -1,6 +1,7 @@
-import { StationSettings } from "@actions/stationStatus";
+import { StationStatusSettings } from "@actions/stationStatus";
 import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import trackAudioManager from "@managers/trackAudio";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
 import { STATION_STATUS_CONTROLLER_TYPE } from "@utils/controllerTypes";
@@ -8,7 +9,6 @@ import mainLogger from "@utils/logger";
 import debounce from "debounce";
 import { LRUCache } from "lru-cache";
 import { BaseController } from "./baseController";
-import trackAudioManager from "@managers/trackAudio";
 
 // Valid values for the ListenTo property. This must match
 // the list of array property names that come from TrackAudio
@@ -33,7 +33,7 @@ export class StationStatusController extends BaseController {
   private _isReceiving = false;
   private _isTransmitting = false;
   private _outputVolume? = 100;
-  private _settings: StationSettings | null = null;
+  private _settings: StationStatusSettings | null = null;
 
   // This gets initialized in the settings setter so it can be re-created if the
   // number of callsigns to track changes.
@@ -52,7 +52,7 @@ export class StationStatusController extends BaseController {
    * @param action The callsign for the action
    * @param settings: The options for the action
    */
-  constructor(action: KeyAction, settings: StationSettings) {
+  constructor(action: KeyAction, settings: StationStatusSettings) {
     super(action);
 
     this.action = action;
@@ -70,90 +70,91 @@ export class StationStatusController extends BaseController {
 
   //#region Getters and setters
   /**
-   * Returns the mutedImagePath or the default template path if the if
-   * the user didn't specify a custom icon.
+   * Gets the path to the muted image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get mutedImagePath(): string {
     return this._mutedImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Returns the notListeningImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the not listening image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get notListeningImagePath(): string {
     return this._notListeningImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notListeningImagePath and re-compiles the SVG template if necessary.
+   * Sets the notListeningImagePath.
    */
   set notListeningImagePath(newValue: string | undefined) {
     this._notListeningImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the listeningImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the listening image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get listeningImagePath(): string {
     return this._listeningImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the listeningImagePath and re-compiles the SVG template if necessary.
+   * Sets the listeningImagePath.
    */
   set listeningImagePath(newValue: string | undefined) {
     this._listeningImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the blockingImagePath or the default blocking image path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the blocking coms image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get blockedCommsImagePath(): string {
     return this._blockedCommsImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the activeCommsImagePath and re-compiles the SVG template if necessary.
+   * Sets the blockingComsImagePath.
    */
   set blockedCommsImagePath(newValue: string | undefined) {
     this._blockedCommsImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the activeCommsImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the active coms image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get activeCommsImagePath(): string {
     return this._activeCommsImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the activeCommsImagePath and re-compiles the SVG template if necessary.
+   * Sets the activeCommsImagePath.
    */
   set activeCommsImagePath(newValue: string | undefined) {
     this._activeCommsImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the unavailableImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the unavailable image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get unavailableImagePath(): string {
     return this._unavailableImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
+   * Sets the unavailableImagePath.
    */
   set unavailableImagePath(newValue: string | undefined) {
     this._unavailableImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Gets whether the output is muted. Returns false if undefined.
+   * Gets the isOutputMuted property.
+   * @returns {boolean} True if the station is muted. Defaults to false.
    */
   get isOutputMuted(): boolean {
     return this._isOutputMuted ?? false;
@@ -172,8 +173,9 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Gets the output volume. Returns 100 if undefined.
-   **/
+   * Gets the output volume property.
+   * @returns {number} The output volume. Defaults to 100.
+   */
   get outputVolume(): number {
     return this._outputVolume ?? 100;
   }
@@ -191,9 +193,10 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Gets the frequency.
+   * Gets the frequency for the station callsign.
+   * @returns {number} The frequency or 0 if the frequency isn't set.
    */
-  get frequency() {
+  get frequency(): number {
     return this._frequency;
   }
 
@@ -212,11 +215,12 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Returns the frequency formatted for display. A value of 121900000
-   * will be returned as "121.900". If the frequency is undefined or 0
+   * Gets the frequency formatted for display. A value of 121900000
+   * will be returned as 121.900. If the frequency is undefined or 0
    * then an empty string is returned.
+   * @returns {string} The frequency, or an empty string if no frequency is defined.
    */
-  get formattedFrequency() {
+  get formattedFrequency(): string {
     if (this.frequency) {
       return (this.frequency / 1000000).toFixed(3);
     } else {
@@ -225,24 +229,27 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Convenience property to get the listenTo value of settings.
+   * Gets the listenTo value from settings.
+   * @returns {string} The listen to value. Defaults to "rx".
    */
-  get listenTo() {
+  get listenTo(): string {
     return this.settings.listenTo ?? "rx";
   }
 
   /**
-   * Convenience property to get the toggleMuteIfPressed value of settings. Defaults to false.
+   * Gets the toggleMuteOnPress value from settings.
+   * @returns {boolean} The value. Defaults to false.
    */
-  get toggleMuteOnPress() {
+  get toggleMuteOnPress(): boolean {
     return this.settings.toggleMuteOnPress ?? false;
   }
 
   /**
-   * Returns true if listenTo is rx, xc, or xca, the settings that mean
-   * rx is active in TrackAudio.
+   * Gets the isListeningForReceive property.
+   * @returns {boolean}  Returns true if listenTo is rx, xc, or xca,
+   * the settings that mean rx is active in TrackAudio.
    */
-  get isListeningForReceive() {
+  get isListeningForReceive(): boolean {
     return (
       this.listenTo === "rx" ||
       this.listenTo === "xc" ||
@@ -251,10 +258,11 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Returns true if listenTo is tx, xc or xca, the settings that mean
-   * tx is active in TrackAudio, and the station in TrackAudio is listening.
+   * Gets the isListeningForTransmit property.
+   * @returns {boolean}  Returns true if listenTo is tx, xc, or xca,
+   * the settings that mean tx is active in TrackAudio.
    */
-  get isListeningForTransmit() {
+  get isListeningForTransmit(): boolean {
     return (
       (this.listenTo === "tx" ||
         this.listenTo === "xc" ||
@@ -264,80 +272,90 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Convenience property to get the callsign value of settings.
+   * Gets the callsign value from settings.
+   * @returns {string | undefined} The callsign. Defaults to undefined.
    */
-  get callsign() {
+  get callsign(): string | undefined {
     return this.settings.callsign;
   }
 
   /**
-   * Returns the title specified by the user in the property inspector.
+   * Gets the title value from settings.
+   * @returns { string | undefined } The title. Defaults to undefined.
    */
-  get title() {
+  get title(): string | undefined {
     return this.settings.title;
   }
 
   /**
-   * Returns the autoSetSpk setting, or false if undefined.
+   * Gets the autoSetSpk value from settings.
+   * @returns { boolean } The value. Defaults to false.
    */
-  get autoSetSpk() {
+  get autoSetSpk(): boolean {
     return this.settings.autoSetSpk ?? false;
   }
 
   /**
-   * Returns the autoSetRx setting, or false if undefined.
+   * Gets the autoSetRx value from settings.
+   * @returns { boolean } The value. Defaults to false.
    */
-  get autoSetRx() {
+  get autoSetRx(): boolean {
     return this.settings.autoSetRx ?? false;
   }
 
   /**
-   * Returns the showTitle setting, or true if undefined.
+   * Gets the showTitle value from settings.
+   * @returns { boolean } The value. Defaults to true.
    */
-  get showTitle() {
+  get showTitle(): boolean {
     return this.settings.showTitle ?? true;
   }
 
   /**
-   * Returns the showCallsign setting, or false if undefined.
+   * Gets the showCallsign value from settings.
+   * @returns { boolean } The value. Defaults to false.
    */
-  get showCallsign() {
+  get showCallsign(): boolean {
     return this.settings.showCallsign ?? false;
   }
 
   /**
-   * Returns the showListenTo setting, or false if undefined
+   * Gets the showLIstenTo value from settings.
+   * @returns { boolean } The value. Defaults to false.
    */
-  get showListenTo() {
+  get showListenTo(): boolean {
     return this.settings.showListenTo ?? false;
   }
 
   /**
-   * Returns the showFrequency setting, or false if undefined
+   * Gets the showFrequency value from settings.
+   * @returns { boolean } The value. Defaults to false.
    */
-  get showFrequency() {
+  get showFrequency(): boolean {
     return this.settings.showFrequency ?? false;
   }
 
   /**
-   * Returns true if the number of last received callsigns to display is greater than 0
+   * Gets the showLastReceivedCallsign property.
+   * @returns { boolean } True if the lastReceivedCallsignCount property is greater than 0. Defaults to false.
    */
-  get showLastReceivedCallsign() {
+  get showLastReceivedCallsign(): boolean {
     return (this.settings.lastReceivedCallsignCount ?? 0) > 0;
   }
 
   /**
-   * Returns the number of minutes to clear callsigns after, or three if it wasn't defined
-   * by the user in settings.
+   * Gets the clearAfterInMinutes value from settings.
+   * @returns { number } The value. Defaults to 3.
    */
-  get clearAfterInMinutes() {
+  get clearAfterInMinutes(): number {
     return this.settings.clearAfterInMinutes ?? 3;
   }
 
   /**
    * Gets the settings.
+   * @return {StationStatusSettings} The settings.
    */
-  get settings() {
+  get settings(): StationStatusSettings {
     if (this._settings === null) {
       throw new Error("Settings not initialized. This should never happen.");
     }
@@ -348,7 +366,7 @@ export class StationStatusController extends BaseController {
   /**
    * Sets the settings.
    */
-  set settings(newValue: StationSettings) {
+  set settings(newValue: StationStatusSettings) {
     // Issue 183: Clear the frequency if the callsign changes.
     if (this._settings && this._settings.callsign !== newValue.callsign) {
       this.frequency = 0;
@@ -385,14 +403,15 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * True if the station is actively receiving.
+   * Gets the isReceiving property.
+   * @returns {boolean} True if the station is currently receiving.
    */
-  get isReceiving() {
+  get isReceiving(): boolean {
     return this._isReceiving;
   }
 
   /**
-   * Sets the isReceiving property and updates the action image accordingly.
+   * Sets the isReceiving property.
    */
   set isReceiving(newValue: boolean) {
     // Don't do anything if the state is the same
@@ -405,14 +424,15 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * True if the station is actively transmitting.
+   * Gets the isTransmitting property.
+   * @returns {boolean} True if the station is currently transmitting.
    */
-  get isTransmitting() {
+  get isTransmitting(): boolean {
     return this._isTransmitting;
   }
 
   /**
-   * Sets the isTransmitting property and updates the action image accordingly.
+   * Sets the isTransmitting property.
    */
   set isTransmitting(newValue: boolean) {
     // Don't do anything if the state is the same
@@ -425,14 +445,15 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * True if the station is being listened to.
+   * Gets the isListening property.
+   * @returns {boolean} True if the station is currently listening.
    */
-  get isListening() {
+  get isListening(): boolean {
     return this._isListening;
   }
 
   /**
-   * Sets the isListening property and updates the action image accordingly.
+   * Sets the isListening property.
    */
   set isListening(newValue: boolean) {
     // Don't do anything if the state is the same
@@ -445,7 +466,8 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * True if the station is available in TrackAudio.
+   * Gets the isAvailable value.
+   * @returns {boolean | undefined} True if the station is available in TrackAudio.
    */
   get isAvailable(): boolean | undefined {
     return this._isAvailable;
@@ -464,6 +486,14 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Gets the lastReceivedCallsign property.
+   * @returns {string | undefined} The last received callsign. Default is undefined.
+   */
+  get lastReceivedCallsign(): string | undefined {
+    return this._lastReceivedCallsign;
+  }
+
+  /**
    * Sets the last received callsign property and updates the action title accordingly.
    */
   set lastReceivedCallsign(callsign: string | undefined) {
@@ -479,17 +509,10 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Returns the last received callsign.
+   * Gets the lastReceivedCallsignHistory property, up to the length specified by the user in settings.
+   * @returns {string[]} An array of callsigns. Default is [].
    */
-  get lastReceivedCallsign() {
-    return this._lastReceivedCallsign;
-  }
-
-  /**
-   * Returns an array of received callsigns, up to the length specified by the user in the
-   * action's settings.
-   */
-  get lastReceivedCallsignHistory() {
+  get lastReceivedCallsignHistory(): string[] {
     const entries = this._lastReceivedCallsignHistory
       ? [...this._lastReceivedCallsignHistory.values()]
       : [];

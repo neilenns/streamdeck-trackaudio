@@ -1,4 +1,4 @@
-import { StationSettings } from "@actions/stationStatus";
+import { StationStatusSettings } from "@actions/stationStatus";
 import { StationStatusController } from "@controllers/stationStatus";
 import { KeyAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
@@ -11,7 +11,7 @@ import actionManager from "@managers/action";
  */
 export const handleAddStation = (
   action: KeyAction,
-  settings: StationSettings
+  settings: StationStatusSettings
 ) => {
   const controller = new StationStatusController(action, settings);
 

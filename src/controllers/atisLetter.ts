@@ -86,8 +86,8 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Gets the callsign for the ATIS action.
-   * @returns {string} The callsign, or undefined if no callsign is set.
+   * Gets the callsign value from settings.
+   * @returns {string | undefined} The callsign. Defaults to undefined.
    */
   get callsign(): string | undefined {
     return this.settings.callsign;
@@ -234,8 +234,8 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Gets the action's title from settings.
-   * @returns { string | undefined } The title, or undefined if none is set.
+   * Gets the title value from settings.
+   * @returns { string | undefined } The title. Defaults to undefined.
    */
   get title(): string | undefined {
     return this.settings.title;
