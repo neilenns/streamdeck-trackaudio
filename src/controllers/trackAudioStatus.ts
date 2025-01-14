@@ -25,77 +25,87 @@ export class TrackAudioStatusController extends BaseController {
 
   /**
    * Creates a new TrackAudioStatusController.
-   * @param action The Stream Deck action object
+   * @param action The Stream Deck action object.
+   * @param settings The settings for configuring the track audio status.
    */
   constructor(action: KeyAction, settings: TrackAudioStatusSettings) {
     super(action);
     this.settings = settings;
   }
 
+  /**
+   * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
+   */
   public override refreshDisplay = debounce(() => {
     this.refreshTitle();
     this.refreshImage();
   }, 100);
 
+  /**
+   * Resets the action to its default state.
+   */
   public reset() {
     this.refreshDisplay();
   }
 
   //#region Getters and setters
   /**
-   * Returns the showTitle setting, or false if undefined.
+   * Gets the showTitle value from settings.
+   * @returns { boolean } The value. Defaults to true.
    */
-  get showTitle() {
+  get showTitle(): boolean {
     return this.settings.showTitle ?? false;
   }
 
   /**
-   * Convenience method to return the action's title from settings.
+   * Gets the title value from settings.
+   * @returns { string | undefined } The title. Defaults to undefined.
    */
-  get title() {
+  get title(): string | undefined {
     return this.settings.title;
   }
 
   /**
-   * Returns the notConnectedImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the not connected image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get notConnectedImagePath(): string {
     return this._notConnectedImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
+   * Sets the notConnectedImagePath.
    */
   set notConnectedImagePath(newValue: string | undefined) {
     this._notConnectedImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the connectedImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the connected image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get connectedImagePath(): string {
     return this._connectedImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
+   * Sets the connectedImagePath.
    */
   set connectedImagePath(newValue: string | undefined) {
     this._connectedImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the voiceConnectedImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the voice connected image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get voiceConnectedImagePath(): string {
     return this._voiceConnectedImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notConnectedImagePath and re-compiles the SVG template if necessary.
+   * Sets the voiceConnectedImagePath.
    */
   set voiceConnectedImagePath(newValue: string | undefined) {
     this._voiceConnectedImagePath = stringOrUndefined(newValue);
@@ -103,6 +113,7 @@ export class TrackAudioStatusController extends BaseController {
 
   /**
    * Gets the settings.
+   * @returns {TrackAudioStatusSettings} The settings.
    */
   get settings() {
     if (this._settings === null) {
@@ -130,7 +141,7 @@ export class TrackAudioStatusController extends BaseController {
   //#endregion
 
   /**
-   * Sets the title on the action.
+   * Sets the displayed title based on the state of the action.
    */
   private refreshTitle() {
     const title = new TitleBuilder();
@@ -141,7 +152,7 @@ export class TrackAudioStatusController extends BaseController {
   }
 
   /**
-   * Sets the action image based on the isConnected state
+   * Sets the displayed image based on the state of the action.
    */
   private refreshImage() {
     const replacements = {

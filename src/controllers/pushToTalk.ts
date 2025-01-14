@@ -3,9 +3,9 @@ import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
-import { BaseController } from "./baseController";
-import debounce from "debounce";
 import { PUSH_TO_TALK_CONTROLLER_TYPE } from "@utils/controllerTypes";
+import debounce from "debounce";
+import { BaseController } from "./baseController";
 
 const defaultTemplatePath = "images/actions/pushToTalk/template.svg";
 
@@ -33,6 +33,7 @@ export class PushToTalkController extends BaseController {
 
   /**
    * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
    */
   public override refreshDisplay = debounce(() => {
     this.refreshTitle();
@@ -40,7 +41,7 @@ export class PushToTalkController extends BaseController {
   }, 100);
 
   /**
-   * Resets the action to its default, disconnected, state.
+   * Resets the action to its default state.
    */
   public reset() {
     this.isTransmitting = false;
@@ -48,53 +49,56 @@ export class PushToTalkController extends BaseController {
 
   //#region Getters and setters
   /**
-   * Returns the transmittingImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the transmitting image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get transmittingImagePath(): string {
     return this._transmittingImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the transmittingImagePath and re-compiles the SVG template if necessary.
+   * Sets the transmittingImagePath.
    */
   set transmittingImagePath(newValue: string | undefined) {
     this._transmittingImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the notTransmittingImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the not transmitting image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get notTransmittingImagePath(): string {
     return this._notTransmittingImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the notTransmittingImagePath and re-compiles the SVG template if necessary.
+   * Sets the notTransmittingImagePath.
    */
   set notTransmittingImagePath(newValue: string | undefined) {
     this._notTransmittingImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Convenience method to return the action's title from settings.
+   * Gets the action's title from settings.
+   * @returns { string | undefined } The title, or undefined if none is set.
    */
-  get title() {
+  get title(): string | undefined {
     return this.settings.title;
   }
 
   /**
-   * Returns the showTitle setting, or false if undefined.
+   * Gets the showTitle setting.
+   * @returns {boolean} True if showTitle is enabled. Defaults to true.
    */
-  get showTitle() {
+  get showTitle(): boolean {
     return this.settings.showTitle ?? false;
   }
 
   /**
-   * True if push-to-talk is actively transmitting.
+   * Gets the isTransmitting property.
+   * @returns {boolean} True if transmitting is active.
    */
-  get isTransmitting() {
+  get isTransmitting(): boolean {
     return this._isTransmitting;
   }
 
@@ -113,8 +117,9 @@ export class PushToTalkController extends BaseController {
 
   /**
    * Gets the settings.
+   * @returns {PushToTalkSettings} The settings.
    */
-  get settings() {
+  get settings(): PushToTalkSettings {
     if (this._settings === null) {
       throw new Error("Settings not initialized. This should never happen.");
     }
@@ -136,7 +141,7 @@ export class PushToTalkController extends BaseController {
   //#endregion
 
   /**
-   * Sets the title on the action.
+   * Sets the displayed title based on the state of the action.
    */
   private refreshTitle() {
     const title = new TitleBuilder();
@@ -147,7 +152,7 @@ export class PushToTalkController extends BaseController {
   }
 
   /**
-   * Sets the action image to the correct one for when comms are active.
+   * Sets the displayed image based on the state of the action.
    */
   private refreshImage() {
     const replacements = {

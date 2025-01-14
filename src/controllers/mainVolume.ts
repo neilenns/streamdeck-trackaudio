@@ -8,9 +8,7 @@ import { stringOrUndefined } from "@utils/utils";
 import debounce from "debounce";
 import { BaseController } from "./baseController";
 
-const defaultConnectedTemplatePath = "images/actions/mainVolume/template.svg";
-const defaultNotConnectedTemplatePath =
-  "images/actions/mainVolume/template.svg";
+const defaultTemplatePath = "images/actions/mainVolume/template.svg";
 
 export class MainVolumeController extends BaseController {
   type = MAIN_VOLUME_CONTROLLER_TYPE;
@@ -25,8 +23,8 @@ export class MainVolumeController extends BaseController {
 
   /**
    * Creates a new MainVolumeController object.
-   * @param action The dial action associated with the controller
-   * @param settings: The options for the action
+   * @param action The dial action associated with the controller.
+   * @param settings: The options for the action.
    */
   constructor(action: DialAction, settings: MainVolumeSettings) {
     super(action);
@@ -36,6 +34,7 @@ export class MainVolumeController extends BaseController {
 
   /**
    * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
    */
   public override refreshDisplay = debounce(() => {
     this.refreshTitle();
@@ -43,42 +42,54 @@ export class MainVolumeController extends BaseController {
   }, 100);
 
   /**
-   * Gets the connected SVG template path.
+   * Resets the action to its default state.
    */
-  get connectedTemplatePath(): string {
-    return this._connectedTemplatePath ?? defaultConnectedTemplatePath;
+  override reset(): void {
+    this._volume = 100;
+
+    this.refreshDisplay();
   }
 
   /**
-   * Sets the connected SVG template path.
+   * Gets the path to the connected image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
+   */
+  get connectedTemplatePath(): string {
+    return this._connectedTemplatePath ?? defaultTemplatePath;
+  }
+
+  /**
+   * Sets the connectedTemplatePath.
    */
   set connectedTemplatePath(newValue: string | undefined) {
     this._connectedTemplatePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Gets the not connected SVG template path.
+   * Gets the path to the not connected image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get notConnectedTemplatePath(): string {
-    return this._notConnectedTemplatePath ?? defaultNotConnectedTemplatePath;
+    return this._notConnectedTemplatePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the not connected SVG template path.
+   * Sets the notConnectedTemplatePath.
    */
   set notConnectedTemplatePath(newValue: string | undefined) {
     this._notConnectedTemplatePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Gets the output volume. Returns 100 if undefined.
+   * Gets the output volume.
+   * @returns {number} The output volume. Defaults to 100.
    **/
   get volume(): number {
     return this._volume;
   }
 
   /**
-   * Sets the output volume.
+   * Sets the output volume and refreshes the action display.
    **/
   set volume(newValue: number) {
     if (this._volume === newValue) {
@@ -94,6 +105,7 @@ export class MainVolumeController extends BaseController {
 
   /**
    * Gets the settings.
+   * @returns {MainVolumeSettings} The settings.
    */
   get settings(): MainVolumeSettings {
     if (this._settings === null) {
@@ -115,19 +127,17 @@ export class MainVolumeController extends BaseController {
   }
 
   /**
-   * Convenience property to get the changeAmount value of settings.
+   * Gets the changeAmount.
+   * @returns {number} The amount to change the volume on each dial tick. Defaults to 2.
    */
-  get changeAmount() {
+  get changeAmount(): number {
     const amount = this.settings.changeAmount ?? 2;
     return amount > 0 ? amount : 2;
   }
 
-  override reset(): void {
-    this._volume = 100;
-
-    this.refreshDisplay();
-  }
-
+  /**
+   * Sets the displayed image based on the state of the action.
+   */
   private refreshImage(): void {
     const replacements = {
       volume: this.volume,
@@ -141,6 +151,9 @@ export class MainVolumeController extends BaseController {
     this.setFeedbackImage(templatePath, replacements);
   }
 
+  /**
+   * Sets the displayed title based on the state of the action.
+   */
   private refreshTitle(): void {
     if (!trackAudioManager.isVoiceConnected) {
       this.action

@@ -38,6 +38,7 @@ export class StationVolumeController extends BaseController {
 
   /**
    * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
    */
   public override refreshDisplay = debounce(() => {
     this.refreshTitle();
@@ -45,7 +46,20 @@ export class StationVolumeController extends BaseController {
   }, 100);
 
   /**
-   * Gets the not muted SVG template path.
+   * Resets the action to its default state.
+   */
+  override reset(): void {
+    this._isAvailable = undefined;
+    this._isOutputMuted = false;
+    this._frequency = 0;
+    this._outputVolume = 100;
+
+    this.refreshDisplay();
+  }
+
+  /**
+   * Gets the path to the not muted image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get notMutedTemplatePath(): string {
     return this._notMutedTemplatePath ?? defaultTemplatePath;
@@ -59,7 +73,8 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets the muted SVG template path.
+   * Gets the path to the muted image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get mutedTemplatePath(): string {
     return this._mutedTemplatePath ?? defaultTemplatePath;
@@ -73,7 +88,8 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets the unavailable SVG template path.
+   * Gets the path to the unavailable image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get unavailableTemplatePath(): string {
     return this._unavailableTemplatePath ?? defaultTemplatePath;
@@ -87,8 +103,9 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets the output volume. Returns 100 if undefined.
-   **/
+   * Gets the output volume property.
+   * @returns {number} The output volume. Defaults to 100.
+   */
   get outputVolume(): number {
     return this._outputVolume ?? 100;
   }
@@ -109,7 +126,8 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Gets whether the output is muted. Returns false if undefined.
+   * Gets the isOutputMuted property.
+   * @returns {boolean} True if the station is muted. Defaults to false.
    */
   get isOutputMuted(): boolean {
     return this._isOutputMuted ?? false;
@@ -129,6 +147,7 @@ export class StationVolumeController extends BaseController {
 
   /**
    * Gets the settings.
+   * @returns {StationVolumeSettings} The settings.
    */
   get settings(): StationVolumeSettings {
     if (this._settings === null) {
@@ -156,16 +175,18 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Convenience property to get the callsign value of settings.
+   * Gets the callsign value from settings.
+   * @returns {string | undefined} The callsign. Defaults to undefined.
    */
-  get callsign() {
+  get callsign(): string | undefined {
     return this.settings.callsign;
   }
 
   /**
-   * Gets the frequency.
+   * Gets the frequency for the station callsign.
+   * @returns {number} The frequency or 0 if the frequency isn't set.
    */
-  get frequency() {
+  get frequency(): number {
     return this._frequency;
   }
 
@@ -184,7 +205,8 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * True if the station is available in TrackAudio.
+   * Gets the isAvailable value.
+   * @returns {boolean | undefined} True if the station is available in TrackAudio.
    */
   get isAvailable(): boolean | undefined {
     return this._isAvailable;
@@ -203,22 +225,17 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
-   * Convenience property to get the changeAmount value of settings.
+   * Gets the changeAmount.
+   * @returns {number} The amount to change the volume on each dial tick. Defaults to 2.
    */
-  get changeAmount() {
+  get changeAmount(): number {
     const amount = this.settings.changeAmount ?? 2;
     return amount > 0 ? amount : 2;
   }
 
-  override reset(): void {
-    this._isAvailable = undefined;
-    this._isOutputMuted = false;
-    this._frequency = 0;
-    this._outputVolume = 100;
-
-    this.refreshDisplay();
-  }
-
+  /**
+   * Sets the displayed image based on the state of the action.
+   */
   private refreshImage(): void {
     const replacements = {
       volume: this.outputVolume,
@@ -255,6 +272,9 @@ export class StationVolumeController extends BaseController {
     });
   }
 
+  /**
+   * Sets the displayed title based on the state of the action.
+   */
   private refreshTitle(): void {
     if (!trackAudioManager.isVoiceConnected || !this.isAvailable) {
       this.action

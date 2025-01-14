@@ -20,7 +20,7 @@ export abstract class BaseController implements Controller {
 
   /**
    * Initializes the BaseController.
-   * @param action The Stream Deck icon this wraps
+   * @param action The Stream Deck action this wraps
    */
   constructor(action: KeyAction | DialAction) {
     this.action = action;
@@ -48,11 +48,11 @@ export abstract class BaseController implements Controller {
   }
 
   /**
-   * Sets the image on the tracked action. If the image is a stored
+   * Sets the image on a key action. If the image is a stored
    * SVG template then the template is populated and used. Otherwise
    * the path is used directly.
-   * @param imagePath The path to the image
-   * @param replacements The replacements to use
+   * @param imagePath The path to the image.
+   * @param replacements The replacements to use.
    */
   setImage(imagePath: string, replacements: object) {
     const generatedSvg = svgManager.renderSvg(imagePath, replacements);
@@ -67,6 +67,13 @@ export abstract class BaseController implements Controller {
     }
   }
 
+  /**
+   * Sets the feedback image on a dial action. If the image is a stored
+   * SVG template then the template is populated and used. Otherwise
+   * the path is used directly.
+   * @param imagePath The path to the image.
+   * @param replacements The replacements to use.
+   */
   setFeedbackImage(imagePath: string, replacements: object) {
     if (!this.action.isDial()) {
       return;
