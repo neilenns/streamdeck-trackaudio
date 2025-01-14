@@ -53,7 +53,7 @@ export class HotlineController extends BaseController {
   }, 100);
 
   /**
-   * Resets the action to its default, disconnected, state.
+   * Resets the action to its default state.
    */
   public reset() {
     this._isReceiving = false;

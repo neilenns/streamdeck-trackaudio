@@ -538,8 +538,7 @@ export class StationStatusController extends BaseController {
   }
 
   /**
-   * Resets the action to the initial display state: no last received callsign
-   * and no active coms image.
+   * Resets the action to its default state.
    */
   public reset() {
     this._lastReceivedCallsign = undefined; // This also clears _lastReceivedCallsignHistory

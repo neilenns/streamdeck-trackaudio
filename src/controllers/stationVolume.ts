@@ -45,6 +45,18 @@ export class StationVolumeController extends BaseController {
   }, 100);
 
   /**
+   * Resets the action to its default state.
+   */
+  override reset(): void {
+    this._isAvailable = undefined;
+    this._isOutputMuted = false;
+    this._frequency = 0;
+    this._outputVolume = 100;
+
+    this.refreshDisplay();
+  }
+
+  /**
    * Gets the path to the not muted image template.
    * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
@@ -218,18 +230,6 @@ export class StationVolumeController extends BaseController {
   get changeAmount(): number {
     const amount = this.settings.changeAmount ?? 2;
     return amount > 0 ? amount : 2;
-  }
-
-  /**
-   * Resets the action to defaults and refreshes the display.
-   */
-  override reset(): void {
-    this._isAvailable = undefined;
-    this._isOutputMuted = false;
-    this._frequency = 0;
-    this._outputVolume = 100;
-
-    this.refreshDisplay();
   }
 
   /**

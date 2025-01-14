@@ -41,6 +41,15 @@ export class MainVolumeController extends BaseController {
   }, 100);
 
   /**
+   * Resets the action to its default state.
+   */
+  override reset(): void {
+    this._volume = 100;
+
+    this.refreshDisplay();
+  }
+
+  /**
    * Gets the path to the connected image template.
    * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
@@ -123,15 +132,6 @@ export class MainVolumeController extends BaseController {
   get changeAmount(): number {
     const amount = this.settings.changeAmount ?? 2;
     return amount > 0 ? amount : 2;
-  }
-
-  /**
-   * Resets the action to defaults and refreshes the display.
-   */
-  override reset(): void {
-    this._volume = 100;
-
-    this.refreshDisplay();
   }
 
   /**
