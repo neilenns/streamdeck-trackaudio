@@ -384,7 +384,7 @@ export class HotlineController extends BaseController {
   //#endregion
 
   /**
-   * Sets the title on the action.
+   * Sets the displayed title based on the state of the action.
    */
   private refreshTitle() {
     const title = new TitleBuilder();
@@ -398,7 +398,7 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * Sets the image based on the state of the action.
+   * Sets the displayed image based on the state of the action.
    */
   private refreshImage() {
     const replacements = {
