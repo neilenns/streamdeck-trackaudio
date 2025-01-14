@@ -3,9 +3,9 @@ import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
-import { BaseController } from "./baseController";
-import debounce from "debounce";
 import { ATIS_LETTER_CONTROLLER_TYPE } from "@utils/controllerTypes";
+import debounce from "debounce";
+import { BaseController } from "./baseController";
 
 const defaultTemplatePath = "images/actions/atisLetter/template.svg";
 
@@ -57,16 +57,18 @@ export class AtisLetterController extends BaseController {
 
   //#region Getters and setters
   /**
-   * Gets the autoClear setting, returning true as default if it wasn't set.
+   * Gets the autoClear setting.
+   * @returns {boolean} True if auto clear is enabled. Defaults to true.
    */
-  get autoClear() {
+  get autoClear(): boolean {
     return this.settings.autoClear ?? true;
   }
 
   /**
-   * Gets isUnavailable, which is true if no ATIS letter was available in the last VATSIM update.
+   * Gets isUnavailable.
+   * @returns {boolean} True if no ATIS letter is available for the station.
    */
-  get isUnavailable() {
+  get isUnavailable(): boolean {
     return this._isUnavailable;
   }
 
@@ -84,15 +86,16 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Returns the callsign for the ATIS action.
+   * Gets the callsign for the ATIS action.
+   * @returns {string} The callsign, or undefined if no callsign is set.
    */
-  get callsign() {
+  get callsign(): string | undefined {
     return this.settings.callsign;
   }
 
   /**
-   * Returns the currentImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the current image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get currentImagePath(): string {
     return this._currentImagePath ?? defaultTemplatePath;
@@ -106,8 +109,8 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Returns the updatedImagePath or the default template path if the user
-   * didn't specify a custom icon.
+   * Gets the path to the updated image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get updatedImagePath(): string {
     return this._updatedImagePath ?? defaultTemplatePath;
@@ -121,8 +124,8 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Returns the unavailableImagePath or the default unavailable template path
-   * if the user didn't specify a custom icon.
+   * Gets the path to the unavailable image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get unavailableImagePath(): string {
     return this._unavailableImagePath ?? defaultTemplatePath;
@@ -136,23 +139,26 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Returns the showTitle setting, or true if undefined.
+   * Gets the showTitle setting.
+   * @returns {boolean} True if showTitle is enabled. Defaults to true.
    */
-  get showTitle() {
+  get showTitle(): boolean {
     return this.settings.showTitle ?? true;
   }
 
   /**
-   * Returns the showLetter setting, or true if undefined.
+   * Gets the showLetter setting.
+   * @returns {boolean} True if showLetter is enabled. Defaults to true.
    */
-  get showLetter() {
+  get showLetter(): boolean {
     return this.settings.showLetter ?? true;
   }
 
   /**
    * Gets the settings.
+   * @returns {AtisLetterSettings} The settings.
    */
-  get settings() {
+  get settings(): AtisLetterSettings {
     if (this._settings === null) {
       throw new Error("Settings not initialized. This should never happen.");
     }
@@ -161,8 +167,7 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Sets the settings. Also updates the private icon paths and
-   * compiled SVGs.
+   * Sets the settings. Also updates the private icon paths.
    */
   set settings(newValue: AtisLetterSettings) {
     this._settings = newValue;
@@ -176,8 +181,9 @@ export class AtisLetterController extends BaseController {
 
   /**
    * Gets the isUpdated state on the action.
+   * @returns {boolean} True if the ATIS is updated.
    */
-  public get isUpdated() {
+  public get isUpdated(): boolean {
     return this._isUpdated;
   }
 
@@ -204,13 +210,14 @@ export class AtisLetterController extends BaseController {
 
   /**
    * Gets the current ATIS letter.
+   * @returns {string | undefined} The current ATIS letter, or undefined if no letter is set.
    */
   get letter(): string | undefined {
     return this._letter;
   }
 
   /**
-   * Sets the current AITS letter.
+   * Sets the current ATIS letter and updates the display.
    */
   set letter(newLetter: string | undefined) {
     // This crazy check catches two situations where the state should not show as updated:
@@ -227,9 +234,10 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Convenience method to return the action's title from settings.
+   * Gets the action's title from settings.
+   * @returns { string | undefined } The title, or undefined if none is set.
    */
-  get title() {
+  get title(): string | undefined {
     return this.settings.title;
   }
   //#endregion
