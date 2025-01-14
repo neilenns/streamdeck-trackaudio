@@ -1,12 +1,12 @@
 import { HotlineSettings } from "@actions/hotline";
 import { KeyAction } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
+import trackAudioManager from "@managers/trackAudio";
 import TitleBuilder from "@root/utils/titleBuilder";
 import { stringOrUndefined } from "@root/utils/utils";
-import { BaseController } from "./baseController";
-import debounce from "debounce";
 import { HOTLINE_CONTROLLER_TYPE } from "@utils/controllerTypes";
-import trackAudioManager from "@managers/trackAudio";
+import debounce from "debounce";
+import { BaseController } from "./baseController";
 
 const defaultTemplatePath = "images/actions/hotline/template.svg";
 
@@ -70,113 +70,114 @@ export class HotlineController extends BaseController {
 
   //#region Getters/setters
   /**
-   * Convenience method to return the action's title from settings or empty string
-   * if it is undefined.
+   * Gets the action's title from settings.
+   * @returns { string | undefined } The title, or undefined if none is set.
    */
-  get title() {
+  get title(): string | undefined {
     return this.settings.title ?? "";
   }
 
   /**
-   * Returns the bothActiveImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the both active image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get bothActiveImagePath(): string {
     return this._bothActiveImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the bothActiveImagePath and re-compiles the SVG template if necessary.
+   * Sets the bothActiveImagePath.
    */
   set bothActiveImagePath(newValue: string | undefined) {
     this._bothActiveImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the unavailableImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the unavailable image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get unavailableImagePath(): string {
     return this._unavailableImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
+   * Sets the unavailableImagePath.
    */
   set unavailableImagePath(newValue: string | undefined) {
     this._unavailableImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the hotlineActiveImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the hotline active image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get hotlineActiveImagePath(): string {
     return this._hotlineActiveImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the hotlineActiveImagePath and re-compiles the SVG template if necessary.
+   * Sets the hotlineActiveImagePath.
    */
   set hotlineActiveImagePath(newValue: string | undefined) {
     this._hotlineActiveImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the listeningImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the listening image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get listeningImagePath(): string {
     return this._listeningImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the listeningImagePath and re-compiles the SVG template if necessary.
+   * Sets the listeningImagePath.
    */
   set listeningImagePath(newValue: string | undefined) {
     this._listeningImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the neitherActiveImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the neither active image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get neitherActiveImagePath(): string {
     return this._neitherActiveImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the neitherActiveImagePath and re-compiles the SVG template if necessary.
+   * Sets the neitherActiveImagePath.
    */
   set neitherActiveImagePath(newValue: string | undefined) {
     this._neitherActiveImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the receivingImagePath or the default template path if the
-   * user didn't specify a custom icon.
+   * Gets the path to the receiving image template.
+   * @returns {string} The path specified by the user, or the defaultTemplatePath if none was specified.
    */
   get receivingImagePath(): string {
     return this._receivingImagePath ?? defaultTemplatePath;
   }
 
   /**
-   * Sets the receivingImagePath and re-compiles the SVG template if necessary.
+   * Sets the receivingImagePath.
    */
   set receivingImagePath(newValue: string | undefined) {
     this._receivingImagePath = stringOrUndefined(newValue);
   }
 
   /**
-   * Returns the frequency for the primary callsign.
+   * Gets the frequency for the primary callsign.
+   * @returns {number} The frequency or 0 if the frequency isn't set.
    */
-  get primaryFrequency() {
+  get primaryFrequency(): number {
     return this._primaryFrequency;
   }
 
   /**
    * Sets the frequency for the primary callsign and updates the isAvailable
-   * to true if both primary and hotline frequency are set
+   * to true if both primary and hotline frequency are set.
    */
   set primaryFrequency(newValue: number) {
     // This is always done even if the new value is the same as the existing one
@@ -190,8 +191,9 @@ export class HotlineController extends BaseController {
 
   /**
    * Gets the frequency for the hotline callsign.
+   * @returns {number} The frequency or 0 if the frequency isn't set.
    */
-  get hotlineFrequency() {
+  get hotlineFrequency(): number {
     return this._hotlineFrequency;
   }
 
@@ -210,14 +212,15 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * True if both the primary and hotline frequencies are available in TrackAudio.
+   * Gets the isAvailable value.
+   * @returns {boolean | undefined} True if both the primary and hotline frequencies are available in TrackAudio.
    */
   get isAvailable(): boolean | undefined {
     return this._isAvailable;
   }
 
   /**
-   * Sets the isAvailable property and updates the action image accordingly.
+   * Sets the isAvailable property and updates the action image.
    */
   set isAvailable(newValue: boolean | undefined) {
     if (this._isAvailable === newValue) {
@@ -229,7 +232,8 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * Sets whether the hotline frequency is actively receiving a communication.
+   * Sets whether the hotline frequency is actively receiving a communication
+   *  and updates the action image.
    */
   set isReceiving(newValue: boolean) {
     // Don't do anything if the state is the same
@@ -242,16 +246,18 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * True if the hotline frequency is actively receicving a communication.
+   * Gets the isReceiving property.
+   * @returns {boolean} True if the hotline frequency is actively receiving a communication.
    */
-  get isReceiving() {
+  get isReceiving(): boolean {
     return this._isReceiving;
   }
 
   /**
-   * True if the station has Tx enabled on the primary frequency.
+   * Gets the isTxPrimary property.
+   * @returns {boolean} True if the station has Tx enabled on the primary frequency.
    */
-  get isTxPrimary() {
+  get isTxPrimary(): boolean {
     return this._isTxPrimary;
   }
 
@@ -263,9 +269,10 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * True if the station has Tx enabled on the hotline frequency.
+   * Gets the isTxHotline property.
+   * @returns {boolean} True if the station has Tx enabled on the hotline frequency.
    */
-  get isTxHotline() {
+  get isTxHotline(): boolean {
     return this._isTxHotline;
   }
 
@@ -277,9 +284,10 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * True if the station has Rx enabled on the hotline frequency.
+   * Gets the isRxHotline property.
+   * @returns {boolean} True if the station has Rx enabled on the hotline frequency.
    */
-  get isRxHotline() {
+  get isRxHotline(): boolean {
     return this._isRxHotline;
   }
 
@@ -291,44 +299,50 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * Convenience property to get the primaryCallsign value of settings.
+   * Gets the primaryCallsign value from settings.
+   * @returns {string | undefined} The primary callsign, or undefined if not specified.
    */
-  get primaryCallsign() {
+  get primaryCallsign(): string | undefined {
     return this.settings.primaryCallsign;
   }
 
   /**
-   * Convenience property to get the hotlineCallsign value of settings.
+   * Gets the hotlineCallsign value from settings.
+   * @returns {string | undefined} The hotline callsign, or undefined if not specified.
    */
-  get hotlineCallsign() {
+  get hotlineCallsign(): string | undefined {
     return this.settings.hotlineCallsign;
   }
 
   /**
-   * Returns the showTitle setting, or true if undefined.
+   * Gets the showTitle setting.
+   * @returns {boolean} True if showTitle is enabled. Defaults to true.
    */
-  get showTitle() {
+  get showTitle(): boolean {
     return this.settings.showTitle ?? true;
   }
 
   /**
-   * Returns the showHotlineCallsign setting, or false if undefined.
+   * Gets the showHotlineCallsign setting.
+   * @returns {boolean} True if showHotlineCallsign is enabled. Defaults to true.
    */
-  get showHotlineCallsign() {
+  get showHotlineCallsign(): boolean {
     return this.settings.showHotlineCallsign ?? false;
   }
 
   /**
-   * Returns the showPrimaryCallsign setting, or false if undefined.
+   * Gets the showPrimaryCallsign setting.
+   * @returns {boolean} True if showPrimaryCallsign is enabled. Defaults to true.
    */
-  get showPrimaryCallsign() {
+  get showPrimaryCallsign(): boolean {
     return this.settings.showPrimaryCallsign ?? false;
   }
 
   /**
    * Gets the settings.
+   * @returns {HotlineSettings} The settings.
    */
-  get settings() {
+  get settings(): HotlineSettings {
     if (this._settings === null) {
       throw new Error("Settings not initialized. This should never happen.");
     }

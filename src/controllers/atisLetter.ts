@@ -102,7 +102,7 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Sets the currentImagePath and re-compiles the SVG template if necessary.
+   * Sets the currentImagePath.
    */
   set currentImagePath(newValue: string | undefined) {
     this._currentImagePath = stringOrUndefined(newValue);
@@ -117,7 +117,7 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Sets the updatedImagePath and re-compiles the SVG template if necessary.
+   * Sets the updatedImagePath.
    */
   set updatedImagePath(newValue: string | undefined) {
     this._updatedImagePath = stringOrUndefined(newValue);
@@ -132,7 +132,7 @@ export class AtisLetterController extends BaseController {
   }
 
   /**
-   * Sets the unavailableImagePath and re-compiles the SVG template if necessary.
+   * Sets the unavailableImagePath.
    */
   set unavailableImagePath(newValue: string | undefined) {
     this._unavailableImagePath = stringOrUndefined(newValue);
