@@ -61,6 +61,7 @@ export class StationStatusController extends BaseController {
 
   /**
    * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
    */
   public override refreshDisplay = debounce(() => {
     logger.debug(`Refreshing display for ${this.callsign ?? ""}`);

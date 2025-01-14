@@ -45,7 +45,8 @@ export class HotlineController extends BaseController {
   }
 
   /**
-   * Updates the title and image on the action.
+   * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
    */
   public override refreshDisplay = debounce(() => {
     this.refreshTitle();
@@ -71,10 +72,10 @@ export class HotlineController extends BaseController {
   //#region Getters/setters
   /**
    * Gets the action's title from settings.
-   * @returns { string | undefined } The title, or undefined if none is set.
+   * @returns { string | undefined } The title. Defaults to undefined.
    */
   get title(): string | undefined {
-    return this.settings.title ?? "";
+    return this.settings.title;
   }
 
   /**

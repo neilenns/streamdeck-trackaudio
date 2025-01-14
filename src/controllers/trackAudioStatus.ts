@@ -26,6 +26,7 @@ export class TrackAudioStatusController extends BaseController {
   /**
    * Creates a new TrackAudioStatusController.
    * @param action The Stream Deck action object.
+   * @param settings The settings for configuring the track audio status.
    */
   constructor(action: KeyAction, settings: TrackAudioStatusSettings) {
     super(action);
@@ -34,6 +35,7 @@ export class TrackAudioStatusController extends BaseController {
 
   /**
    * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
    */
   public override refreshDisplay = debounce(() => {
     this.refreshTitle();

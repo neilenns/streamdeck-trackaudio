@@ -38,6 +38,7 @@ export class AtisLetterController extends BaseController {
 
   /**
    * Refreshes the title and image on the action.
+   * @remarks This method is debounced with a 100ms delay to prevent excessive updates.
    */
   public override refreshDisplay = debounce(() => {
     this.refreshTitle();
