@@ -140,7 +140,7 @@
   "Description": "Provides buttons for controlling TrackAudio",
   "Icon": "images/plugin/pluginIcon",
   "SDKVersion": 2,
-  "URL": "https://github.com/neilenns/streamdeck-trackaudio",
+  "URL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/",
   "Software": {
     "MinimumVersion": "6.5"
   },
