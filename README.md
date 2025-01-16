@@ -1,7 +1,7 @@
 # TrackAudio actions for Stream Deck <!-- omit from toc -->
 
 > [!IMPORTANT]
-> This plugin requires [TrackAudio beta 1.3.0-beta.1](https://github.com/pierr3/TrackAudio/releases/tag/1.3.0-beta.1) or later. It will not work with earlier versions of TrackAudio.
+> This plugin requires [TrackAudio beta 1.3.0-beta.1](https://github.com/pierr3/TrackAudio/releases/tag/1.3.0-beta.5) or later. It will not work with earlier versions of TrackAudio.
 
 [![get it on marketplace](docs/marketplace-light.svg "Get TrackAudio on Marketplace")](https://marketplace.elgato.com/product/trackaudio-e913a0ca-4c12-411d-a5a6-acf5f6c4bdea)
 
