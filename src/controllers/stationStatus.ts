@@ -238,6 +238,14 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Gets the toggleMuteOnLongPress value from settings.
+   * @returns {boolean} The value. Defaults to false.
+   */
+  get toggleMuteOnLongPress(): boolean {
+    return this.settings.toggleMuteOnLongPress ?? false;
+  }
+
+  /**
    * Gets the toggleMuteOnPress value from settings.
    * @returns {boolean} The value. Defaults to false.
    */

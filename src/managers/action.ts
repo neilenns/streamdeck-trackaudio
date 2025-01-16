@@ -68,8 +68,12 @@ class ActionManager extends EventEmitter {
 
     // Add on all the hotline action callsigns
     this.getHotlineControllers().forEach((hotline) => {
-      trackedCallsignsSet.add(hotline.primaryCallsign);
-      trackedCallsignsSet.add(hotline.hotlineCallsign);
+      if (hotline.primaryCallsign) {
+        trackedCallsignsSet.add(hotline.primaryCallsign);
+      }
+      if (hotline.hotlineCallsign) {
+        trackedCallsignsSet.add(hotline.hotlineCallsign);
+      }
     });
 
     // Auto-add all tracked callsigns with a 250ms delay between each message
