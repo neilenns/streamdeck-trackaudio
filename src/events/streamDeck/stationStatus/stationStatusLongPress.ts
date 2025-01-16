@@ -4,8 +4,8 @@ import trackAudioManager from "@managers/trackAudio";
 import { handleAsyncException } from "@utils/handleAsyncException";
 
 /**
- * Called when a station status action has a long press. Resets the
- * station status and refreshes its state.
+ * Called when a station status action has a long press.
+ * Either toggles mute or refreshes the station status depending on the user's setting.
  * @param actionId The ID of the action that had the long press
  */
 export const handleStationStatusLongPress = (action: KeyAction) => {
@@ -34,7 +34,7 @@ export const handleStationStatusLongPress = (action: KeyAction) => {
     return;
   }
 
-  // Otherwise reset and refresh
+  // If mute toggle isn't enabled, refresh the station state.
   savedAction.reset();
   trackAudioManager.refreshStationState(savedAction.callsign);
 
