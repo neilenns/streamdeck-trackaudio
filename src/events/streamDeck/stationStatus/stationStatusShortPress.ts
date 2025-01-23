@@ -1,7 +1,6 @@
 import { isStationStatusController } from "@controllers/stationStatus";
 import { KeyAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
-import trackAudioManager from "@managers/trackAudio";
 
 /**
  * Handles a short press of a station status action. Toggles the
@@ -24,32 +23,16 @@ export const handleStationStatusShortPress = (action: KeyAction) => {
 
   // Mute if that's the requested action.
   if (foundAction.toggleMuteOnPress) {
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: foundAction.frequency,
-        isOutputMuted: "toggle",
-        rx: undefined,
-        tx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-      },
-    });
-    return;
+    foundAction.toggleMute();
   }
 
-  // Send the message to TrackAudio.
-  trackAudioManager.sendMessage({
-    type: "kSetStationState",
-    value: {
-      frequency: foundAction.frequency,
-      rx: foundAction.listenTo === "rx" ? "toggle" : undefined,
-      tx: foundAction.listenTo === "tx" ? "toggle" : undefined,
-      xc: foundAction.listenTo === "xc" ? "toggle" : undefined,
-      xca: foundAction.listenTo === "xca" ? "toggle" : undefined,
-      headset: undefined,
-      isOutputMuted: undefined,
-    },
-  });
+  // Toggle speaker if that's the requested action.
+  if (foundAction.toggleSpeakerOnPress) {
+    foundAction.toggleSpeaker();
+  }
+
+  // If mute or speaker isn't set then toggle listenTo.
+  if (!foundAction.toggleMuteOnPress && !foundAction.toggleSpeakerOnPress) {
+    foundAction.toggleListenTo();
+  }
 };

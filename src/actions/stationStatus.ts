@@ -104,6 +104,8 @@ export interface StationStatusSettings {
   title?: string;
   toggleMuteOnLongPress?: boolean;
   toggleMuteOnPress?: boolean;
+  toggleSpeakerOnLongPress?: boolean;
+  toggleSpeakerOnPress?: boolean;
   unavailableImagePath?: string;
   [key: string]: JsonValue;
 }

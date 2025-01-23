@@ -9,34 +9,32 @@ import { handleAsyncException } from "@utils/handleAsyncException";
  * @param actionId The ID of the action that had the long press
  */
 export const handleStationStatusLongPress = (action: KeyAction) => {
-  const savedAction = actionManager
+  const foundAction = actionManager
     .getStationStatusControllers()
     .find((entry) => entry.action.id === action.id);
 
-  if (!savedAction) {
+  if (!foundAction) {
     return;
   }
 
   // Mute if that's the requested action.
-  if (savedAction.toggleMuteOnLongPress) {
-    trackAudioManager.sendMessage({
-      type: "kSetStationState",
-      value: {
-        frequency: savedAction.frequency,
-        isOutputMuted: "toggle",
-        rx: undefined,
-        tx: undefined,
-        xc: undefined,
-        xca: undefined,
-        headset: undefined,
-      },
-    });
-    return;
+  if (foundAction.toggleMuteOnLongPress) {
+    foundAction.toggleMute();
   }
 
-  // If mute toggle isn't enabled, refresh the station state.
-  savedAction.reset();
-  trackAudioManager.refreshStationState(savedAction.callsign);
+  // Speaker if that's the requested action.
+  if (foundAction.toggleSpeakerOnLongPress) {
+    foundAction.toggleSpeaker();
+  }
+
+  // If mute or speaker toggle isn't enabled, refresh the station state.
+  if (
+    !foundAction.toggleMuteOnLongPress &&
+    !foundAction.toggleSpeakerOnLongPress
+  ) {
+    foundAction.reset();
+    trackAudioManager.refreshStationState(foundAction.callsign);
+  }
 
   action.showOk().catch((error: unknown) => {
     handleAsyncException("Unable to show OK on station status button:", error);
