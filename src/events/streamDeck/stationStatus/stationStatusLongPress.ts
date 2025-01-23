@@ -20,17 +20,21 @@ export const handleStationStatusLongPress = (action: KeyAction) => {
   // Mute if that's the requested action.
   if (foundAction.toggleMuteOnLongPress) {
     foundAction.toggleMute();
-    return;
   }
 
+  // Speaker if that's the requested action.
   if (foundAction.toggleSpeakerOnLongPress) {
     foundAction.toggleSpeaker();
-    return;
   }
 
   // If mute or speaker toggle isn't enabled, refresh the station state.
-  foundAction.reset();
-  trackAudioManager.refreshStationState(foundAction.callsign);
+  if (
+    !foundAction.toggleMuteOnLongPress &&
+    !foundAction.toggleSpeakerOnLongPress
+  ) {
+    foundAction.reset();
+    trackAudioManager.refreshStationState(foundAction.callsign);
+  }
 
   action.showOk().catch((error: unknown) => {
     handleAsyncException("Unable to show OK on station status button:", error);

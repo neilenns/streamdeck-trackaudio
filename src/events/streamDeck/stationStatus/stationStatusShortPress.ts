@@ -24,14 +24,15 @@ export const handleStationStatusShortPress = (action: KeyAction) => {
   // Mute if that's the requested action.
   if (foundAction.toggleMuteOnPress) {
     foundAction.toggleMute();
-    return;
   }
 
+  // Toggle speaker if that's the requested action.
   if (foundAction.toggleSpeakerOnPress) {
     foundAction.toggleSpeaker();
-    return;
   }
 
   // If mute or speaker isn't set then toggle listenTo.
-  foundAction.toggleListenTo();
+  if (!foundAction.toggleMuteOnPress && !foundAction.toggleSpeakerOnPress) {
+    foundAction.toggleListenTo();
+  }
 };
