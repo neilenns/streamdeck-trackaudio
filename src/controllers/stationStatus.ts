@@ -546,9 +546,9 @@ export class StationStatusController extends BaseController {
   //#endregion
 
   //#region Websocket messages
-  /// <summary>
-  /// Toggles the mute state of the station.
-  /// </summary>
+  /**
+   * Toggles the mute state of the station.
+   */
   public toggleMute() {
     trackAudioManager.sendMessage({
       type: "kSetStationState",
@@ -564,9 +564,9 @@ export class StationStatusController extends BaseController {
     });
   }
 
-  /// <summary>
-  /// Toggles the speaker state of the station.
-  /// </summary>
+  /**
+   * Toggles the speaker state of the station.
+   */
   public toggleSpeaker() {
     trackAudioManager.sendMessage({
       type: "kSetStationState",
@@ -582,9 +582,9 @@ export class StationStatusController extends BaseController {
     });
   }
 
-  /// <summary>
-  /// Toggles the state of the listenTo button.
-  /// </summary>
+  /**
+   * Toggles the listenTo button on the action.
+   */
   public toggleListenTo() {
     trackAudioManager.sendMessage({
       type: "kSetStationState",
