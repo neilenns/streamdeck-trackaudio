@@ -254,6 +254,22 @@ export class StationStatusController extends BaseController {
   }
 
   /**
+   * Gets the toggleSpeakerOnLongPress value from settings.
+   * @returns {boolean} The value. Defaults to false.
+   */
+  get toggleSpeakerOnLongPress(): boolean {
+    return this.settings.toggleSpeakerOnLongPress ?? false;
+  }
+
+  /**
+   * Gets the toggleSpeakerOnPress value from settings.
+   * @returns {boolean} The value. Defaults to false.
+   */
+  get toggleSpeakerOnPress(): boolean {
+    return this.settings.toggleSpeakerOnPress ?? false;
+  }
+
+  /**
    * Gets the isListeningForReceive property.
    * @returns {boolean}  Returns true if listenTo is rx, xc, or xca,
    * the settings that mean rx is active in TrackAudio.
@@ -527,6 +543,63 @@ export class StationStatusController extends BaseController {
       : [];
     return entries;
   }
+  //#endregion
+
+  //#region Websocket messages
+  /// <summary>
+  /// Toggles the mute state of the station.
+  /// </summary>
+  public toggleMute() {
+    trackAudioManager.sendMessage({
+      type: "kSetStationState",
+      value: {
+        frequency: this.frequency,
+        isOutputMuted: "toggle",
+        rx: undefined,
+        tx: undefined,
+        xc: undefined,
+        xca: undefined,
+        headset: undefined,
+      },
+    });
+  }
+
+  /// <summary>
+  /// Toggles the speaker state of the station.
+  /// </summary>
+  public toggleSpeaker() {
+    trackAudioManager.sendMessage({
+      type: "kSetStationState",
+      value: {
+        frequency: this.frequency,
+        isOutputMuted: undefined,
+        rx: undefined,
+        tx: undefined,
+        xc: undefined,
+        xca: undefined,
+        headset: "toggle",
+      },
+    });
+  }
+
+  /// <summary>
+  /// Toggles the state of the listenTo button.
+  /// </summary>
+  public toggleListenTo() {
+    trackAudioManager.sendMessage({
+      type: "kSetStationState",
+      value: {
+        frequency: this.frequency,
+        rx: this.listenTo === "rx" ? "toggle" : undefined,
+        tx: this.listenTo === "tx" ? "toggle" : undefined,
+        xc: this.listenTo === "xc" ? "toggle" : undefined,
+        xca: this.listenTo === "xca" ? "toggle" : undefined,
+        headset: undefined,
+        isOutputMuted: undefined,
+      },
+    });
+  }
+
   //#endregion
 
   /**
