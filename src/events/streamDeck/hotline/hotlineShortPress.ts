@@ -3,7 +3,7 @@ import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
 
 /**
- * Handles the short press of a hotline action. Toggles the tx on both the primary and hotline frequency.
+ * Handles the short press of a hotline action. Toggles TX and XCA on both the primary and hotline frequency.
  * @param actionId The action id to toggle the state of
  */
 export const handleHotlineShortPress = (action: KeyAction) => {
@@ -24,16 +24,16 @@ export const handleHotlineShortPress = (action: KeyAction) => {
     foundAction.isTxHotline = true;
   }
 
-  // The primary frequency always gets its xc state toggled to match the tx state,
-  // ensuring xc is re-enabled when tx turns on.
+  // The primary frequency always gets its xca state toggled to match the tx state,
+  // ensuring xca is re-enabled when tx turns on.
   trackAudioManager.sendMessage({
     type: "kSetStationState",
     value: {
       frequency: foundAction.primaryFrequency,
       tx: !foundAction.isTxPrimary,
       rx: undefined,
-      xc: !foundAction.isTxPrimary,
-      xca: undefined,
+      xc: undefined,
+      xca: !foundAction.isTxPrimary,
       headset: undefined,
       isOutputMuted: undefined,
     },
