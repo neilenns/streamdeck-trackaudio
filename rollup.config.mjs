@@ -1,11 +1,11 @@
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
+import replace from "@rollup/plugin-replace";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import path from "node:path";
 import url from "node:url";
-import json from "@rollup/plugin-json";
-import replace from "@rollup/plugin-replace";
 
 const isWatching = !!process.env.ROLLUP_WATCH;
 const sdPlugin = "com.neil-enns.trackaudio.sdPlugin";
@@ -32,7 +32,7 @@ const config = {
           process.env.NODE_ENV ?? "production"
         ),
         "process.env.LOG_LEVEL": process.env.LOG_LEVEL
-          ? JSON.stringify(process.env.NODE_ENV)
+          ? JSON.stringify(process.env.LOG_LEVEL)
           : undefined,
       },
     }),
