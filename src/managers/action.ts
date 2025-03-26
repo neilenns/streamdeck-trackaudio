@@ -40,6 +40,7 @@ class ActionManager extends EventEmitter {
   private static instance: ActionManager | null = null;
   private actions: Controller[] = [];
   private profileChangedTimeout: NodeJS.Timeout | undefined;
+  private static readonly PROFILE_CHANGE_DELAY_MS = 500; // Number of milliseconds to wait before auto-adding stations after a profile change
 
   private constructor() {
     super();
@@ -65,7 +66,7 @@ class ActionManager extends EventEmitter {
       this.autoAddStations().catch((error: unknown) => {
         handleAsyncException("Error auto-adding stations", error);
       });
-    }, 500);
+    }, ActionManager.PROFILE_CHANGE_DELAY_MS);
   }
 
   /**
