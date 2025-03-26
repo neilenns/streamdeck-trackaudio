@@ -27,6 +27,7 @@ import { ActionContext } from "@elgato/streamdeck";
 import { Controller } from "@interfaces/controller";
 import { SetStationState, StationStateUpdate } from "@interfaces/messages";
 import trackAudioManager from "@managers/trackAudio";
+import { handleAsyncException } from "@utils/handleAsyncException";
 import mainLogger from "@utils/logger";
 import { EventEmitter } from "events";
 
@@ -38,6 +39,7 @@ const logger = mainLogger.child({ service: "action" });
 class ActionManager extends EventEmitter {
   private static instance: ActionManager | null = null;
   private actions: Controller[] = [];
+  private profileChangedTimeout: NodeJS.Timeout | undefined;
 
   private constructor() {
     super();
@@ -54,20 +56,42 @@ class ActionManager extends EventEmitter {
     return ActionManager.instance;
   }
 
+  public trackProfileChanged() {
+    if (this.profileChangedTimeout) {
+      clearTimeout(this.profileChangedTimeout);
+    }
+
+    this.profileChangedTimeout = setTimeout(() => {
+      this.autoAddStations().catch((error: unknown) => {
+        handleAsyncException("Error auto-adding stations", error);
+      });
+    }, 500);
+  }
+
   /**
    * Automatically sends add requests to TrackAudio for tracked stations
    */
   public async autoAddStations() {
-    // Collect all the status action callsigns. Exclude GUARD and UNICOM since those are always
-    // automatically present in TrackAudio. A Set is used to ensure unique entries in the list.
+    // Collect all the status action callsigns. Exclude any with isAvailable true as that means it is
+    // already added in TrackAudio. Exclude GUARD and UNICOM since those are always
+    // automatically present in TrackAudio, and any stations without a callsign.
+    // A Set is used to ensure unique entries in the list.
     const trackedCallsignsSet = new Set(
       this.getStationStatusControllers()
+        .filter((controller) => !controller.isAvailable)
         .map((controller) => controller.callsign ?? "")
-        .filter((callsign) => callsign !== "GUARD" && callsign !== "UNICOM")
+        .filter(
+          (callsign) =>
+            callsign !== "GUARD" && callsign !== "UNICOM" && callsign !== ""
+        )
     );
 
     // Add on all the hotline action callsigns
     this.getHotlineControllers().forEach((hotline) => {
+      // If the hotline is already available, don't add it to TrackAudio again.
+      if (hotline.isAvailable) {
+        return;
+      }
       if (hotline.primaryCallsign) {
         trackedCallsignsSet.add(hotline.primaryCallsign);
       }
