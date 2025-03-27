@@ -1,5 +1,5 @@
-import winston from "winston";
 import StreamdeckTransport from "streamdeck-transport";
+import winston from "winston";
 
 /**
  * Additional properties for Winston info objects to keep TypeScript happy.
@@ -56,9 +56,7 @@ class Logger {
    * @returns The instance of Logger
    */
   public static getInstance(): Logger {
-    if (!Logger._instance) {
-      Logger._instance = new Logger();
-    }
+    Logger._instance ??= new Logger();
     return Logger._instance;
   }
 }

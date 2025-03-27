@@ -1,9 +1,9 @@
+import mainLogger from "@utils/logger";
+import * as chokidar from "chokidar";
+import EventEmitter from "events";
 import * as fs from "fs";
 import Handlebars from "handlebars";
 import path from "path";
-import * as chokidar from "chokidar";
-import EventEmitter from "events";
-import mainLogger from "@utils/logger";
 
 const logger = mainLogger.child({ service: "svg" });
 
@@ -44,9 +44,7 @@ class SvgTemplateManager extends EventEmitter {
    * @returns The SVG manager instance
    */
   public static getInstance(): SvgTemplateManager {
-    if (!SvgTemplateManager.instance) {
-      SvgTemplateManager.instance = new SvgTemplateManager();
-    }
+    SvgTemplateManager.instance ??= new SvgTemplateManager();
 
     return SvgTemplateManager.instance;
   }

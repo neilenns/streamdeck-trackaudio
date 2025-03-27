@@ -48,9 +48,7 @@ class ActionManager extends EventEmitter {
    * @returns The instance of ActionManager
    */
   public static getInstance(): ActionManager {
-    if (!ActionManager.instance) {
-      ActionManager.instance = new ActionManager();
-    }
+    ActionManager.instance ??= new ActionManager();
     return ActionManager.instance;
   }
 
