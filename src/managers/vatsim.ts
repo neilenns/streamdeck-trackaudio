@@ -1,8 +1,8 @@
 import { VatsimData } from "@interfaces/vatsim";
 import { handleAsyncException } from "@root/utils/handleAsyncException";
+import mainLogger from "@utils/logger";
 import axios from "axios";
 import EventEmitter from "events";
-import mainLogger from "@utils/logger";
 
 const logger = mainLogger.child({ service: "vatsim" });
 
@@ -22,9 +22,7 @@ class VatsimManager extends EventEmitter {
    * @returns The instance
    */
   public static getInstance(): VatsimManager {
-    if (!VatsimManager.instance) {
-      VatsimManager.instance = new VatsimManager();
-    }
+    VatsimManager.instance ??= new VatsimManager();
     return VatsimManager.instance;
   }
 

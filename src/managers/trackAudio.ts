@@ -41,9 +41,7 @@ class TrackAudioManager extends EventEmitter {
    * @returns The websocket instance
    */
   public static getInstance(): TrackAudioManager {
-    if (!TrackAudioManager.instance) {
-      TrackAudioManager.instance = new TrackAudioManager();
-    }
+    TrackAudioManager.instance ??= new TrackAudioManager();
     return TrackAudioManager.instance;
   }
   //#endregion
