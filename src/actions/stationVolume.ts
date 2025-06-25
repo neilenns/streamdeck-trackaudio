@@ -96,5 +96,6 @@ export interface StationVolumeSettings {
   changeAmount?: number;
   mutedImagePath?: string;
   notMutedImagePath?: string;
+  pushToMute?: boolean;
   [key: string]: JsonValue;
 }

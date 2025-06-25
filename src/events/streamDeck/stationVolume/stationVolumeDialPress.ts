@@ -1,6 +1,9 @@
 import { DialAction } from "@elgato/streamdeck";
 import actionManager from "@managers/action";
 import trackAudioManager from "@managers/trackAudio";
+import mainLogger from "@utils/logger";
+
+const logger = mainLogger.child({ service: "stationVolume" });
 
 /**
  * Toggles the mute setting on the station.
@@ -12,6 +15,15 @@ export const handleStationVolumeDialPress = (action: DialAction) => {
     .find((entry) => entry.action.id === action.id);
 
   if (!savedAction) {
+    return;
+  }
+
+  if (!savedAction.pushToMute) {
+    logger.info(
+      `Station volume action ${
+        savedAction.callsign ?? "undefined"
+      } does not have push to mute enabled.`
+    );
     return;
   }
 

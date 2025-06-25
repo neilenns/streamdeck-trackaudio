@@ -146,6 +146,14 @@ export class StationVolumeController extends BaseController {
   }
 
   /**
+   * Gets the pushToMute setting.
+   * @returns {boolean} True if push to mute is enabled. Defaults to true.
+   */
+  get pushToMute(): boolean {
+    return this._settings?.pushToMute ?? true;
+  }
+
+  /**
    * Gets the settings.
    * @returns {StationVolumeSettings} The settings.
    */
