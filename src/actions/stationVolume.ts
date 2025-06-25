@@ -68,7 +68,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
       return;
     }
 
-    handleStationVolumeDialPress(ev.action);
+    handleStationVolumeDialPress(ev.action, "press");
   }
 
   override onTouchTap(
@@ -80,7 +80,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
       return;
     }
 
-    handleStationVolumeDialPress(ev.action);
+    handleStationVolumeDialPress(ev.action, "tap");
   }
 
   override onWillDisappear(
@@ -97,5 +97,6 @@ export interface StationVolumeSettings {
   mutedImagePath?: string;
   notMutedImagePath?: string;
   pushToMute?: boolean;
+  tapToMute?: boolean;
   [key: string]: JsonValue;
 }
