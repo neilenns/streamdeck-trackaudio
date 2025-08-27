@@ -39,3 +39,13 @@ jobs:
           name: Streamdeck-TrackAudio
           path: |
             com.neil-enns.trackaudio.streamDeckPlugin
+
+      - name: Add artifact links to pull request
+        if: github.event_name == 'pull_request'
+        uses: tonyhallett/artifacts-url-comments@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          prefix: "Build for this pull request:"
+          format: "[StreamDeck-TrackAudio.zip]({url})"
+          addTo: pull
