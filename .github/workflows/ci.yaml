@@ -44,9 +44,9 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           # Get the artifact download URL
-          ARTIFACT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          $env:ARTIFACT_URL = "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           
           # Add comment with artifact link
-          gh pr comment ${{ github.event.pull_request.number }} --body "Build for this pull request: [StreamDeck-TrackAudio.zip](${ARTIFACT_URL})"
+          gh pr comment ${{ github.event.pull_request.number }} --body "Build for this pull request: [StreamDeck-TrackAudio.zip]($env:ARTIFACT_URL)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
