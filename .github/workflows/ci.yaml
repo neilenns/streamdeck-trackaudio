@@ -42,10 +42,11 @@ jobs:
 
       - name: Add artifact links to pull request
         if: github.event_name == 'pull_request'
-        uses: tonyhallett/artifacts-url-comments@v1.1.0
+        run: |
+          # Get the artifact download URL
+          ARTIFACT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+          # Add comment with artifact link
+          gh pr comment ${{ github.event.pull_request.number }} --body "Build for this pull request: [StreamDeck-TrackAudio.zip](${ARTIFACT_URL})"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          prefix: "Build for this pull request:"
-          format: "[StreamDeck-TrackAudio.zip]({url})"
-          addTo: pull
