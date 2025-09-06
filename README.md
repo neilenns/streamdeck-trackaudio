@@ -1,10 +1,8 @@
 # TrackAudio actions for Stream Deck <!-- omit from toc -->
 
 > [!IMPORTANT]
-> CRC is removing support for external audio applications on October 15, 2025. From that date, TrackAudio
-> will no longer work for US-based controllers, making this plug-in useless for people using CRC. If
-> you are outside of the US, TrackAudio will continue to work as before and you can continue using
-> this plug-in.
+> CRC does not support external audio clients, and does not expose an external interface for controlling
+> audio. Therefore, this plugin cannot be used with CRC.
 
 [![get it on marketplace](docs/marketplace-light.svg "Get TrackAudio on Marketplace")](https://marketplace.elgato.com/product/trackaudio-e913a0ca-4c12-411d-a5a6-acf5f6c4bdea)
 
