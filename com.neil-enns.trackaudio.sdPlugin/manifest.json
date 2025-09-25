@@ -165,7 +165,7 @@
 	"CodePath": "bin/plugin.js",
 	"Description": "Provides buttons for controlling TrackAudio",
 	"Icon": "images/plugin/pluginIcon",
-	"SDKVersion": 2,
+	"SDKVersion": 3,
 	"URL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/",
 	"Software": {
 		"MinimumVersion": "6.9"
