@@ -1,188 +1,170 @@
 {
-	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
-	"Name": "TrackAudio",
-	"Version": "0.1.0.0",
-	"Author": "Neil Enns",
-	"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/",
-	"Actions": [
-		{
-			"Name": "Main volume",
-			"UUID": "com.neil-enns.trackaudio.mainvolume",
-			"Icon": "images/plugin/volume",
-			"PropertyInspectorPath": "pi/mainVolume.html",
-			"Tooltip": "Controls the main volume for TrackAudio.",
-			"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/main-volume/",
-			"Controllers": [
-				"Encoder"
-			],
-			"Encoder": {
-				"layout": "$B1",
-				"TriggerDescription": {
-					"Push": "Toggle mute",
-					"Rotate": "Adjust volume"
-				}
-			},
-			"DisableAutomaticStates": true,
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "Station volume",
-			"UUID": "com.neil-enns.trackaudio.stationvolume",
-			"Icon": "images/plugin/volume",
-			"PropertyInspectorPath": "pi/stationVolume.html",
-			"Tooltip": "Controls the volume for the specified station.",
-			"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/station-status/",
-			"Controllers": [
-				"Encoder"
-			],
-			"Encoder": {
-				"layout": "$B1",
-				"TriggerDescription": {
-					"Push": "Toggle mute",
-					"Touch": "Toggle mute",
-					"Rotate": "Adjust volume"
-				}
-			},
-			"DisableAutomaticStates": true,
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "ATIS letter",
-			"UUID": "com.neil-enns.trackaudio.atisletter",
-			"Icon": "images/actions/atisLetter/cloud-white",
-			"PropertyInspectorPath": "pi/atisLetter.html",
-			"Tooltip": "Shows the current ATIS letter for the specified station.",
-			"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/atis-letter/",
-			"Controllers": [
-				"Keypad"
-			],
-			"DisableAutomaticStates": true,
-			"UserTitleEnabled": false,
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "Hotline",
-			"UUID": "com.neil-enns.trackaudio.hotline",
-			"Icon": "images/plugin/phone-solid",
-			"Tooltip": "Toggles Tx for a hotline frequency.",
-			"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/hotline/",
-			"PropertyInspectorPath": "pi/hotline.html",
-			"DisableAutomaticStates": true,
-			"UserTitleEnabled": false,
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "bottom"
-				}
-			]
-		},
-		{
-			"Name": "Push to talk",
-			"UUID": "com.neil-enns.trackaudio.pushtotalk",
-			"Icon": "images/plugin/microphone-solid",
-			"Tooltip": "Triggers transmit via push-to-talk.",
-			"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/push-to-talk/",
-			"DisableAutomaticStates": true,
-			"UserTitleEnabled": false,
-			"PropertyInspectorPath": "pi/pushToTalk.html",
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "Station status",
-			"UUID": "com.neil-enns.trackaudio.stationstatus",
-			"Icon": "images/plugin/headphones-solid",
-			"Tooltip": "Shows the status of a station.",
-			"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/station-status/",
-			"DisableAutomaticStates": true,
-			"Controllers": [
-				"Keypad"
-			],
-			"PropertyInspectorPath": "pi/stationStatus.html",
-			"UserTitleEnabled": false,
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		},
-		{
-			"Name": "TrackAudio status",
-			"UUID": "com.neil-enns.trackaudio.trackaudiostatus",
-			"Icon": "images/actions/trackAudioStatus/pluginIcon",
-			"Tooltip": "Shows the status of the connection to TrackAudio.",
-			"SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/trackaudio-status/",
-			"PropertyInspectorPath": "pi/trackAudioStatus.html",
-			"DisableAutomaticStates": true,
-			"UserTitleEnabled": false,
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "images/actions/default",
-					"TitleAlignment": "middle"
-				}
-			]
-		}
-	],
-	"ApplicationsToMonitor": {
-		"mac": [
-			"com.vatsim.trackaudio"
-		],
-		"windows": [
-			"trackaudio.exe"
-		]
-	},
-	"Category": "TrackAudio",
-	"CategoryIcon": "images/plugin/categoryIcon",
-	"CodePath": "bin/plugin.js",
-	"Description": "Provides buttons for controlling TrackAudio",
-	"Icon": "images/plugin/pluginIcon",
-	"SDKVersion": 2,
-	"URL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/",
-	"Software": {
-		"MinimumVersion": "6.9"
-	},
-	"OS": [
-		{
-			"Platform": "mac",
-			"MinimumVersion": "10.15"
-		},
-		{
-			"Platform": "windows",
-			"MinimumVersion": "10"
-		}
-	],
-	"Nodejs": {
-		"Version": "20",
-		"Debug": "--inspect=127.0.0.1:54545"
-	},
-	"UUID": "com.neil-enns.trackaudio"
+  "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+  "Name": "TrackAudio",
+  "Version": "0.1.0.0",
+  "Author": "Neil Enns",
+  "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/",
+  "Actions": [
+    {
+      "Name": "Main volume",
+      "UUID": "com.neil-enns.trackaudio.mainvolume",
+      "Icon": "images/plugin/volume",
+      "PropertyInspectorPath": "pi/mainVolume.html",
+      "Tooltip": "Controls the main volume for TrackAudio.",
+      "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/main-volume/",
+      "Controllers": ["Encoder"],
+      "Encoder": {
+        "layout": "$B1",
+        "TriggerDescription": {
+          "Push": "Toggle mute",
+          "Rotate": "Adjust volume"
+        }
+      },
+      "DisableAutomaticStates": true,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "Station volume",
+      "UUID": "com.neil-enns.trackaudio.stationvolume",
+      "Icon": "images/plugin/volume",
+      "PropertyInspectorPath": "pi/stationVolume.html",
+      "Tooltip": "Controls the volume for the specified station.",
+      "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/station-volume/",
+      "Controllers": ["Encoder"],
+      "Encoder": {
+        "layout": "$B1",
+        "TriggerDescription": {
+          "Push": "Toggle mute",
+          "Touch": "Toggle mute",
+          "Rotate": "Adjust volume"
+        }
+      },
+      "DisableAutomaticStates": true,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "ATIS letter",
+      "UUID": "com.neil-enns.trackaudio.atisletter",
+      "Icon": "images/actions/atisLetter/cloud-white",
+      "PropertyInspectorPath": "pi/atisLetter.html",
+      "Tooltip": "Shows the current ATIS letter for the specified station.",
+      "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/atis-letter/",
+      "Controllers": ["Keypad"],
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "Hotline",
+      "UUID": "com.neil-enns.trackaudio.hotline",
+      "Icon": "images/plugin/phone-solid",
+      "Tooltip": "Toggles Tx for a hotline frequency.",
+      "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/hotline/",
+      "PropertyInspectorPath": "pi/hotline.html",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Push to talk",
+      "UUID": "com.neil-enns.trackaudio.pushtotalk",
+      "Icon": "images/plugin/microphone-solid",
+      "Tooltip": "Triggers transmit via push-to-talk.",
+      "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/push-to-talk/",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "PropertyInspectorPath": "pi/pushToTalk.html",
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "Station status",
+      "UUID": "com.neil-enns.trackaudio.stationstatus",
+      "Icon": "images/plugin/headphones-solid",
+      "Tooltip": "Shows the status of a station.",
+      "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/station-status/",
+      "DisableAutomaticStates": true,
+      "Controllers": ["Keypad"],
+      "PropertyInspectorPath": "pi/stationStatus.html",
+      "UserTitleEnabled": false,
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    },
+    {
+      "Name": "TrackAudio status",
+      "UUID": "com.neil-enns.trackaudio.trackaudiostatus",
+      "Icon": "images/actions/trackAudioStatus/pluginIcon",
+      "Tooltip": "Shows the status of the connection to TrackAudio.",
+      "SupportURL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/trackaudio-status/",
+      "PropertyInspectorPath": "pi/trackAudioStatus.html",
+      "DisableAutomaticStates": true,
+      "UserTitleEnabled": false,
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "images/actions/default",
+          "TitleAlignment": "middle"
+        }
+      ]
+    }
+  ],
+  "ApplicationsToMonitor": {
+    "mac": ["com.vatsim.trackaudio"],
+    "windows": ["trackaudio.exe"]
+  },
+  "Category": "TrackAudio",
+  "CategoryIcon": "images/plugin/categoryIcon",
+  "CodePath": "bin/plugin.js",
+  "Description": "Provides buttons for controlling TrackAudio",
+  "Icon": "images/plugin/pluginIcon",
+  "SDKVersion": 3,
+  "URL": "https://projects.neilenns.com/docs/streamdeck-trackaudio/",
+  "Software": {
+    "MinimumVersion": "6.9"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.15"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Nodejs": {
+    "Version": "20",
+    "Debug": "--inspect=127.0.0.1:54545"
+  },
+  "UUID": "com.neil-enns.trackaudio"
 }

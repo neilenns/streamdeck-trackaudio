@@ -33,7 +33,7 @@
     "typescript-eslint": "^8.0.0"
   },
   "dependencies": {
-    "@elgato/streamdeck": "^1.0.0",
+    "@elgato/streamdeck": "^2.0.0-beta",
     "axios": "^1.7.2",
     "chokidar": "^4.0.0",
     "debounce": "^2.1.0",
