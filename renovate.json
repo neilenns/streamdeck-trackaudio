@@ -5,44 +5,27 @@
     "schedule:monthly",
     "schedule:automergeMonthly"
   ],
-  "labels": [
-    "dependencies"
-  ],
+  "labels": ["dependencies"],
   "packageRules": [
     {
       "groupName": "definitelyTyped",
-      "matchDepTypes": [
-        "devDependencies"
-      ],
+      "matchDepTypes": ["devDependencies"],
       "automerge": true,
-      "matchPackageNames": [
-        "@types/{/,}**"
-      ]
+      "matchPackageNames": ["@types/{/,}**"]
     },
     {
       "groupName": "linting",
       "groupSlug": "eslint-plugin",
-      "matchDepTypes": [
-        "devDependencies"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
-      "matchPackageNames": [
-        "eslint-plugin{/,}**"
-      ]
+      "matchPackageNames": ["eslint-plugin{/,}**"]
     },
     {
       "groupName": "all minor and patch dependencies",
       "groupSlug": "all-minor-patch",
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
     }
   ]
 }
