@@ -18,7 +18,7 @@ import { handleUpdateMainVolumeSettings } from "@events/streamDeck/mainVolume/up
 /**
  * Represents the volume of a TrackAudio station
  */
-export class MainVolume extends SingletonAction<MainVolumeSettings> {
+export class MainVolume extends SingletonAction {
   debouncedUpdate = debounce(
     (action: DialAction, settings: MainVolumeSettings) => {
       handleUpdateMainVolumeSettings(action, settings);
@@ -27,7 +27,7 @@ export class MainVolume extends SingletonAction<MainVolumeSettings> {
   );
 
   override onWillAppear(
-    ev: WillAppearEvent<MainVolumeSettings>
+    ev: WillAppearEvent
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // DialAction.
@@ -39,13 +39,13 @@ export class MainVolume extends SingletonAction<MainVolumeSettings> {
   }
 
   override onDialRotate(
-    ev: DialRotateEvent<MainVolumeSettings>
+    ev: DialRotateEvent
   ): Promise<void> | void {
     handleMainVolumeDialRotate(ev.action, ev.payload.ticks);
   }
 
   override onDidReceiveSettings(
-    ev: DidReceiveSettingsEvent<MainVolumeSettings>
+    ev: DidReceiveSettingsEvent
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // DialAction.
@@ -57,7 +57,7 @@ export class MainVolume extends SingletonAction<MainVolumeSettings> {
   }
 
   override onWillDisappear(
-    ev: WillDisappearEvent<MainVolumeSettings>
+    ev: WillDisappearEvent
   ): Promise<void> | void {
     handleRemove(ev.action);
   }
