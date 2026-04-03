@@ -23,7 +23,7 @@ import debounce from "debounce";
 /**
  * Represents the status of a TrackAudio station
  */
-export class AtisLetter extends SingletonAction<AtisLetterSettings> {
+export class AtisLetter extends SingletonAction {
   private _keyDownStart = 0;
 
   debouncedUpdate = debounce(
@@ -37,7 +37,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   override onWillAppear(
-    ev: WillAppearEvent<AtisLetterSettings>
+    ev: WillAppearEvent
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
@@ -50,7 +50,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
-    ev: WillDisappearEvent<AtisLetterSettings>
+    ev: WillDisappearEvent
   ): void | Promise<void> {
     handleRemove(ev.action);
   }
@@ -58,7 +58,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
   // When settings are received the ActionManager is called to update the existing
   // settings on the saved action.
   override onDidReceiveSettings(
-    ev: DidReceiveSettingsEvent<AtisLetterSettings>
+    ev: DidReceiveSettingsEvent
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
@@ -89,7 +89,7 @@ export class AtisLetter extends SingletonAction<AtisLetterSettings> {
     this._keyDownStart = Date.now();
   }
 
-  override onKeyUp(ev: KeyUpEvent<AtisLetterSettings>): Promise<void> | void {
+  override onKeyUp(ev: KeyUpEvent): Promise<void> | void {
     const pressLength = Date.now() - this._keyDownStart;
 
     if (pressLength > LONG_PRESS_THRESHOLD) {

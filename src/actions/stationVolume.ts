@@ -21,7 +21,7 @@ import debounce from "debounce";
 /**
  * Represents the volume of a TrackAudio station
  */
-export class StationVolume extends SingletonAction<StationVolumeSettings> {
+export class StationVolume extends SingletonAction {
   debouncedUpdate = debounce(
     (action: DialAction, settings: StationVolumeSettings) => {
       handleUpdateStationVolumeSettings(action, settings);
@@ -30,7 +30,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   );
 
   override onWillAppear(
-    ev: WillAppearEvent<StationVolumeSettings>
+    ev: WillAppearEvent
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // DialAction.
@@ -42,13 +42,13 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   }
 
   override onDialRotate(
-    ev: DialRotateEvent<StationVolumeSettings>
+    ev: DialRotateEvent
   ): Promise<void> | void {
     handleStationVolumeDialRotate(ev.action, ev.payload.ticks);
   }
 
   override onDidReceiveSettings(
-    ev: DidReceiveSettingsEvent<StationVolumeSettings>
+    ev: DidReceiveSettingsEvent
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // DialAction.
@@ -60,7 +60,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   }
 
   override onDialDown(
-    ev: DialDownEvent<StationVolumeSettings>
+    ev: DialDownEvent
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // DialAction.
@@ -72,7 +72,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   }
 
   override onTouchTap(
-    ev: TouchTapEvent<StationVolumeSettings>
+    ev: TouchTapEvent
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // DialAction.
@@ -84,7 +84,7 @@ export class StationVolume extends SingletonAction<StationVolumeSettings> {
   }
 
   override onWillDisappear(
-    ev: WillDisappearEvent<StationVolumeSettings>
+    ev: WillDisappearEvent
   ): Promise<void> | void {
     handleRemove(ev.action);
   }

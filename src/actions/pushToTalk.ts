@@ -19,7 +19,7 @@ import debounce from "debounce";
 /**
  * Represents a push-to-talk action
  */
-export class PushToTalk extends SingletonAction<PushToTalkSettings> {
+export class PushToTalk extends SingletonAction {
   debouncedUpdate = debounce(
     (action: KeyAction, settings: PushToTalkSettings) => {
       handleUpdatePushToTalk(action, settings);
@@ -31,7 +31,7 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   // instance for use elsewhere in the code. The default title is also set
   // to something useful.
   override onWillAppear(
-    ev: WillAppearEvent<PushToTalkSettings>
+    ev: WillAppearEvent
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
@@ -44,7 +44,7 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
-    ev: WillDisappearEvent<PushToTalkSettings>
+    ev: WillDisappearEvent
   ): void | Promise<void> {
     handleRemove(ev.action);
   }
@@ -60,7 +60,7 @@ export class PushToTalk extends SingletonAction<PushToTalkSettings> {
   // When settings are received the ActionManager is called to update the existing
   // settings on the saved action.
   override onDidReceiveSettings(
-    ev: DidReceiveSettingsEvent<PushToTalkSettings>
+    ev: DidReceiveSettingsEvent
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.

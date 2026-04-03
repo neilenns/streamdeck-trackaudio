@@ -19,7 +19,7 @@ import debounce from "debounce";
 /**
  * Represents the status of the websocket connection to TrackAudio
  */
-export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> {
+export class TrackAudioStatus extends SingletonAction {
   private _keyDownStart = 0;
 
   debouncedUpdate = debounce(
@@ -32,7 +32,7 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   // When the action is added to a profile it gets saved in the ActionManager
   // instance for use elsewhere in the code.
   override onWillAppear(
-    ev: WillAppearEvent<TrackAudioStatusSettings>
+    ev: WillAppearEvent
   ): void | Promise<void> {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
@@ -45,13 +45,13 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
 
   // When the action is removed from a profile it also gets removed from the ActionManager.
   override onWillDisappear(
-    ev: WillDisappearEvent<TrackAudioStatusSettings>
+    ev: WillDisappearEvent
   ): void | Promise<void> {
     handleRemove(ev.action);
   }
 
   override onDidReceiveSettings(
-    ev: DidReceiveSettingsEvent<TrackAudioStatusSettings>
+    ev: DidReceiveSettingsEvent
   ): Promise<void> | void {
     // This should never happen. Typeguard to ensure the rest of the code can just use
     // KeyAction.
@@ -67,7 +67,7 @@ export class TrackAudioStatus extends SingletonAction<TrackAudioStatusSettings> 
   }
 
   override onKeyUp(
-    ev: KeyUpEvent<TrackAudioStatusSettings>
+    ev: KeyUpEvent
   ): Promise<void> | void {
     const pressLength = Date.now() - this._keyDownStart;
 
